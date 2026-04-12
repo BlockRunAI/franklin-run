@@ -187,12 +187,12 @@ export function HeroSection() {
             src="/images/franklin-bill.jpg"
             alt=""
             fill
-            className="object-cover object-top opacity-[0.06]"
-            style={{ filter: "grayscale(100%) contrast(1.2)" }}
+            className="object-cover object-top opacity-[0.15]"
+            style={{ filter: "sepia(40%) saturate(60%) brightness(0.9)" }}
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#05070b]/40 via-[#05070b]/70 to-[#05070b]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.06),transparent_60%)]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#05070b]/60 to-[#05070b]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,215,0,0.05),transparent_50%)]" />
         </div>
 
         {/* Content */}
