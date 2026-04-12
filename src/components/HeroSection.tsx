@@ -181,37 +181,39 @@ export function HeroSection() {
   return (
     <div className="relative">
       <div className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
-        {/* Franklin portrait background */}
-        <div className="absolute inset-0 overflow-hidden">
+        {/* Franklin portrait — right side, visible */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[45%] overflow-hidden lg:block">
           <Image
             src="/images/franklin-bill.jpg"
             alt=""
             fill
-            className="object-cover object-top opacity-[0.15]"
-            style={{ filter: "sepia(40%) saturate(60%) brightness(0.9)" }}
+            className="object-cover object-top opacity-[0.35]"
+            style={{ filter: "brightness(1.3) contrast(0.9)" }}
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#05070b]/60 to-[#05070b]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,215,0,0.05),transparent_50%)]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#05070b] via-[#05070b]/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#05070b] via-transparent to-[#05070b]/50" />
         </div>
+        {/* Subtle glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_30%,rgba(255,215,0,0.04),transparent_60%)]" />
 
         {/* Content */}
         <div className="relative mx-auto max-w-[1320px] px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-8 lg:pt-36">
           <div className="mx-auto max-w-[1120px]">
-            {/* Text */}
-            <div className="text-center">
+            {/* Text — left-aligned on desktop to give room for portrait */}
+            <div className="text-center lg:text-left">
               <h1 className="font-[family-name:var(--font-serif)] text-[3.5rem] leading-[0.95] tracking-[-0.04em] text-white sm:text-[4rem] md:text-[5rem] lg:text-[6rem]">
                 The AI agent with a{" "}
                 <span className="text-[#FFD700]">wallet</span>.
               </h1>
 
-              <p className="mx-auto mt-7 max-w-[720px] text-[16px] leading-7 text-white/60 sm:text-[17px]">
+              <p className="mx-auto mt-7 max-w-[720px] text-[16px] leading-7 text-white/60 sm:text-[17px] lg:mx-0 lg:max-w-[560px]">
                 While others chat, Franklin spends. 55+ models, one wallet, every paid API.
                 Pay per action in USDC. No subscriptions. No API keys. No limits.
               </p>
 
               {/* CTAs */}
-              <div className="mt-10 flex items-center justify-center gap-4">
+              <div className="mt-10 flex items-center justify-center gap-4 lg:justify-start">
                 <a
                   href="#get-started"
                   className="inline-flex items-center justify-center gap-2 rounded-[12px] bg-white px-6 py-3 text-[14px] font-semibold text-[#0a0d12] transition-all hover:bg-white/90 hover:shadow-lg hover:shadow-white/10"
@@ -228,7 +230,7 @@ export function HeroSection() {
               </div>
 
               {/* Install command */}
-              <div className="mx-auto mt-8 max-w-[520px]">
+              <div className="mx-auto mt-8 max-w-[520px] lg:mx-0">
                 <div className="flex items-center gap-3 rounded-[11px] border border-white/12 bg-white/5 px-4 py-2.5 text-[13px] backdrop-blur-sm">
                   <span className="select-none text-white/30">$</span>
                   <code className="flex-1 font-mono text-white/70">{INSTALL_COMMAND}</code>
@@ -243,7 +245,7 @@ export function HeroSection() {
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center justify-center gap-5 text-[12px] text-white/30">
+              <div className="mt-6 flex items-center justify-center gap-5 text-[12px] text-white/30 lg:justify-start">
                 <span>Payments on <span className="text-white/50">Base</span> &amp; <span className="text-white/50">Solana</span></span>
                 <span>·</span>
                 <span>Powered by <span className="text-white/50">x402</span></span>
