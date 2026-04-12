@@ -1,14 +1,28 @@
+import Image from "next/image";
+
 export function Header() {
   return (
     <header className="absolute inset-x-0 top-0 z-30 bg-transparent">
       <div className="mx-auto flex h-[76px] max-w-[1320px] items-center justify-between px-8">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-2">
-          <span className="text-[20px] text-[#FFD700]">&#9670;</span>
-          <span className="font-sans text-[16px] font-semibold tracking-[-0.01em] text-white">
-            Franklin
-          </span>
-          <span className="ml-1 text-[11px] text-white/30">by BlockRun.ai</span>
+        <a href="/" className="flex items-center gap-3">
+          <div className="size-8 overflow-hidden rounded-full border border-[#FFD700]/30">
+            <Image
+              src="/images/franklin-portrait.jpg"
+              alt="Franklin"
+              width={32}
+              height={32}
+              className="h-full w-full object-cover object-top"
+            />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="font-sans text-[18px] font-bold tracking-[-0.02em] text-white">
+              Franklin
+            </span>
+            <span className="text-[11px] font-medium text-white/40">
+              by <span className="text-[#10b981]">BlockRun.ai</span>
+            </span>
+          </div>
         </a>
 
         {/* Right buttons */}
