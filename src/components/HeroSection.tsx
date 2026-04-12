@@ -188,6 +188,7 @@ export function HeroSection() {
             alt=""
             fill
             className="object-cover object-top opacity-50"
+            sizes="50vw"
             style={{ filter: "brightness(1.4)" }}
             priority
           />
