@@ -132,7 +132,7 @@ function TerminalDemo() {
       </div>
 
       {/* Terminal body */}
-      <div className="p-5 font-mono text-[13px] leading-relaxed" style={{ minHeight: 260 }}>
+      <div className="p-4 font-mono text-[11px] leading-relaxed sm:p-5 sm:text-[13px]" style={{ minHeight: 220 }}>
         {/* Prompt line */}
         <div className="flex items-center gap-0">
           <span className="text-[#10b981]">❯ </span>
@@ -153,7 +153,7 @@ function TerminalDemo() {
       </div>
 
       {/* Status bar */}
-      <div className="flex items-center gap-4 border-t border-white/6 px-5 py-2 font-mono text-[11px] text-white/25">
+      <div className="flex items-center gap-3 border-t border-white/6 px-4 py-2 font-mono text-[10px] text-white/25 sm:gap-4 sm:px-5 sm:text-[11px]">
         <span className="text-white/50">zai/glm-5.1</span>
         <span>·</span>
         <span className="text-[#10b981]/70">$4.80 USDC</span>
@@ -181,21 +181,19 @@ export function HeroSection() {
   return (
     <div className="relative">
       <div className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
-        {/* Franklin portrait — right side, visible */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[45%] overflow-hidden lg:block">
+        {/* Franklin portrait — right side */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[50%] overflow-hidden lg:block">
           <Image
             src="/images/franklin-bill.jpg"
             alt=""
             fill
-            className="object-cover object-top opacity-[0.35]"
-            style={{ filter: "brightness(1.3) contrast(0.9)" }}
+            className="object-cover object-top opacity-50"
+            style={{ filter: "brightness(1.4)" }}
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#05070b] via-[#05070b]/80 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#05070b] via-transparent to-[#05070b]/50" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#05070b] to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#05070b] to-transparent" />
         </div>
-        {/* Subtle glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_30%,rgba(255,215,0,0.04),transparent_60%)]" />
 
         {/* Content */}
         <div className="relative mx-auto max-w-[1320px] px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-8 lg:pt-36">
