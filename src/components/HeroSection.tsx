@@ -49,14 +49,9 @@ export function HeroSection() {
   return (
     <div className="relative">
       <div className="relative min-h-full overflow-hidden bg-[#05070b] text-white">
-        {/* Background image */}
-        <Image
-          src="/images/landing-bg.jpg"
-          alt=""
-          fill
-          className="absolute inset-0 object-cover"
-          priority
-        />
+        {/* Gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#05070b] via-[#0a1628] to-[#05070b]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.08),transparent_70%)]" />
 
         {/* Content container */}
         <div className="relative mx-auto max-w-[1320px] px-4 pb-16 pt-28 sm:px-6 sm:pt-32 lg:px-8 lg:pb-24 lg:pt-36">

@@ -8,6 +8,7 @@ export function Header() {
           <span className="font-sans text-[16px] font-semibold tracking-[-0.01em] text-white">
             Franklin
           </span>
+          <span className="ml-1 text-[11px] text-white/30">by BlockRun.ai</span>
         </a>
 
         {/* Right buttons */}

@@ -40,7 +40,10 @@ export function Footer() {
             </a>
 
             <p className="mt-4 max-w-[320px] text-[14px] leading-6 text-white/50">
-              The AI agent with a wallet. Open source, runs locally, pays per action in USDC. By BlockRun.
+              The AI agent with a wallet. Open source, runs locally, pays per action in USDC.
+            </p>
+            <p className="mt-3 text-[13px] text-white/30">
+              A <a href="https://blockrun.ai" className="text-[#10b981] hover:underline">BlockRun.ai</a> product. Powered by the x402 micropayment protocol.
             </p>
 
             {/* Social links */}
@@ -110,8 +113,9 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 border-t border-white/10 pt-8 text-[13px] text-white/30">
-          &copy; {new Date().getFullYear()} BlockRun. All rights reserved.
+        <div className="mt-12 flex items-center justify-between border-t border-white/10 pt-8 text-[13px] text-white/30">
+          <span>&copy; {new Date().getFullYear()} <a href="https://blockrun.ai" className="hover:text-white/50">BlockRun.ai</a>. All rights reserved.</span>
+          <span>Franklin is an open-source product by <a href="https://blockrun.ai" className="text-[#10b981] hover:underline">BlockRun.ai</a></span>
         </div>
       </div>
     </footer>

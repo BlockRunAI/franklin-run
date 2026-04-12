@@ -15,7 +15,8 @@ interface FeatureSubSection {
   navLabel: string;
   heading: string;
   description: string;
-  image: string;
+  screenshot?: string;
+  terminalLines?: string[];
   cards: FeatureCard[];
 }
 
@@ -26,7 +27,7 @@ const FEATURE_DATA: FeatureSubSection[] = [
     heading: "Every action has a price tag. Franklin pays it.",
     description:
       "USDC micropayments via the x402 protocol. No API keys, no credit cards, no accounts. Fund your wallet and go. Every cent is tracked, every model call is logged, every dollar is visible.",
-    image: "/images/feature-bg.jpg",
+    screenshot: "/images/panel-overview.png",
     cards: [
       {
         title: "x402 Native Payments",
@@ -51,7 +52,17 @@ const FEATURE_DATA: FeatureSubSection[] = [
     heading: "55+ models. One endpoint. Smart routing picks the cheapest one.",
     description:
       "GPT-5, Claude, Gemini, DeepSeek, Grok, Llama, and 50 more — all through one gateway. Franklin scores every request on 15 dimensions and routes to the cheapest model that can handle it. Average savings: 89% vs Claude Opus.",
-    image: "/images/feature-bg-2.jpg",
+    terminalLines: [
+      "$ franklin --trust -m auto",
+      "  Router: SIMPLE → gemini-2.5-flash (91% savings)",
+      "",
+      "  ❯ explain this function",
+      "  Using gemini-2.5-flash — $0.0003",
+      "",
+      "  ❯ refactor with full test coverage",
+      "  Router: COMPLEX → claude-opus-4.6",
+      "  Using claude-opus-4.6 — $0.0180",
+    ],
     cards: [
       {
         title: "15-Dimension Request Scoring",
@@ -76,7 +87,7 @@ const FEATURE_DATA: FeatureSubSection[] = [
     heading: "Franklin learns your preferences. Gets smarter every session.",
     description:
       "Per-user self-evolution inspired by NousResearch. After each session, Franklin extracts your preferences — language, coding style, model choices, workflow patterns — and injects them into the next session. All data stays local.",
-    image: "/images/feature-bg-3.jpg",
+    screenshot: "/images/panel-learnings.png",
     cards: [
       {
         title: "Automatic Preference Extraction",
@@ -101,7 +112,19 @@ const FEATURE_DATA: FeatureSubSection[] = [
     heading: "Find posts. Draft replies. Grow your audience.",
     description:
       "Built-in X/Twitter marketing. Franklin searches for relevant posts, suggests replies with links, and lets you decide what to send. Pre-key dedup, daily caps, natural tone — all configurable.",
-    image: "/images/feature-bg-4.jpg",
+    terminalLines: [
+      "❯ find posts about ai agents on X",
+      "",
+      "  1. @dev_sarah: \"Need an AI agent that can pay APIs\"",
+      "     🔗 x.com/dev_sarah/status/123...",
+      "     → \"We built this — Franklin pays with USDC\"",
+      "",
+      "  2. @crypto_builder: \"x402 protocol is interesting\"",
+      "     🔗 x.com/crypto_builder/status/456...",
+      "     → \"Yeah, it's our payment layer\"",
+      "",
+      "  Reply to any? Give me the number.",
+    ],
     cards: [
       {
         title: "Human-in-the-Loop",
@@ -195,15 +218,32 @@ export function FeaturesSection() {
                   {feature.description}
                 </p>
 
-                <div className="relative mt-12 overflow-hidden rounded-xl">
-                  <Image
-                    src={feature.image}
-                    alt=""
-                    width={996}
-                    height={652}
-                    className="block h-auto w-full"
-                  />
-                </div>
+                {/* Screenshot or Terminal mockup */}
+                {feature.screenshot ? (
+                  <div className="relative mt-12 overflow-hidden rounded-xl border border-[#1e2130] shadow-2xl">
+                    <Image
+                      src={feature.screenshot}
+                      alt=""
+                      width={1280}
+                      height={800}
+                      className="block h-auto w-full"
+                    />
+                  </div>
+                ) : feature.terminalLines ? (
+                  <div className="relative mt-12 overflow-hidden rounded-xl border border-[#1e2130] bg-[#0a0d12] shadow-2xl">
+                    <div className="flex items-center gap-2 border-b border-[#1e2130] px-4 py-3">
+                      <span className="size-3 rounded-full bg-[#ff5f57]" />
+                      <span className="size-3 rounded-full bg-[#febc2e]" />
+                      <span className="size-3 rounded-full bg-[#28c840]" />
+                      <span className="ml-3 text-[12px] text-white/30">franklin</span>
+                    </div>
+                    <pre className="p-6 font-mono text-[13px] leading-6 text-[#10b981]/90">
+                      {feature.terminalLines.map((line, j) => (
+                        <div key={j} className={line.startsWith("$") || line.startsWith("❯") ? "text-white/90" : ""}>{line || "\u00A0"}</div>
+                      ))}
+                    </pre>
+                  </div>
+                ) : null}
 
                 <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
                   {feature.cards.map((card) => (
