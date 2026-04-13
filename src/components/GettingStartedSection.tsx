@@ -13,9 +13,9 @@ const steps = [
   },
   {
     number: "03",
-    title: "Start Coding",
+    title: "State an Outcome",
     description:
-      "Run franklin --trust. Ask anything: write code, search the web, generate images, find X posts. Franklin picks the cheapest model and pays per call.",
+      "Run franklin --trust. Write code, research markets, draft social posts, generate images — Franklin picks the best model and pays per action from your wallet.",
   },
   {
     number: "04",

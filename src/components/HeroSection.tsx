@@ -205,8 +205,8 @@ export function HeroSection() {
               </h1>
 
               <p className="mx-auto mt-7 max-w-[720px] text-[16px] leading-7 text-white/60 sm:text-[17px] lg:mx-0 lg:max-w-[560px]">
-                While others chat, Franklin spends. 55+ models, one wallet, every paid API.
-                Pay per action in USDC. No subscriptions. No API keys. No limits.
+                While others generate text, Franklin deploys capital. One wallet, every model,
+                every paid API. Budgeted execution in USDC. No subscriptions. No API keys. No account.
               </p>
 
               {/* CTAs */}

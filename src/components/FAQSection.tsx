@@ -16,7 +16,7 @@ const faqData = [
   {
     question: "How is this different from Claude Code or Cursor?",
     answer:
-      "Those tools require API keys and subscriptions. Franklin has a wallet — it pays for models directly with USDC. This means no rate limits, no account bans, no vendor lock-in. Plus smart routing saves ~89% vs using Claude Opus directly. And Franklin learns your preferences across sessions.",
+      "Those are coding agents — they write code. Franklin is an economic agent — software with purchasing power. It holds a wallet, picks the best model per task, pays per action in USDC, and works across verticals: code, trading, research, social, ops. Smart routing saves ~89% vs Claude Opus. No API keys, no subscriptions, no vendor lock-in.",
   },
   {
     question: "Can I use it for free?",

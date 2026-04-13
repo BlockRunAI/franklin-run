@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-const NAV_ITEMS = ["Wallet", "Models", "Self-Evolution", "Social"] as const;
+const NAV_ITEMS = ["Wallet", "Smart Router", "Self-Evolution", "Tools & APIs"] as const;
 
 interface FeatureCard {
   title: string;
@@ -24,9 +24,9 @@ const FEATURE_DATA: FeatureSubSection[] = [
   {
     id: "wallet-powered",
     navLabel: "Wallet",
-    heading: "Every action has a price tag. Franklin pays it.",
+    heading: "No API keys. No setup. Just USDC and every model.",
     description:
-      "USDC micropayments via the x402 protocol. No API keys, no credit cards, no accounts. Fund your wallet and go. Every cent is tracked, every model call is logged, every dollar is visible.",
+      "One wallet unlocks 55+ models from every provider — forever. No API key management, no billing portals, no per-provider accounts. Fund with USDC and start using Claude, GPT, Gemini, Grok, DeepSeek, and more. Every cent is tracked, every call is logged.",
     screenshot: "/images/panel-overview.png",
     cards: [
       {
@@ -47,37 +47,36 @@ const FEATURE_DATA: FeatureSubSection[] = [
     ],
   },
   {
-    id: "smart-routing",
-    navLabel: "Models",
-    heading: "55+ models. One endpoint. Smart routing picks the cheapest one.",
+    id: "smart-router",
+    navLabel: "Smart Router",
+    heading: "You don't pick models. Franklin picks for you.",
     description:
-      "GPT-5, Claude, Gemini, DeepSeek, Grok, Llama, and 50 more — all through one gateway. Franklin scores every request on 15 dimensions and routes to the cheapest model that can handle it. Average savings: 89% vs Claude Opus.",
+      "The Smart Router classifies every request — coding, trading, reasoning, research — and selects the model with the best quality-to-cost ratio. Every response shows which model was chosen, why, and how much you saved.",
     terminalLines: [
-      "$ franklin --trust -m auto",
-      "  Router: SIMPLE → gemini-2.5-flash (91% savings)",
+      "❯ refactor this auth module to use JWT",
+      "  CODING → kimi-k2.5  ·  saved 84%",
       "",
-      "  ❯ explain this function",
-      "  Using gemini-2.5-flash — $0.0003",
+      "❯ what's the BTC outlook for the week?",
+      "  TRADING → grok-4-1-fast-reasoning  ·  saved 95%",
       "",
-      "  ❯ refactor with full test coverage",
-      "  Router: COMPLEX → claude-opus-4.6",
-      "  Using claude-opus-4.6 — $0.0180",
+      "❯ prove that this algorithm is O(n log n)",
+      "  REASONING → claude-sonnet-4.6",
     ],
     cards: [
       {
-        title: "15-Dimension Request Scoring",
+        title: "Four Routing Profiles",
         description:
-          "Token count, code detection, reasoning complexity, agentic patterns, multi-step tasks. Each request is classified into Simple, Medium, Complex, or Reasoning tiers.",
+          "Auto (best quality-to-cost ratio), Eco (cheapest possible), Premium (most capable), Free (NVIDIA models only). Switch anytime — the router adapts instantly.",
       },
       {
-        title: "Three Routing Profiles",
+        title: "Learns From Your Usage",
         description:
-          "Auto (balanced cost/quality), Eco (cheapest possible), Premium (most capable). Switch with `/model auto`, `/model eco`, or `/model premium`.",
+          "If you keep retrying a model for coding tasks, Franklin adapts and picks a better one next time. Your router gets smarter the more you use it.",
       },
       {
-        title: "Free Tier Always Available",
+        title: "Per-Session Cost Breakdown",
         description:
-          "NVIDIA Nemotron and community models are free forever. Start coding without funding your wallet. Upgrade when you need premium models.",
+          "Run `/cost` to see exactly where your USDC went — model by model, category by category, with request counts and totals. No surprises.",
       },
     ],
   },
@@ -107,39 +106,36 @@ const FEATURE_DATA: FeatureSubSection[] = [
     ],
   },
   {
-    id: "social-growth",
-    navLabel: "Social",
-    heading: "Find posts. Draft replies. Grow your audience.",
+    id: "tools-and-apis",
+    navLabel: "Tools & APIs",
+    heading: "Every premium API. One wallet to access them all.",
     description:
-      "Built-in X/Twitter marketing. Franklin searches for relevant posts, suggests replies with links, and lets you decide what to send. Pre-key dedup, daily caps, natural tone — all configurable.",
+      "Trading data, image generation, web search, social automation — Franklin pays for premium tools and data the same way it pays for models. One USDC wallet replaces dozens of API keys and billing accounts.",
     terminalLines: [
-      "❯ find posts about ai agents on X",
+      "❯ what's BTC looking like today?",
+      "  TradingSignal · live price, RSI, MACD, Bollinger",
       "",
-      "  1. @dev_sarah: \"Need an AI agent that can pay APIs\"",
-      "     🔗 x.com/dev_sarah/status/123...",
-      "     → \"We built this — Franklin pays with USDC\"",
+      "❯ generate a hero image for my landing page",
+      "  ImageGen · DALL-E via x402  ·  $0.040",
       "",
-      "  2. @crypto_builder: \"x402 protocol is interesting\"",
-      "     🔗 x.com/crypto_builder/status/456...",
-      "     → \"Yeah, it's our payment layer\"",
-      "",
-      "  Reply to any? Give me the number.",
+      "❯ find X posts about ai agents and draft replies",
+      "  SearchX · 8 results found  ·  3 drafts ready",
     ],
     cards: [
       {
-        title: "Human-in-the-Loop",
+        title: "Trading & Market Data",
         description:
-          "Franklin suggests, you decide. Every reply draft is shown with the original post link. Pick a number to send, or skip. Never auto-posts without your approval.",
+          "Live prices, RSI, MACD, Bollinger bands, Fear & Greed — ask about any token. CoinGecko data computed locally, no separate API key needed.",
       },
       {
-        title: "Smart Dedup & Rate Limiting",
+        title: "Image Generation & Search",
         description:
-          "Pre-key hashing skips posts you've already seen — before spending LLM tokens. Daily caps and minimum delays prevent spam.",
+          "DALL-E, web search, research tools — all paid through x402 micropayments from the same USDC wallet. One balance covers everything.",
       },
       {
-        title: "Conversational Setup",
+        title: "Social Automation",
         description:
-          "No JSON config files. Tell Franklin your handle, your product, your keywords. It writes the config for you.",
+          "Search X for relevant posts, draft contextual replies, post with your confirmation. Same wallet, same agent, no X API key required.",
       },
     ],
   },
