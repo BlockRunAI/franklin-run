@@ -99,14 +99,9 @@ function TerminalDemo() {
       if (visibleLines < demo.response.length) {
         timerRef.current = setTimeout(() => setVisibleLines((l) => l + 1), 120);
       } else {
-        setPhase("pausing");
+        timerRef.current = setTimeout(() => setPhase("pausing"), 0);
         timerRef.current = setTimeout(() => {
-          // Move to next demo
           setDemoIdx((i) => (i + 1) % DEMOS.length);
-          setTypedChars(0);
-          setShowResponse(false);
-          setVisibleLines(0);
-          setPhase("typing");
         }, 3000);
       }
     }
@@ -115,10 +110,13 @@ function TerminalDemo() {
 
   // Reset on demo change
   useEffect(() => {
-    setTypedChars(0);
-    setShowResponse(false);
-    setVisibleLines(0);
-    setPhase("typing");
+    const t = setTimeout(() => {
+      setTypedChars(0);
+      setShowResponse(false);
+      setVisibleLines(0);
+      setPhase("typing");
+    }, 0);
+    return () => clearTimeout(t);
   }, [demoIdx]);
 
   return (
