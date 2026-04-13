@@ -242,10 +242,12 @@ export function HeroSection() {
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center justify-center gap-5 text-[12px] text-white/30 lg:justify-start">
-                <span>Payments on <span className="text-white/50">Base</span> &amp; <span className="text-white/50">Solana</span></span>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12px] text-white/30 lg:justify-start">
+                <span className="text-[#FFD700]/70">&#9670; Circle USDC Hackathon Winner</span>
                 <span>·</span>
-                <span>Powered by <span className="text-white/50">x402</span></span>
+                <span><span className="text-white/50">2M+</span> API calls</span>
+                <span>·</span>
+                <span>The <span className="text-white/50">economic agent</span></span>
                 <span>·</span>
                 <span><span className="text-white/50">Apache 2.0</span></span>
               </div>

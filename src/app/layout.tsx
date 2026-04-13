@@ -52,9 +52,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    title: "Franklin — The AI Agent with a Wallet",
+    title: "Franklin — The Economic Agent",
     description:
-      "55+ AI models, one USDC wallet, pay per action. No subscriptions, no API keys, no limits. Open source.",
+      "The wallet-native economic agent. 55+ models, one USDC wallet, pay per action. From the Circle USDC Hackathon-winning team. Open source.",
     siteName: "Franklin",
     images: [
       {
@@ -69,9 +69,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@BlockRunAI",
     creator: "@BlockRunAI",
-    title: "Franklin — The AI Agent with a Wallet",
+    title: "Franklin — The Economic Agent",
     description:
-      "55+ AI models, one USDC wallet, pay per action. Open source autonomous economic agent.",
+      "The wallet-native economic agent. 55+ models, USDC micropayments, 2M+ API calls. Circle USDC Hackathon Winner. Open source.",
     images: ["/images/og-image.png"],
   },
   robots: {
