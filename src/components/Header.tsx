@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 export function Header() {
@@ -10,7 +11,7 @@ export function Header() {
     <header className="absolute inset-x-0 top-0 z-30 bg-transparent">
       <div className="mx-auto flex h-[76px] max-w-[1320px] items-center justify-between px-6 sm:px-8">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <div className="size-8 overflow-hidden rounded-full border border-[#FFD700]/30">
             <Image
               src="/images/franklin-portrait.jpg"
@@ -28,7 +29,7 @@ export function Header() {
               by <span className="text-[#10b981]">BlockRun.ai</span>
             </span>
           </div>
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <div className="hidden gap-3 sm:flex">

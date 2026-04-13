@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const NAV_COLUMNS = [
   {
     title: "Product",
@@ -32,12 +34,12 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_auto_auto_auto] lg:gap-16">
           {/* Left column */}
           <div>
-            <a href="/" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <span className="text-[20px] text-[#FFD700]">&#9670;</span>
               <span className="text-[16px] font-semibold text-white">
                 Franklin
               </span>
-            </a>
+            </Link>
 
             <p className="mt-4 max-w-[320px] text-[14px] leading-6 text-white/50">
               The AI agent with a wallet. Open source, runs locally, pays per action in USDC.
