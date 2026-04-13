@@ -12,7 +12,7 @@ const NAV_COLUMNS = [
   {
     title: "Resources",
     links: [
-      { label: "Documentation", href: "https://docs.blockrun.ai" },
+      { label: "Documentation", href: "/docs" },
       { label: "BlockRun Gateway", href: "https://blockrun.ai" },
       { label: "x402 Protocol", href: "https://x402.org" },
     ],

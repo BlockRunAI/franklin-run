@@ -33,6 +33,12 @@ export function Header() {
 
         {/* Desktop nav */}
         <div className="hidden gap-3 sm:flex">
+          <Link
+            href="/docs"
+            className="inline-flex items-center justify-center rounded-[11px] px-4 py-2.5 text-[13px] font-semibold text-white/70 transition-colors hover:text-white"
+          >
+            Docs
+          </Link>
           <a
             href="https://github.com/BlockRunAI/franklin"
             className="inline-flex items-center justify-center gap-2 rounded-[11px] border border-white/18 bg-black/16 px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-white/10"
@@ -71,7 +77,7 @@ export function Header() {
             <a href="#features" onClick={() => setMenuOpen(false)} className="py-2 text-[15px] text-white/70 hover:text-white">Features</a>
             <a href="#get-started" onClick={() => setMenuOpen(false)} className="py-2 text-[15px] text-white/70 hover:text-white">Get Started</a>
             <a href="https://github.com/BlockRunAI/franklin" className="py-2 text-[15px] text-white/70 hover:text-white">GitHub</a>
-            <a href="https://docs.blockrun.ai" className="py-2 text-[15px] text-white/70 hover:text-white">Docs</a>
+            <Link href="/docs" onClick={() => setMenuOpen(false)} className="py-2 text-[15px] text-white/70 hover:text-white">Docs</Link>
           </div>
         </div>
       )}
