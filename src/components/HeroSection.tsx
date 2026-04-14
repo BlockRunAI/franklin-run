@@ -280,11 +280,11 @@ export function HeroSection() {
               </div>
 
               <div className="fr-reveal fr-reveal-delay-5 mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.15em] text-white/25 lg:justify-start">
+                <span><span className="text-[#FFD700]/85">YOPO</span> — You Only Pay Outcome</span>
+                <span className="text-[#FFD700]/30">◆</span>
                 <span>USDC on <span className="text-white/55">Base</span> &amp; <span className="text-white/55">Solana</span></span>
                 <span className="text-[#FFD700]/30">◆</span>
                 <span>Powered by <span className="text-white/55">x402</span></span>
-                <span className="text-[#FFD700]/30">◆</span>
-                <span><span className="text-white/55">Apache 2.0</span></span>
               </div>
             </div>
 

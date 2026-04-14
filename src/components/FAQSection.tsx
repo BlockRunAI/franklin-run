@@ -22,7 +22,7 @@ const faqData = [
   {
     question: "How much does it cost?",
     answer:
-      "Provider cost + 5%. That's it. A simple question: $0.001. A coding session: $0.02-0.10. A full 30-minute session: $0.10-0.50. The Smart Router saves dramatically by matching cheap models to easy tasks. Free NVIDIA models are always available at zero cost — no wallet needed.",
+      "YOPO — You Only Pay Outcome. Provider cost + 5%, settled per call in USDC. That's the entire pricing model. A simple question: $0.001. A coding session: $0.02-0.10. A full 30-minute session: $0.10-0.50. No subscriptions, no monthly fees, no rate limits. Free NVIDIA models are always available at zero cost — no wallet needed.",
   },
   {
     question: "Does it learn how I work?",

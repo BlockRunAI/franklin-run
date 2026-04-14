@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useRevealGroup } from "@/hooks/useReveal";
 
 const NAV_ITEMS = ["The Wallet", "Trading", "Smart Router", "Learns You"] as const;
 
@@ -145,6 +146,7 @@ const FEATURE_DATA: FeatureSubSection[] = [
 export function FeaturesSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const revealRef = useRevealGroup<HTMLElement>();
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -173,7 +175,7 @@ export function FeaturesSection() {
   };
 
   return (
-    <section className="fr-grain relative overflow-hidden bg-[#faf5e8] text-[#0a0d12]">
+    <section ref={revealRef} className="fr-grain relative overflow-hidden bg-[#faf5e8] text-[#0a0d12]">
       {/* Section ornament — engraved banknote-style border at top */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#0a0d12]/15 to-transparent" />
 
@@ -245,6 +247,38 @@ export function FeaturesSection() {
                 <p className="fr-reveal fr-reveal-delay-2 mt-6 max-w-[680px] text-[17px] leading-[1.7] text-[#0a0d12]/65">
                   {feature.description}
                 </p>
+
+                {/* YOPO signature stamp — only on The Wallet feature */}
+                {feature.id === "the-wallet" && (
+                  <div className="fr-reveal fr-reveal-delay-3 mt-10 max-w-[640px]">
+                    <div className="relative overflow-hidden rounded-[3px] border border-[#c9a300]/40 bg-gradient-to-br from-[#faf5e8] to-[#f4ebd9] p-7 shadow-[0_2px_0_0_rgba(201,163,0,0.15),0_20px_40px_-20px_rgba(10,13,18,0.2)]">
+                      {/* Top + bottom hairline gold rules */}
+                      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a300] to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#c9a300]/50 to-transparent" />
+                      {/* Corner marks — banknote security feature */}
+                      <span className="absolute left-3 top-3 font-mono text-[9px] tracking-[0.3em] text-[#c9a300]/70">◆</span>
+                      <span className="absolute right-3 top-3 font-mono text-[9px] tracking-[0.3em] text-[#c9a300]/70">◆</span>
+                      <span className="absolute left-3 bottom-3 font-mono text-[9px] tracking-[0.3em] text-[#c9a300]/70">◆</span>
+                      <span className="absolute right-3 bottom-3 font-mono text-[9px] tracking-[0.3em] text-[#c9a300]/70">◆</span>
+
+                      <div className="flex items-baseline gap-5">
+                        <span className="fr-numeral fr-gold-shimmer text-[64px] font-medium leading-none">
+                          YOPO
+                        </span>
+                        <div className="flex-1">
+                          <div className="fr-engraved text-[#0a0d12]/70">
+                            You Only Pay Outcome
+                          </div>
+                          <div className="mt-2 h-px w-full bg-[#0a0d12]/15" />
+                          <p className="mt-3 text-[14px] leading-[1.65] text-[#0a0d12]/70">
+                            Not for access. Not for trying.
+                            Only for the work Franklin delivers.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Screenshot or Terminal mockup */}
                 {feature.screenshot ? (
