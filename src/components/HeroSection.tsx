@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+import { useRevealGroup } from "@/hooks/useReveal";
 
 function CopyIcon() {
   return (
@@ -120,13 +121,17 @@ function TerminalDemo() {
   }, [demoIdx]);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0c0e14] shadow-2xl shadow-black/50">
+    <div className="group relative overflow-hidden rounded-[3px] border border-white/10 bg-[#0c0e14] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7),0_0_0_1px_rgba(255,215,0,0.06)] transition-shadow duration-500 hover:shadow-[0_30px_100px_-15px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,215,0,0.18)]">
+      {/* Gold top rule */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FFD700]/50 to-transparent" />
+
       {/* Title bar */}
-      <div className="flex items-center gap-2 border-b border-white/8 bg-[#08090f] px-4 py-3">
-        <span className="size-3 rounded-full bg-[#ff5f57]" />
-        <span className="size-3 rounded-full bg-[#febc2e]" />
-        <span className="size-3 rounded-full bg-[#28c840]" />
-        <span className="ml-3 font-mono text-[12px] text-white/25">franklin --trust</span>
+      <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#08090f] px-4 py-3">
+        <span className="size-2.5 rounded-full bg-[#ff5f57]/70" />
+        <span className="size-2.5 rounded-full bg-[#febc2e]/70" />
+        <span className="size-2.5 rounded-full bg-[#28c840]/70" />
+        <span className="ml-3 font-mono text-[11px] tracking-wider text-white/25">~ franklin --trust</span>
+        <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.2em] text-[#FFD700]/40">LIVE</span>
       </div>
 
       {/* Terminal body */}
@@ -152,7 +157,7 @@ function TerminalDemo() {
 
       {/* Status bar */}
       <div className="flex items-center gap-3 border-t border-white/6 px-4 py-2 font-mono text-[10px] text-white/25 sm:gap-4 sm:px-5 sm:text-[11px]">
-        <span className="text-white/50">zai/glm-5.1</span>
+        <span className="text-white/50">claude-opus-4.6</span>
         <span>·</span>
         <span className="text-[#10b981]/70">$4.80 USDC</span>
         <span>·</span>
@@ -168,6 +173,7 @@ const INSTALL_COMMAND = "npm install -g @blockrun/franklin";
 
 export function HeroSection() {
   const [copied, setCopied] = useState(false);
+  const heroRef = useRevealGroup<HTMLDivElement>();
 
   function handleCopy() {
     navigator.clipboard.writeText(INSTALL_COMMAND).then(() => {
@@ -177,49 +183,80 @@ export function HeroSection() {
   }
 
   return (
-    <div className="relative">
-      <div className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
+    <div ref={heroRef} className="relative">
+      <div className="fr-grain-dark fr-guilloche relative min-h-screen overflow-hidden bg-[#05070b] text-white">
+        {/* Ambient radial glow — center of stage */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-60"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 50% at 30% 40%, rgba(255, 215, 0, 0.06), transparent 60%), radial-gradient(ellipse 80% 60% at 70% 80%, rgba(26, 77, 58, 0.12), transparent 65%)",
+          }}
+        />
+
         {/* Franklin portrait — right side */}
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[50%] overflow-hidden lg:block">
           <Image
             src="/images/franklin-bill.jpg"
             alt=""
             fill
-            className="object-cover object-top opacity-50"
+            className="object-cover object-top opacity-55"
             sizes="50vw"
-            style={{ filter: "brightness(1.4)" }}
+            style={{ filter: "brightness(1.4) contrast(1.05) sepia(0.15)" }}
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#05070b] to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#05070b] to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#05070b] via-[#05070b]/80 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#05070b] to-transparent" />
+        </div>
+
+        {/* Corner ornaments — banknote corner flourishes */}
+        <div className="pointer-events-none absolute left-8 top-24 hidden lg:block">
+          <div className="fr-engraved text-[#FFD700]/50">№ 1776</div>
+          <div className="mt-1 h-px w-12 bg-[#FFD700]/30" />
+        </div>
+        <div className="pointer-events-none absolute right-8 top-24 hidden lg:block">
+          <div className="fr-engraved text-right text-[#FFD700]/50">Series 2026</div>
+          <div className="mt-1 ml-auto h-px w-12 bg-[#FFD700]/30" />
         </div>
 
         {/* Content */}
-        <div className="relative mx-auto max-w-[1320px] px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-8 lg:pt-36">
+        <div className="relative z-10 mx-auto max-w-[1320px] px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-8 lg:pt-36">
           <div className="mx-auto max-w-[1120px]">
             {/* Text — left-aligned on desktop to give room for portrait */}
             <div className="text-center lg:text-left">
-              <h1 className="font-[family-name:var(--font-serif)] text-[3.5rem] leading-[0.95] tracking-[-0.04em] text-white sm:text-[4rem] md:text-[5rem] lg:text-[6rem]">
-                The AI agent with a{" "}
-                <span className="text-[#FFD700]">wallet</span>.
+              {/* Engraved eyebrow */}
+              <div className="fr-reveal mb-8 flex items-center justify-center gap-3 lg:justify-start">
+                <span className="h-px w-10 bg-[#FFD700]/50" />
+                <span className="fr-engraved text-[#FFD700]/80">
+                  The Autonomous Economic Agent
+                </span>
+              </div>
+
+              <h1 className="fr-reveal fr-reveal-delay-1 font-[family-name:var(--font-serif)] text-[3.5rem] leading-[0.92] tracking-[-0.04em] text-white sm:text-[4rem] md:text-[5rem] lg:text-[6.2rem]">
+                The AI agent<br className="hidden sm:block" />{" "}
+                with a{" "}
+                <span className="fr-gold-shimmer italic">wallet</span>.
               </h1>
 
-              <p className="mx-auto mt-7 max-w-[720px] text-[16px] leading-7 text-white/60 sm:text-[17px] lg:mx-0 lg:max-w-[560px]">
-                While others generate text, Franklin deploys capital. One wallet, every model,
-                every paid API. Budgeted execution in USDC. No subscriptions. No API keys. No account.
+              <p className="fr-reveal fr-reveal-delay-2 mx-auto mt-7 max-w-[720px] text-[16px] leading-7 text-white/65 sm:text-[17px] lg:mx-0 lg:max-w-[560px]">
+                Other agents write code. Franklin writes code and spends money to get things
+                done. It holds your USDC, picks the best model per task, buys trading data,
+                generates images, searches the web &mdash; and decides what&rsquo;s worth paying
+                for. You set the budget. It runs it.
               </p>
 
               {/* CTAs */}
-              <div className="mt-10 flex items-center justify-center gap-4 lg:justify-start">
+              <div className="fr-reveal fr-reveal-delay-3 mt-10 flex items-center justify-center gap-4 lg:justify-start">
                 <a
                   href="#get-started"
-                  className="inline-flex items-center justify-center gap-2 rounded-[12px] bg-white px-6 py-3 text-[14px] font-semibold text-[#0a0d12] transition-all hover:bg-white/90 hover:shadow-lg hover:shadow-white/10"
+                  className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-[2px] bg-[#FFD700] px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.12em] text-[#0a0d12] shadow-[0_8px_24px_-8px_rgba(255,215,0,0.5)] transition-all hover:shadow-[0_12px_32px_-6px_rgba(255,215,0,0.65)]"
                 >
-                  Get Started Free
+                  <span className="relative z-10">Get Started Free</span>
+                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 </a>
                 <a
                   href="https://github.com/BlockRunAI/franklin"
-                  className="inline-flex items-center justify-center gap-2 rounded-[12px] border border-white/15 bg-white/5 px-6 py-3 text-[14px] font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/10"
+                  className="inline-flex items-center justify-center gap-2 rounded-[2px] border border-white/20 bg-white/[0.04] px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur-sm transition-all hover:border-[#FFD700]/40 hover:bg-white/[0.08]"
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
                   Star on GitHub
@@ -227,10 +264,10 @@ export function HeroSection() {
               </div>
 
               {/* Install command */}
-              <div className="mx-auto mt-8 max-w-[520px] lg:mx-0">
-                <div className="flex items-center gap-3 rounded-[11px] border border-white/12 bg-white/5 px-4 py-2.5 text-[13px] backdrop-blur-sm">
-                  <span className="select-none text-white/30">$</span>
-                  <code className="flex-1 font-mono text-white/70">{INSTALL_COMMAND}</code>
+              <div className="fr-reveal fr-reveal-delay-4 mx-auto mt-8 max-w-[520px] lg:mx-0">
+                <div className="group flex items-center gap-3 rounded-[2px] border border-white/10 bg-black/40 px-4 py-3 text-[13px] backdrop-blur-sm transition-colors hover:border-[#FFD700]/25">
+                  <span className="select-none font-mono text-[#FFD700]/50">$</span>
+                  <code className="flex-1 font-mono text-white/75">{INSTALL_COMMAND}</code>
                   <button
                     type="button"
                     onClick={handleCopy}
@@ -242,19 +279,17 @@ export function HeroSection() {
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12px] text-white/30 lg:justify-start">
-                <span className="text-[#FFD700]/70">&#9670; Circle USDC Hackathon Winner</span>
-                <span>·</span>
-                <span><span className="text-white/50">2M+</span> API calls</span>
-                <span>·</span>
-                <span>The <span className="text-white/50">economic agent</span></span>
-                <span>·</span>
-                <span><span className="text-white/50">Apache 2.0</span></span>
+              <div className="fr-reveal fr-reveal-delay-5 mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.15em] text-white/25 lg:justify-start">
+                <span>USDC on <span className="text-white/55">Base</span> &amp; <span className="text-white/55">Solana</span></span>
+                <span className="text-[#FFD700]/30">◆</span>
+                <span>Powered by <span className="text-white/55">x402</span></span>
+                <span className="text-[#FFD700]/30">◆</span>
+                <span><span className="text-white/55">Apache 2.0</span></span>
               </div>
             </div>
 
             {/* CLI Demo — the star of the show */}
-            <div className="mx-auto mt-14 max-w-[780px]">
+            <div className="fr-reveal fr-reveal-delay-6 mx-auto mt-14 max-w-[780px]">
               <TerminalDemo />
             </div>
           </div>

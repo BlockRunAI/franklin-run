@@ -8,7 +8,7 @@ import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="h-full overflow-y-auto">
+    <>
       <div className="relative">
         <Header />
         <HeroSection />
@@ -18,6 +18,6 @@ export default function Home() {
       <OpenSourceSection />
       <FAQSection />
       <Footer />
-    </div>
+    </>
   );
 }

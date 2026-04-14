@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-const NAV_ITEMS = ["Wallet", "Smart Router", "Self-Evolution", "Tools & APIs"] as const;
+const NAV_ITEMS = ["The Wallet", "Trading", "Smart Router", "Learns You"] as const;
 
 interface FeatureCard {
   title: string;
@@ -22,36 +22,71 @@ interface FeatureSubSection {
 
 const FEATURE_DATA: FeatureSubSection[] = [
   {
-    id: "wallet-powered",
-    navLabel: "Wallet",
-    heading: "No API keys. No setup. Just USDC and every model.",
+    id: "the-wallet",
+    navLabel: "The Wallet",
+    heading: "Software that can spend money.",
     description:
-      "One wallet unlocks 55+ models from every provider — forever. No API key management, no billing portals, no per-provider accounts. Fund with USDC and start using Claude, GPT, Gemini, Grok, DeepSeek, and more. Every cent is tracked, every call is logged.",
+      "Claude Code writes code. Cursor writes code. Franklin writes code and buys what it needs to get the job done. It holds USDC on Base or Solana, picks the best model per task, purchases trading data, generates images, pays for web search — all autonomously from one wallet. You set a budget. Franklin runs it.",
     screenshot: "/images/panel-overview.png",
     cards: [
       {
-        title: "x402 Native Payments",
+        title: "Economic Autonomy",
         description:
-          "HTTP 402 Payment Required, handled automatically. Franklin signs payments from your wallet on every API call. No middleware, no billing portals.",
+          "Franklin doesn't just call APIs — it pays for them. Every model call, every data query, every image generation is a real USDC transaction signed from your wallet. No API keys, no billing portals, no accounts.",
       },
       {
-        title: "Dual Chain Support",
+        title: "Budget Caps, On-Chain",
         description:
-          "Base (EVM) and Solana wallets built in. Choose your chain at setup. Switch anytime. Same USDC, same models, different rails.",
+          "Set a spending limit and Franklin enforces it. Every cent is tracked in real-time — per call, per session, per model. Run `franklin panel` for a full dashboard. No surprises.",
       },
       {
-        title: "Real-Time Cost Tracking",
+        title: "Base & Solana",
         description:
-          "Every call shows cost in the terminal. Session totals, daily trends, model breakdowns. Run `franklin panel` for a full dashboard.",
+          "Choose your chain at setup. Switch anytime. Same USDC, same models, same capabilities — different rails. Non-custodial: your private keys never leave your machine.",
+      },
+    ],
+  },
+  {
+    id: "trading",
+    navLabel: "Trading",
+    heading: "Buy data, make decisions, execute.",
+    description:
+      "This is where a wallet changes everything. Franklin purchases live market data, runs technical analysis, searches for alpha on X, and drafts trades — all in one session. The wallet isn't just for paying models. It's for buying the data and services that make the models useful.",
+    terminalLines: [
+      "❯ what's BTC looking like today?",
+      "  TradingSignal · BTC $107,842 (+2.3%)  ·  RSI 62",
+      "  Fear & Greed: 72 (Greed)  ·  Signal: Bullish",
+      "",
+      "❯ find X posts about BTC ETF flows this week",
+      "  SearchX · 12 results  ·  $0.003",
+      "",
+      "❯ generate a chart of BTC vs ETH YTD",
+      "  ImageGen · saved to ./btc-eth-ytd.png  ·  $0.040",
+    ],
+    cards: [
+      {
+        title: "Live Market Intelligence",
+        description:
+          "Prices, RSI, MACD, Bollinger bands, Fear & Greed — ask about any token. Franklin buys the data, runs the analysis, and gives you the signal. One prompt, not five browser tabs.",
+      },
+      {
+        title: "Social Signal Detection",
+        description:
+          "Search X for sentiment, find KOL posts, draft contextual replies. Franklin pays for X/Twitter intelligence via the same wallet it uses for models. No separate X API key.",
+      },
+      {
+        title: "Research + Image + Search",
+        description:
+          "Exa neural web search, DALL-E image generation, prediction market data from Polymarket and Kalshi. Franklin buys what it needs to answer your question completely.",
       },
     ],
   },
   {
     id: "smart-router",
     navLabel: "Smart Router",
-    heading: "You don't pick models. Franklin picks for you.",
+    heading: "55+ models. It picks the right one.",
     description:
-      "The Smart Router classifies every request — coding, trading, reasoning, research — and selects the model with the best quality-to-cost ratio. Every response shows which model was chosen, why, and how much you saved.",
+      "No single model is best at everything. Claude writes better code, Gemini handles longer context, DeepSeek costs 20x less for simple tasks. Franklin's Smart Router classifies every request and routes to the optimal model automatically — up to 89% savings vs always using Opus. Multi-provider redundancy means your work never stops because one provider has a bad day.",
     terminalLines: [
       "❯ refactor this auth module to use JWT",
       "  CODING → kimi-k2.5  ·  saved 84%",
@@ -64,78 +99,44 @@ const FEATURE_DATA: FeatureSubSection[] = [
     ],
     cards: [
       {
-        title: "Four Routing Profiles",
+        title: "Automatic Model Selection",
         description:
-          "Auto (best quality-to-cost ratio), Eco (cheapest possible), Premium (most capable), Free (NVIDIA models only). Switch anytime — the router adapts instantly.",
+          "You don't pick the model. Franklin classifies your request (coding, reasoning, trading, research) and routes to the best model in under 1ms. 55+ models across 12+ providers.",
       },
       {
-        title: "Learns From Your Usage",
+        title: "Adapts to You",
         description:
-          "If you keep retrying a model for coding tasks, Franklin adapts and picks a better one next time. Your router gets smarter the more you use it.",
+          "Override the router a few times, and it learns. Your routing gets personalized to how you work — not a generic one-size-fits-all algorithm.",
       },
       {
-        title: "Per-Session Cost Breakdown",
+        title: "Never Goes Down",
         description:
-          "Run `/cost` to see exactly where your USDC went — model by model, category by category, with request counts and totals. No surprises.",
+          "Claude has an outage? Franklin routes to GPT. GPT is slow? Gemini. Your work doesn't stop because one provider has a bad day.",
       },
     ],
   },
   {
-    id: "self-evolution",
-    navLabel: "Self-Evolution",
-    heading: "Franklin learns your preferences. Gets smarter every session.",
+    id: "learns-you",
+    navLabel: "Learns You",
+    heading: "Gets smarter the more you use it.",
     description:
-      "Per-user self-evolution inspired by NousResearch. After each session, Franklin extracts your preferences — language, coding style, model choices, workflow patterns — and injects them into the next session. All data stays local.",
+      "Claude Code forgets everything between sessions. Franklin doesn't. After each session, it extracts your preferences — language, coding style, model choices, workflow patterns — and injects them into the next one. Combined with the wallet, this means an agent that knows what you like and can pay for what you need.",
     screenshot: "/images/panel-learnings.png",
     cards: [
       {
-        title: "Automatic Preference Extraction",
+        title: "Automatic, Not Manual",
         description:
-          "A cheap model analyzes your session trace after you exit. Language preference, coding conventions, communication style — all captured automatically.",
+          "You don't configure preferences in a settings file. Franklin observes how you work and captures patterns automatically. Language, coding style, model preferences, communication tone.",
       },
       {
-        title: "Confidence-Based Decay",
+        title: "Evolves, Not Fossilizes",
         description:
-          "Learnings confirmed multiple times get higher confidence. Stale preferences decay after 30 days. Your agent stays current, not fossilized.",
+          "Learnings confirmed across sessions gain confidence. Stale preferences decay after 30 days. Your agent stays current with how you work today, not how you worked last month.",
       },
       {
         title: "One-Click Migration",
         description:
-          "Coming from Claude Code? `franklin migrate` imports your sessions, MCP configs, project memories, and preferences in seconds.",
-      },
-    ],
-  },
-  {
-    id: "tools-and-apis",
-    navLabel: "Tools & APIs",
-    heading: "Every premium API. One wallet to access them all.",
-    description:
-      "Trading data, image generation, web search, social automation — Franklin pays for premium tools and data the same way it pays for models. One USDC wallet replaces dozens of API keys and billing accounts.",
-    terminalLines: [
-      "❯ what's BTC looking like today?",
-      "  TradingSignal · live price, RSI, MACD, Bollinger",
-      "",
-      "❯ generate a hero image for my landing page",
-      "  ImageGen · DALL-E via x402  ·  $0.040",
-      "",
-      "❯ find X posts about ai agents and draft replies",
-      "  SearchX · 8 results found  ·  3 drafts ready",
-    ],
-    cards: [
-      {
-        title: "Trading & Market Data",
-        description:
-          "Live prices, RSI, MACD, Bollinger bands, Fear & Greed — ask about any token. CoinGecko data computed locally, no separate API key needed.",
-      },
-      {
-        title: "Image Generation & Search",
-        description:
-          "DALL-E, web search, research tools — all paid through x402 micropayments from the same USDC wallet. One balance covers everything.",
-      },
-      {
-        title: "Social Automation",
-        description:
-          "Search X for relevant posts, draft contextual replies, post with your confirmation. Same wallet, same agent, no X API key required.",
+          "Coming from Claude Code? `franklin migrate` imports your sessions, MCP configs, project memories, and preferences in seconds. Start where you left off.",
       },
     ],
   },
@@ -172,30 +173,48 @@ export function FeaturesSection() {
   };
 
   return (
-    <section className="bg-white text-[#0a0d12]">
-      <div className="mx-auto max-w-[1320px] px-4 sm:px-6 lg:px-8">
+    <section className="fr-grain relative overflow-hidden bg-[#faf5e8] text-[#0a0d12]">
+      {/* Section ornament — engraved banknote-style border at top */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#0a0d12]/15 to-transparent" />
+
+      <div className="relative z-10 mx-auto max-w-[1320px] px-4 sm:px-6 lg:px-8">
         <div className="relative lg:flex lg:gap-20">
           {/* Sticky Sidebar Nav */}
-          <nav className="hidden lg:block lg:w-[180px] lg:shrink-0">
-            <div className="sticky top-28 flex flex-col gap-0 py-28">
-              {NAV_ITEMS.map((label, i) => (
-                <button
-                  key={label}
-                  onClick={() => scrollToSection(i)}
-                  className="group flex items-center gap-3 rounded-lg px-4 py-3 text-left text-[14px] font-semibold transition-colors"
-                  style={{
-                    color: activeIndex === i ? "#0a0d12" : "rgba(10, 13, 18, 0.36)",
-                  }}
-                >
-                  <span
-                    className="size-1.5 rounded-full transition-colors"
+          <nav className="hidden lg:block lg:w-[200px] lg:shrink-0">
+            <div className="sticky top-28 py-28">
+              <div className="fr-engraved mb-6 flex items-center gap-2 text-[#0a0d12]/40">
+                <span className="h-px w-6 bg-[#c9a300]/60" />
+                Contents
+              </div>
+              <div className="flex flex-col gap-0">
+                {NAV_ITEMS.map((label, i) => (
+                  <button
+                    key={label}
+                    onClick={() => scrollToSection(i)}
+                    className="group relative flex items-baseline gap-4 py-3 text-left transition-colors"
                     style={{
-                      backgroundColor: activeIndex === i ? "#0a0d12" : "transparent",
+                      color: activeIndex === i ? "#0a0d12" : "rgba(10, 13, 18, 0.36)",
                     }}
-                  />
-                  {label}
-                </button>
-              ))}
+                  >
+                    <span
+                      className="font-mono text-[11px] tabular-nums transition-colors"
+                      style={{
+                        color: activeIndex === i ? "#c9a300" : "rgba(10, 13, 18, 0.25)",
+                      }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="flex-1 text-[14px] font-semibold">{label}</span>
+                    <span
+                      className="h-px w-4 self-center transition-all"
+                      style={{
+                        backgroundColor: activeIndex === i ? "#c9a300" : "transparent",
+                        width: activeIndex === i ? "20px" : "8px",
+                      }}
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
           </nav>
 
@@ -205,18 +224,32 @@ export function FeaturesSection() {
               <div
                 key={feature.id}
                 ref={(el) => { sectionRefs.current[i] = el; }}
-                className={`py-20 lg:py-28 ${i < FEATURE_DATA.length - 1 ? "border-b border-[#0a0d12]/8" : ""}`}
+                className={`relative py-20 lg:py-28 ${i < FEATURE_DATA.length - 1 ? "border-b border-[#0a0d12]/8" : ""}`}
               >
-                <h2 className="font-[family-name:var(--font-serif)] text-[2.4rem] leading-[1.05] tracking-[-0.03em] text-[#0a0d12] sm:text-[3rem] lg:text-[4.2rem] lg:leading-[1.05]">
+                {/* Chapter numeral — oversized, banknote-style */}
+                <div className="fr-reveal mb-8 flex items-center gap-4">
+                  <span className="fr-numeral text-[72px] text-[#c9a300]/90 lg:text-[96px]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="flex-1">
+                    <div className="fr-engraved text-[#0a0d12]/50">
+                      {feature.navLabel}
+                    </div>
+                    <div className="mt-2 h-px w-full bg-gradient-to-r from-[#c9a300]/60 via-[#0a0d12]/10 to-transparent" />
+                  </div>
+                </div>
+
+                <h2 className="fr-reveal fr-reveal-delay-1 font-[family-name:var(--font-serif)] text-[2.4rem] leading-[1.02] tracking-[-0.03em] text-[#0a0d12] sm:text-[3rem] lg:text-[4.4rem] lg:leading-[1.0]">
                   {feature.heading}
                 </h2>
-                <p className="mt-5 max-w-[640px] text-[16px] leading-7 text-[#0a0d12]/60">
+                <p className="fr-reveal fr-reveal-delay-2 mt-6 max-w-[680px] text-[17px] leading-[1.7] text-[#0a0d12]/65">
                   {feature.description}
                 </p>
 
                 {/* Screenshot or Terminal mockup */}
                 {feature.screenshot ? (
-                  <div className="relative mt-12 overflow-hidden rounded-xl border border-[#1e2130] shadow-2xl">
+                  <div className="fr-reveal fr-reveal-delay-3 relative mt-12 overflow-hidden rounded-[3px] border border-[#0a0d12]/12 shadow-[0_30px_60px_-20px_rgba(10,13,18,0.3)]">
+                    <div className="absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#FFD700]/60 to-transparent" />
                     <Image
                       src={feature.screenshot}
                       alt=""
@@ -226,12 +259,13 @@ export function FeaturesSection() {
                     />
                   </div>
                 ) : feature.terminalLines ? (
-                  <div className="relative mt-12 overflow-hidden rounded-xl border border-[#1e2130] bg-[#0a0d12] shadow-2xl">
-                    <div className="flex items-center gap-2 border-b border-[#1e2130] px-4 py-3">
-                      <span className="size-3 rounded-full bg-[#ff5f57]" />
-                      <span className="size-3 rounded-full bg-[#febc2e]" />
-                      <span className="size-3 rounded-full bg-[#28c840]" />
-                      <span className="ml-3 text-[12px] text-white/30">franklin</span>
+                  <div className="fr-reveal fr-reveal-delay-3 relative mt-12 overflow-hidden rounded-[3px] border border-[#0a0d12]/15 bg-[#0a0d12] shadow-[0_30px_60px_-20px_rgba(10,13,18,0.4)]">
+                    <div className="absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#FFD700]/50 to-transparent" />
+                    <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#08090f] px-4 py-3">
+                      <span className="size-2.5 rounded-full bg-[#ff5f57]/70" />
+                      <span className="size-2.5 rounded-full bg-[#febc2e]/70" />
+                      <span className="size-2.5 rounded-full bg-[#28c840]/70" />
+                      <span className="ml-3 font-mono text-[11px] tracking-wider text-white/25">~ franklin</span>
                     </div>
                     <pre className="p-6 font-mono text-[13px] leading-6 text-[#10b981]/90">
                       {feature.terminalLines.map((line, j) => (
@@ -241,13 +275,21 @@ export function FeaturesSection() {
                   </div>
                 ) : null}
 
-                <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
-                  {feature.cards.map((card) => (
-                    <div key={card.title}>
-                      <h3 className="text-[17px] font-semibold text-[#0a0d12]">
+                <div className="mt-14 grid grid-cols-1 gap-px bg-[#0a0d12]/10 sm:grid-cols-3">
+                  {feature.cards.map((card, cardIdx) => (
+                    <div
+                      key={card.title}
+                      className={`fr-reveal fr-reveal-delay-${cardIdx + 3} group relative bg-[#faf5e8] p-7 transition-all duration-500 hover:bg-[#f4ebd9]`}
+                    >
+                      {/* Gold hover accent */}
+                      <div className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-[#c9a300] transition-transform duration-500 group-hover:scale-x-100" />
+                      <div className="fr-engraved mb-4 text-[#c9a300]/80">
+                        {String(cardIdx + 1).padStart(2, "0")}
+                      </div>
+                      <h3 className="font-[family-name:var(--font-serif)] text-[22px] leading-[1.2] text-[#0a0d12]">
                         {card.title}
                       </h3>
-                      <p className="mt-3 text-[15px] leading-7 text-[#0a0d12]/60">
+                      <p className="mt-3 text-[14px] leading-[1.7] text-[#0a0d12]/65">
                         {card.description}
                       </p>
                     </div>
@@ -258,6 +300,9 @@ export function FeaturesSection() {
           </div>
         </div>
       </div>
+
+      {/* Bottom rule */}
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#0a0d12]/15 to-transparent" />
     </section>
   );
 }

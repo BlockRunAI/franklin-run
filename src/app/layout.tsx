@@ -30,17 +30,20 @@ const SITE_URL = "https://franklin.run";
 export const metadata: Metadata = {
   title: "Franklin — The AI Agent with a Wallet",
   description:
-    "The first autonomous economic agent. 55+ AI models, one USDC wallet, pay per action. No subscriptions, no API keys. Open source.",
+    "The AI agent with a wallet. It holds your USDC and spends it for you — 55+ models, trading data, image generation, web search. One wallet, no API keys. Open source.",
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/" },
   keywords: [
     "AI agent",
+    "economic agent",
     "autonomous agent",
+    "payment rail for AI",
     "USDC",
     "micropayments",
     "x402",
+    "x402 protocol",
     "LLM",
-    "coding agent",
+    "smart router",
     "BlockRun",
     "Franklin",
     "Base",
@@ -52,9 +55,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    title: "Franklin — The Economic Agent",
+    title: "Franklin — The AI Agent with a Wallet",
     description:
-      "The wallet-native economic agent. 55+ models, one USDC wallet, pay per action. From the Circle USDC Hackathon-winning team. Open source.",
+      "Other agents write code. Franklin writes code and spends money to get things done. 55+ models, trading data, image gen, web search — one USDC wallet. Open source.",
     siteName: "Franklin",
     images: [
       {
@@ -69,9 +72,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@BlockRunAI",
     creator: "@BlockRunAI",
-    title: "Franklin — The Economic Agent",
+    title: "Franklin — The AI Agent with a Wallet",
     description:
-      "The wallet-native economic agent. 55+ models, USDC micropayments, 2M+ API calls. Circle USDC Hackathon Winner. Open source.",
+      "The AI agent with a wallet. 55+ models, trading data, image gen — it holds your USDC and spends it for you. Open source.",
     images: ["/images/og-image.png"],
   },
   robots: {
@@ -103,7 +106,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${notoSerifSC.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${notoSerifSC.variable} antialiased`}
     >
       <head>
         <Script
@@ -125,7 +128,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
               name: "Franklin",
-              description: "The AI agent with a wallet. 55+ models, USDC micropayments, open source.",
+              description: "The AI agent with a wallet. Holds USDC, picks models, buys data, and spends autonomously via x402. Open source.",
               url: SITE_URL,
               applicationCategory: "DeveloperApplication",
               operatingSystem: "macOS, Linux, Windows (WSL)",
@@ -135,7 +138,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="h-full overflow-y-auto">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

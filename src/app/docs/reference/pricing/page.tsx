@@ -32,17 +32,18 @@ export default function PricingPage() {
           protocol. There are no subscriptions, monthly fees, or rate limits.
         </p>
         <p>
-          Each model call costs fractions of a cent, proportional to the
-          tokens consumed. The exact cost depends on the model and provider.
+          Your cost = provider cost + 5%. That&apos;s it. Each model call costs
+          fractions of a cent, proportional to the tokens consumed.
         </p>
 
         <h2>Free Tier</h2>
         <p>
-          Franklin always includes free access to NVIDIA-hosted models:
+          Franklin always includes free access to NVIDIA-hosted models with
+          unlimited usage:
         </p>
         <ul>
-          <li>Llama 3.1 (8B, 70B, 405B)</li>
-          <li>Mistral (7B, Mixtral)</li>
+          <li>NVIDIA GPT-OSS 120B / 20B</li>
+          <li>Llama 3.3 70B</li>
           <li>Qwen 2.5</li>
           <li>DeepSeek R1</li>
         </ul>
@@ -103,7 +104,32 @@ franklin models`}
           usage breakdown, and cost projections.
         </p>
 
-        <h2>Example Costs</h2>
+        <h2>What $1 Gets You</h2>
+        <p>
+          Concrete token budgets for $1 in USDC:
+        </p>
+        <ul>
+          <li>
+            <strong>GPT-4o</strong> &mdash; ~400K input tokens
+          </li>
+          <li>
+            <strong>DeepSeek V3</strong> &mdash; ~7M input tokens
+          </li>
+          <li>
+            <strong>Gemini Flash</strong> &mdash; ~13M input tokens
+          </li>
+          <li>
+            <strong>DALL-E 3</strong> &mdash; ~20 images
+          </li>
+          <li>
+            <strong>Exa neural search</strong> &mdash; ~40 queries
+          </li>
+          <li>
+            <strong>NVIDIA GPT-OSS</strong> &mdash; Unlimited (FREE)
+          </li>
+        </ul>
+
+        <h2>Example Session Costs</h2>
         <p>
           Approximate costs for common operations (varies by model and context
           size):

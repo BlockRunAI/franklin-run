@@ -8,7 +8,7 @@ import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
   title: "Models",
-  description: "55+ models from 9 providers, including a free tier.",
+  description: "55+ models from 12+ providers, including a free tier.",
 };
 
 const PAGE_PATH = "/docs/user-guide/models";
@@ -23,24 +23,25 @@ export default function ModelsPage() {
 
       <DocsContent
         title="Models"
-        description="55+ models from 9 providers, including a free tier."
+        description="55+ models from 12+ providers, including a free tier."
       >
         <h2>Available Providers</h2>
         <p>
-          Franklin gives you access to 55+ models from 9 providers through a
+          Franklin gives you access to 55+ models from 12+ providers through a
           single interface. No API keys needed &mdash; everything is routed
-          through BlockRun&apos;s unified gateway.
+          through BlockRun&apos;s unified gateway. You pay provider cost + 5%, settled
+          instantly in USDC via x402.
         </p>
         <ul>
-          <li><strong>Anthropic</strong> &mdash; Claude Sonnet, Claude Haiku, Claude Opus</li>
-          <li><strong>OpenAI</strong> &mdash; GPT-5, GPT-4.1, o3, o4-mini</li>
-          <li><strong>Google</strong> &mdash; Gemini 2.5 Pro, Gemini 2.5 Flash</li>
-          <li><strong>xAI</strong> &mdash; Grok 3, Grok 3 Mini</li>
-          <li><strong>DeepSeek</strong> &mdash; DeepSeek V3, DeepSeek R1</li>
-          <li><strong>GLM</strong> &mdash; GLM-4</li>
-          <li><strong>Kimi</strong> &mdash; Moonshot</li>
-          <li><strong>Minimax</strong> &mdash; MiniMax-01</li>
-          <li><strong>NVIDIA</strong> &mdash; Nemotron, Llama, Qwen (free)</li>
+          <li><strong>Anthropic</strong> &mdash; Claude Opus 4.6, Claude Opus 4.5, Claude Sonnet 4.6, Claude Haiku 4.5</li>
+          <li><strong>OpenAI</strong> &mdash; GPT-5.4, GPT-5.4 Pro, GPT-5.3, o1, o3, GPT-5-mini, GPT-5-nano</li>
+          <li><strong>Google</strong> &mdash; Gemini 3.1 Pro, Gemini 3 Flash Preview, Gemini 2.5 Pro, Gemini 2.5 Flash</li>
+          <li><strong>xAI</strong> &mdash; Grok-3, Grok-3 Fast</li>
+          <li><strong>DeepSeek</strong> &mdash; DeepSeek Chat V3.2, DeepSeek Reasoner</li>
+          <li><strong>Z.AI</strong> &mdash; GLM-5, GLM-5 Turbo</li>
+          <li><strong>Moonshot</strong> &mdash; Kimi K2.5 (262K context, MoE)</li>
+          <li><strong>MiniMax</strong> &mdash; MiniMax M2.7 (204K context, reasoning)</li>
+          <li><strong>NVIDIA</strong> &mdash; GPT-OSS 120B/20B, Nemotron, Llama, Qwen (free)</li>
         </ul>
 
         <h2>List All Models</h2>

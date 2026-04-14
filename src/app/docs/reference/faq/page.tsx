@@ -27,21 +27,21 @@ export default function FaqPage() {
       >
         <h2>What models does Franklin support?</h2>
         <p>
-          Franklin supports <strong>55+ models</strong> from 9 providers,
-          including OpenAI (GPT-4o, GPT-4.1), Anthropic (Claude Sonnet, Opus),
-          Google (Gemini 2.5), xAI (Grok), Meta (Llama), Mistral, Qwen,
-          DeepSeek, and NVIDIA-hosted open models. Run{" "}
-          <code>franklin models</code> to see the full list with availability
-          status.
+          Franklin supports <strong>55+ models</strong> from 12+ providers,
+          including OpenAI (GPT-5.4, GPT-5.3, o3), Anthropic (Claude Opus 4.6,
+          Sonnet 4.6), Google (Gemini 3.1 Pro, 2.5 Flash), xAI (Grok-3),
+          DeepSeek (V3.2, Reasoner), Moonshot (Kimi K2.5), MiniMax (M2.7),
+          Z.AI (GLM-5), and free NVIDIA-hosted models. Run{" "}
+          <code>franklin models</code> to see the full list with pricing.
         </p>
 
         <h2>How does payment work?</h2>
         <p>
           Franklin uses the <strong>x402 protocol</strong> for micropayments.
           Each API call is settled instantly in USDC on Base or Solana. You
-          fund a wallet with USDC, and Franklin deducts fractions of a cent
-          per action. There are no subscriptions, invoices, or billing cycles
-          &mdash; you pay only for what you use.
+          pay provider cost + 5%, settled via EIP-712 signatures. No
+          subscriptions, no invoices, no billing cycles &mdash; you pay only
+          for what you use.
         </p>
         <CodeBlock language="bash">
           {`# Set up a wallet
@@ -68,40 +68,42 @@ franklin balance`}
         <h2>Can I use it for free?</h2>
         <p>
           Yes. Franklin includes free access to <strong>NVIDIA-hosted
-          models</strong> (Llama, Mistral, Qwen, DeepSeek) with zero setup.
-          No wallet, no USDC, no API keys required. Just install and run{" "}
-          <code>franklin</code>.
+          models</strong> (GPT-OSS 120B/20B, Llama, Qwen, DeepSeek R1) with
+          unlimited usage and zero setup. No wallet, no USDC, no API keys
+          required. Just install and run <code>franklin</code>.
         </p>
         <p>
           Fund your wallet only when you want to unlock premium models like
-          Claude, GPT-4, Gemini, and Grok.
+          Claude Opus 4.6, GPT-5.4, Gemini 3.1 Pro, and Grok-3.
         </p>
 
         <h2>How is this different from Claude Code?</h2>
         <p>
-          Claude Code is a coding assistant locked to a single provider
-          (Anthropic). Franklin is an <strong>economic agent</strong> that:
+          Claude Code is a coding copilot locked to a single provider
+          (Anthropic). Franklin is an <strong>economic agent</strong> &mdash;
+          software with purchasing power:
         </p>
         <ul>
           <li>
-            Routes across <strong>55+ models</strong> from 9 providers &mdash;
-            picks the best model for each task automatically
+            Routes across <strong>55+ models</strong> from 12+ providers &mdash;
+            picks the best model for each task, saving up to 89% vs always
+            using Opus
           </li>
           <li>
-            Uses <strong>micropayments</strong> instead of subscriptions &mdash;
-            no monthly fees, no rate limits
+            Uses <strong>x402 micropayments</strong> instead of $200/month
+            subscriptions &mdash; provider cost + 5%, no rate limits
           </li>
           <li>
             Has <strong>self-evolution</strong> &mdash; learns your preferences
             and improves over time
           </li>
           <li>
-            Includes <strong>trading, social, and search</strong> capabilities
-            beyond code
+            Works across <strong>verticals</strong> &mdash; code, trading,
+            research, image generation, social media, and ops
           </li>
           <li>
-            Stores everything <strong>locally</strong> &mdash; no cloud accounts
-            or data sharing
+            <strong>Non-custodial</strong> &mdash; your keys never leave your
+            machine, everything stored locally
           </li>
         </ul>
 

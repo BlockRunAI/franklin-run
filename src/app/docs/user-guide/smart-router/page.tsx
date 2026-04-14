@@ -8,7 +8,7 @@ import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
   title: "Smart Router",
-  description: "How Franklin picks the best model for every request.",
+  description: "How Franklin picks the best model for every request — routing in <1ms with 7-layer compression.",
 };
 
 const PAGE_PATH = "/docs/user-guide/smart-router";
@@ -23,14 +23,16 @@ export default function SmartRouterPage() {
 
       <DocsContent
         title="Smart Router"
-        description="How Franklin picks the best model for every request."
+        description="How Franklin picks the best model for every request — routing in <1ms with 7-layer compression."
       >
         <h2>How Classification Works</h2>
         <p>
-          Every time you send a message, the Smart Router scores your request
-          and picks the best model automatically. It analyzes prompt complexity,
-          required capabilities (code, reasoning, creativity), and your active
-          routing profile to make the decision in milliseconds.
+          Every time you send a message, the Smart Router classifies your
+          request and picks the best model in under 1ms &mdash; 100% local,
+          zero latency overhead. It analyzes prompt complexity, required
+          capabilities (code, reasoning, creativity, trading), and your active
+          routing profile. Before routing, 7-layer prompt compression reduces
+          token count by 15-40%, cutting costs before they hit the provider.
         </p>
 
         <h2>Complexity Tiers</h2>

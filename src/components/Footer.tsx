@@ -29,20 +29,33 @@ const NAV_COLUMNS = [
 
 export function Footer() {
   return (
-    <footer className="bg-[#0a0d12] text-white">
-      <div className="mx-auto max-w-[1320px] px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+    <footer className="fr-grain-dark relative overflow-hidden bg-[#05070b] text-white">
+      {/* Decorative banknote-style top border */}
+      <div className="relative border-t border-[#FFD700]/20">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FFD700]/50 to-transparent" />
+        <div className="mx-auto flex max-w-[1320px] items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#FFD700]/50">
+            ◆ Franklin · Series 2026 ◆
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#FFD700]/50">
+            USDC · Base · Solana
+          </span>
+        </div>
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-[1320px] px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_auto_auto_auto] lg:gap-16">
           {/* Left column */}
           <div>
-            <Link href="/" className="flex items-center gap-3">
-              <span className="text-[20px] text-[#FFD700]">&#9670;</span>
-              <span className="text-[16px] font-semibold text-white">
+            <Link href="/" className="group flex items-center gap-3">
+              <span className="text-[20px] text-[#FFD700] transition-transform group-hover:rotate-180 duration-500">&#9670;</span>
+              <span className="font-[family-name:var(--font-serif)] text-[22px] text-white">
                 Franklin
               </span>
             </Link>
 
-            <p className="mt-4 max-w-[320px] text-[14px] leading-6 text-white/50">
-              The wallet-native economic agent. Open source, runs locally, budgeted execution in USDC.
+            <p className="mt-5 max-w-[320px] text-[14px] leading-[1.7] text-white/55">
+              The AI agent with a wallet. It holds your USDC and spends it for you. Open source.
             </p>
             <p className="mt-3 text-[13px] text-white/30">
               A <a href="https://blockrun.ai" className="text-[#10b981] hover:underline">BlockRun.ai</a> product. Powered by the x402 micropayment protocol.
@@ -85,9 +98,10 @@ export function Footer() {
             <div className="mt-8">
               <a
                 href="#get-started"
-                className="inline-flex items-center justify-center rounded-[10px] bg-white px-4 py-2.5 text-[13px] font-semibold text-[#0a0d12] transition-colors hover:bg-white/90"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-[2px] bg-[#FFD700] px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.12em] text-[#0a0d12] transition-all hover:shadow-[0_8px_20px_-6px_rgba(255,215,0,0.5)]"
               >
-                Get Started
+                <span className="relative z-10">Get Started</span>
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
               </a>
             </div>
           </div>
@@ -95,17 +109,18 @@ export function Footer() {
           {/* Navigation columns */}
           {NAV_COLUMNS.map((column) => (
             <div key={column.title}>
-              <h4 className="text-[13px] font-semibold text-white/50">
+              <h4 className="fr-engraved text-[#FFD700]/70">
                 {column.title}
               </h4>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-5 space-y-3">
                 {column.links.map((link) => (
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="text-[14px] text-white/70 transition-colors hover:text-white"
+                      className="group inline-flex items-center gap-2 text-[14px] text-white/65 transition-colors hover:text-white"
                     >
-                      {link.label}
+                      <span className="h-px w-0 bg-[#FFD700] transition-all duration-300 group-hover:w-3" />
+                      <span>{link.label}</span>
                     </a>
                   </li>
                 ))}
@@ -115,9 +130,11 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex items-center justify-between border-t border-white/10 pt-8 text-[13px] text-white/30">
-          <span>&copy; {new Date().getFullYear()} <a href="https://blockrun.ai" className="hover:text-white/50">BlockRun.ai</a>. All rights reserved.</span>
-          <span>The economic agent by <a href="https://blockrun.ai" className="text-[#10b981] hover:underline">BlockRun.ai</a></span>
+        <div className="mt-14 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-8 text-[12px] text-white/35 sm:flex-row sm:items-center">
+          <span>&copy; {new Date().getFullYear()} <a href="https://blockrun.ai" className="hover:text-white/60">BlockRun.ai</a>. All rights reserved.</span>
+          <span className="font-mono uppercase tracking-[0.15em]">
+            The autonomous economic agent by <a href="https://blockrun.ai" className="text-[#FFD700]/70 hover:text-[#FFD700]">BlockRun.ai</a>
+          </span>
         </div>
       </div>
     </footer>
