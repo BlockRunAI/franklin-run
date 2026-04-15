@@ -14,7 +14,7 @@ A reusable template for reverse-engineering any website into a clean, modern Nex
 - **UI:** shadcn/ui (Radix primitives, Tailwind CSS v4, `cn()` utility)
 - **Icons:** Lucide React (default — will be replaced/supplemented by extracted SVGs)
 - **Styling:** Tailwind CSS v4 with oklch design tokens
-- **Deployment:** Vercel
+- **Deployment:** Google Cloud Run (NOT Vercel)
 
 ## Commands
 - `npm run dev` — Start dev server
@@ -22,6 +22,18 @@ A reusable template for reverse-engineering any website into a clean, modern Nex
 - `npm run lint` — ESLint check
 - `npm run typecheck` — TypeScript check
 - `npm run check` — Run lint + typecheck + build
+- `npm run deploy` — Deploy to Cloud Run (franklin.run)
+
+## Deployment — IMPORTANT
+**franklin.run is hosted on Google Cloud Run, NOT Vercel.** Pushing to GitHub does NOT trigger a deploy. After every push you want live, run `npm run deploy`.
+
+- **Project:** `blockrun-prod-2026`
+- **Service:** `franklin-run`
+- **Region:** `us-central1`
+- **Image:** `us-central1-docker.pkg.dev/blockrun-prod-2026/blockrun-images/franklin-run`
+- **Script:** `scripts/deploy.sh` — builds from `Dockerfile` via Cloud Build, tags with git short SHA, rolls out automatically.
+
+Typical flow: `git push origin master` → `npm run deploy`.
 
 ## Code Style
 - TypeScript strict mode, no `any`
