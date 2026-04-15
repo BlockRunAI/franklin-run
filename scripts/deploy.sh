@@ -28,7 +28,6 @@ echo
 
 gcloud run deploy "${SERVICE}" \
   --source . \
-  --image "${IMAGE}:${SHA}" \
   --region "${REGION}" \
   --project "${PROJECT}" \
   --allow-unauthenticated \
