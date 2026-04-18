@@ -17,7 +17,7 @@ const faqData = [
   {
     question: "What can Franklin spend money on?",
     answer:
-      "55+ AI models from 12+ providers (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, and more), DALL-E image generation, Exa neural web search, prediction market data from Polymarket and Kalshi, X/Twitter intelligence, and music generation. The Smart Router picks the best model per task automatically — up to 89% savings vs always using Opus.",
+      "55+ AI models from 12+ providers (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, and more), image generation (DALL-E, Nano Banana, Grok Imagine), video generation (Grok Imagine Video), Exa neural web search, prediction market data from Polymarket and Kalshi, X/Twitter intelligence, and music generation. The Smart Router picks the best model per task automatically — up to 89% savings vs always using Opus.",
   },
   {
     question: "How much does it cost?",

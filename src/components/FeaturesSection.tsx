@@ -76,9 +76,9 @@ const FEATURE_DATA: FeatureSubSection[] = [
           "Search X for sentiment, find KOL posts, draft contextual replies. Franklin pays for X/Twitter intelligence via the same wallet it uses for models. No separate X API key.",
       },
       {
-        title: "Research + Image + Search",
+        title: "Research + Image + Video + Search",
         description:
-          "Exa neural web search, DALL-E image generation, prediction market data from Polymarket and Kalshi. Franklin buys what it needs to answer your question completely.",
+          "Exa neural web search, image generation (DALL-E, Grok Imagine, Nano Banana), video generation (Grok Imagine Video), and prediction market data from Polymarket and Kalshi. Franklin buys what it needs to answer your question completely.",
       },
     ],
   },

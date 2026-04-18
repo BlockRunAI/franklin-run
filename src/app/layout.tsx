@@ -30,7 +30,7 @@ const SITE_URL = "https://franklin.run";
 export const metadata: Metadata = {
   title: "Franklin — The AI Agent with a Wallet",
   description:
-    "The AI agent with a wallet. It holds your USDC and spends it for you — 55+ models, trading data, image generation, web search. One wallet, no API keys. Open source.",
+    "The AI agent with a wallet. It holds your USDC and spends it for you — 55+ models, trading data, image generation, video generation, web search. One wallet, no API keys. Open source.",
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/" },
   keywords: [
