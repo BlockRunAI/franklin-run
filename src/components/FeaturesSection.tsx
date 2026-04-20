@@ -38,7 +38,7 @@ function WalletBill() {
           <span className="cost">−$0.012</span>
         </div>
         <div className="bill-tx">
-          <span className="lbl">▸ kimi-k2.5 · context compaction</span>
+          <span className="lbl">▸ kimi-k2.6 · context compaction</span>
           <span className="cost">−$0.004</span>
         </div>
       </div>
@@ -132,7 +132,7 @@ function RoutingLedger() {
     {
       req: "refactor src/auth.ts to use the new jwt helper",
       cat: "CODING",
-      model: "kimi-k2.5",
+      model: "kimi-k2.6",
       cost: "$0.0023",
       save: "↓ 84%",
     },
@@ -215,7 +215,7 @@ function PreferenceStack() {
     },
     {
       k: "Preferred Coder",
-      v: "kimi-k2.5 over sonnet for refactors",
+      v: "kimi-k2.6 over sonnet for refactors",
       meta: "confirmed · 19 sess",
       conf: [true, true, true, true, false],
     },
