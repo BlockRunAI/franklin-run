@@ -49,7 +49,7 @@ const DEMOS: Demo[] = [
   {
     prompt: "refactor src/auth.ts to use the new jwt helper",
     response: [
-      { text: "Router: CODING → kimi-k2.5", color: "rgba(255,255,255,.5)" },
+      { text: "Router: CODING → kimi-k2.6", color: "rgba(255,255,255,.5)" },
       { text: "✓ Read   src/auth.ts                    $0.002", color: "#10b981" },
       { text: "✓ Read   src/lib/jwt.ts                 $0.001", color: "#10b981" },
       { text: "✓ Edit   src/auth.ts (-24 +31 lines)    $0.008", color: "#10b981" },
