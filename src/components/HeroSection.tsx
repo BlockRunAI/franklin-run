@@ -1,300 +1,307 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
-import { useRevealGroup } from "@/hooks/useReveal";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { CheckIcon, CopyIcon, GitHubIcon } from "./icons";
 
-function CopyIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-      <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-    </svg>
-  );
-}
+type DemoLine = { text: string; color: string };
+type Demo = { prompt: string; response: DemoLine[] };
 
-function CheckIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
+const INSTALL_CMD = "npm install -g @blockrun/franklin";
 
-// ─── Typing animation demos ─────────────────────────────────────────────
-
-const DEMOS = [
+const DEMOS: Demo[] = [
   {
     prompt: "what's BTC looking like today?",
     response: [
-      { text: "BTC/USD: $107,842 (+2.3%)", color: "text-[#10b981]" },
-      { text: "24h Volume: $48.2B", color: "text-white/70" },
-      { text: "Fear & Greed: 72 (Greed)", color: "text-[#ffd700]" },
-      { text: "Signal: Bullish momentum, RSI at 62", color: "text-white/60" },
+      { text: "✓ TradingSignal  BTC", color: "#10b981" },
+      {
+        text: "  Price $71,056 (+2.3% 24h)  ·  RSI 53.2  ·  MACD bullish cross",
+        color: "rgba(255,255,255,.75)",
+      },
+      {
+        text: "  Bollinger mid-band  ·  Volatility 35.3% annualized",
+        color: "rgba(255,255,255,.6)",
+      },
       { text: "", color: "" },
-      { text: "3 calls  ·  $0.0012", color: "text-white/30" },
+      {
+        text: "Signal: bullish momentum, breakout above $72K viable",
+        color: "#c9a227",
+      },
+      { text: "2 calls · $0.0031 USDC", color: "rgba(255,255,255,.3)" },
     ],
   },
   {
-    prompt: "find X posts about ai agents",
+    prompt: "generate a logo for my AI startup",
     response: [
-      { text: "1. @dev_sarah: \"Need an AI agent that can pay APIs\"", color: "text-white/80" },
-      { text: "   🔗 x.com/dev_sarah/status/123456", color: "text-[#60a5fa]" },
-      { text: "   → \"We built this — Franklin pays with USDC\"", color: "text-[#10b981]" },
+      { text: "Using DALL·E via x402 micropayment…", color: "rgba(255,255,255,.55)" },
+      {
+        text: '✓ ImageGen  "minimalist AI logo, dark background"',
+        color: "#10b981",
+      },
+      {
+        text: "  Saved: generated-logo-1713052800.png (1024×1024)",
+        color: "rgba(255,255,255,.55)",
+      },
       { text: "", color: "" },
-      { text: "2. @builder_dao: \"x402 protocol looks promising\"", color: "text-white/80" },
-      { text: "   🔗 x.com/builder_dao/status/789012", color: "text-[#60a5fa]" },
-      { text: "   → \"It's our payment layer for agents\"", color: "text-[#10b981]" },
-      { text: "", color: "" },
-      { text: "Reply to any? Give me the number.", color: "text-white/50" },
+      { text: "1 call · $0.040 USDC", color: "rgba(255,255,255,.3)" },
     ],
   },
   {
-    prompt: "generate a hero image for my landing page",
+    prompt: "refactor src/auth.ts to use the new jwt helper",
     response: [
-      { text: "Using DALL-E via x402 micropayment...", color: "text-white/50" },
-      { text: "✓ Image generated — saved to ./hero.png", color: "text-[#10b981]" },
-      { text: "  1024×1024, style: modern minimal", color: "text-white/50" },
+      { text: "Router: CODING → kimi-k2.5", color: "rgba(255,255,255,.5)" },
+      { text: "✓ Read   src/auth.ts                    $0.002", color: "#10b981" },
+      { text: "✓ Read   src/lib/jwt.ts                 $0.001", color: "#10b981" },
+      { text: "✓ Edit   src/auth.ts (-24 +31 lines)    $0.008", color: "#10b981" },
+      { text: "✓ Bash   npm test                       $0.000", color: "#10b981" },
+      { text: "  › 142 passing · 0 failing · 2.4s", color: "rgba(255,255,255,.6)" },
       { text: "", color: "" },
-      { text: "1 call  ·  $0.040", color: "text-white/30" },
+      { text: "Done in 18s · $0.011 USDC", color: "rgba(255,255,255,.3)" },
     ],
   },
   {
-    prompt: "refactor this file with full test coverage",
+    prompt: "compare top 5 agent pricing models and save a note",
     response: [
-      { text: "Router: COMPLEX → claude-opus-4.6", color: "text-white/50" },
-      { text: "Reading src/agent/loop.ts...", color: "text-white/40" },
-      { text: "✓ Refactored: extracted 3 functions, added types", color: "text-[#10b981]" },
-      { text: "✓ Tests: 12 cases, 100% branch coverage", color: "text-[#10b981]" },
-      { text: "✓ Committed: \"refactor: extract token pipeline\"", color: "text-[#10b981]" },
+      { text: "✓ WebSearch  ai agent pricing models", color: "#10b981" },
+      { text: "✓ WebFetch   5 articles", color: "#10b981" },
+      { text: "✓ Write      notes/agent-pricing.md", color: "#10b981" },
       { text: "", color: "" },
-      { text: "47,291 in / 8,104 out  ·  $0.0340", color: "text-white/30" },
+      {
+        text: "Pattern: usage-based wins with power users.",
+        color: "rgba(255,255,255,.75)",
+      },
+      {
+        text: "Wallet-based billing is still whitespace.",
+        color: "#c9a227",
+      },
+      { text: "", color: "" },
+      { text: "4 calls · $0.012 USDC", color: "rgba(255,255,255,.3)" },
+    ],
+  },
+  {
+    prompt: "research Nvidia earnings and draft a 300-word brief",
+    response: [
+      { text: "Router: RESEARCH → gemini-2.5-pro", color: "rgba(255,255,255,.5)" },
+      { text: "✓ WebSearch  nvidia q4 2025 earnings", color: "#10b981" },
+      { text: "✓ WebFetch   4 sources + 1 filing", color: "#10b981" },
+      { text: "✓ Write      notes/nvda-brief.md (312w)", color: "#10b981" },
+      { text: "", color: "" },
+      {
+        text: "DC revenue ↑ 42% QoQ · guide beats · margin compression flagged",
+        color: "rgba(255,255,255,.75)",
+      },
+      { text: "6 calls · $0.0094 USDC", color: "rgba(255,255,255,.3)" },
     ],
   },
 ];
 
-function TerminalDemo() {
-  const [demoIdx, setDemoIdx] = useState(0);
-  const [typedChars, setTypedChars] = useState(0);
-  const [showResponse, setShowResponse] = useState(false);
-  const [visibleLines, setVisibleLines] = useState(0);
-  const [phase, setPhase] = useState<"typing" | "responding" | "pausing">("typing");
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  const demo = DEMOS[demoIdx];
-  const prompt = demo.prompt;
+function useTerminalDemo() {
+  const [prompt, setPrompt] = useState("");
+  const [responseLines, setResponseLines] = useState<DemoLine[]>([]);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (phase === "typing") {
-      if (typedChars < prompt.length) {
-        timerRef.current = setTimeout(() => setTypedChars((c) => c + 1), 45 + Math.random() * 35);
-      } else {
-        // Done typing, start showing response
-        timerRef.current = setTimeout(() => {
-          setShowResponse(true);
-          setPhase("responding");
-          setVisibleLines(0);
-        }, 400);
-      }
-    } else if (phase === "responding") {
-      if (visibleLines < demo.response.length) {
-        timerRef.current = setTimeout(() => setVisibleLines((l) => l + 1), 120);
-      } else {
-        timerRef.current = setTimeout(() => setPhase("pausing"), 0);
-        timerRef.current = setTimeout(() => {
-          setDemoIdx((i) => (i + 1) % DEMOS.length);
-        }, 3000);
-      }
-    }
-    return () => clearTimeout(timerRef.current);
-  }, [phase, typedChars, visibleLines, prompt.length, demo.response.length]);
+    let cancelled = false;
+    let demoIdx = 0;
+    let charIdx = 0;
+    let lineIdx = 0;
+    let phase: "typing" | "response" | "hold" = "typing";
 
-  // Reset on demo change
-  useEffect(() => {
-    const t = setTimeout(() => {
-      setTypedChars(0);
-      setShowResponse(false);
-      setVisibleLines(0);
-      setPhase("typing");
-    }, 0);
-    return () => clearTimeout(t);
-  }, [demoIdx]);
+    const schedule = (ms: number) => {
+      if (cancelled) return;
+      timer.current = setTimeout(run, ms);
+    };
+
+    const run = () => {
+      if (cancelled) return;
+      const demo = DEMOS[demoIdx];
+      if (phase === "typing") {
+        if (charIdx < demo.prompt.length) {
+          charIdx += 1;
+          setPrompt(demo.prompt.slice(0, charIdx));
+          schedule(45 + Math.random() * 35);
+        } else {
+          phase = "response";
+          lineIdx = 0;
+          setResponseLines([]);
+          schedule(400);
+        }
+      } else if (phase === "response") {
+        if (lineIdx < demo.response.length) {
+          const line = demo.response[lineIdx];
+          setResponseLines((prev) => [...prev, line]);
+          lineIdx += 1;
+          schedule(90);
+        } else {
+          phase = "hold";
+          schedule(3200);
+        }
+      } else {
+        demoIdx = (demoIdx + 1) % DEMOS.length;
+        charIdx = 0;
+        lineIdx = 0;
+        phase = "typing";
+        setPrompt("");
+        setResponseLines([]);
+        schedule(120);
+      }
+    };
+
+    run();
+
+    return () => {
+      cancelled = true;
+      if (timer.current) clearTimeout(timer.current);
+    };
+  }, []);
+
+  return { prompt, responseLines };
+}
+
+function InstallBox() {
+  const [copied, setCopied] = useState(false);
+  const copy = useCallback(() => {
+    if (typeof navigator === "undefined") return;
+    navigator.clipboard?.writeText(INSTALL_CMD).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }, []);
 
   return (
-    <div className="group relative overflow-hidden rounded-[3px] border border-white/10 bg-[#0c0e14] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7),0_0_0_1px_rgba(255,215,0,0.06)] transition-shadow duration-500 hover:shadow-[0_30px_100px_-15px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,215,0,0.18)]">
-      {/* Gold top rule */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FFD700]/50 to-transparent" />
-
-      {/* Title bar */}
-      <div className="flex items-center gap-2 border-b border-white/[0.06] bg-[#08090f] px-4 py-3">
-        <span className="size-2.5 rounded-full bg-[#ff5f57]/70" />
-        <span className="size-2.5 rounded-full bg-[#febc2e]/70" />
-        <span className="size-2.5 rounded-full bg-[#28c840]/70" />
-        <span className="ml-3 font-mono text-[11px] tracking-wider text-white/25">~ franklin --trust</span>
-        <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.2em] text-[#FFD700]/40">LIVE</span>
-      </div>
-
-      {/* Terminal body */}
-      <div className="p-4 font-mono text-[11px] leading-relaxed sm:p-5 sm:text-[13px]" style={{ minHeight: 220 }}>
-        {/* Prompt line */}
-        <div className="flex items-center gap-0">
-          <span className="text-[#10b981]">❯ </span>
-          <span className="text-white/90">{prompt.slice(0, typedChars)}</span>
-          <span className="ml-[1px] inline-block h-[16px] w-[8px] animate-pulse bg-white/60" />
-        </div>
-
-        {/* Response */}
-        {showResponse && (
-          <div className="mt-3 space-y-[2px]">
-            {demo.response.slice(0, visibleLines).map((line, i) => (
-              <div key={i} className={line.color || "text-white/60"}>
-                {line.text || "\u00A0"}
-              </div>
-            ))}
-          </div>
+    <div className="install-box">
+      <span className="sigil">$</span>
+      <code>{INSTALL_CMD}</code>
+      <button type="button" aria-label="Copy install command" onClick={copy}>
+        {copied ? (
+          <CheckIcon className="h-[18px] w-[18px]" />
+        ) : (
+          <CopyIcon className="h-[18px] w-[18px]" />
         )}
-      </div>
-
-      {/* Status bar */}
-      <div className="flex items-center gap-3 border-t border-white/6 px-4 py-2 font-mono text-[10px] text-white/25 sm:gap-4 sm:px-5 sm:text-[11px]">
-        <span className="text-white/50">claude-opus-4.6</span>
-        <span>·</span>
-        <span className="text-[#10b981]/70">$4.80 USDC</span>
-        <span>·</span>
-        <span>esc to abort</span>
-      </div>
+      </button>
     </div>
   );
 }
 
-// ─── Main Hero ──────────────────────────────────────────────────────────
-
-const INSTALL_COMMAND = "npm install -g @blockrun/franklin";
-
 export function HeroSection() {
-  const [copied, setCopied] = useState(false);
-  const heroRef = useRevealGroup<HTMLDivElement>();
-
-  function handleCopy() {
-    navigator.clipboard.writeText(INSTALL_COMMAND).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  }
+  const { prompt, responseLines } = useTerminalDemo();
 
   return (
-    <div ref={heroRef} className="relative">
-      <div className="fr-grain-dark fr-guilloche relative min-h-screen overflow-hidden bg-[#05070b] text-white">
-        {/* Ambient radial glow — center of stage */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-60"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 50% at 30% 40%, rgba(255, 215, 0, 0.06), transparent 60%), radial-gradient(ellipse 80% 60% at 70% 80%, rgba(26, 77, 58, 0.12), transparent 65%)",
-          }}
+    <section className="hero grain-dark guilloche">
+      <div className="hero-glow" />
+      <div className="hero-portrait">
+        <Image
+          src="/images/franklin-bill.jpg"
+          alt=""
+          fill
+          priority
+          sizes="(min-width: 1024px) 55vw, 100vw"
+          aria-hidden="true"
         />
+      </div>
 
-        {/* Franklin portrait — right side */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[50%] overflow-hidden lg:block">
-          <Image
-            src="/images/franklin-bill.jpg"
-            alt=""
-            fill
-            className="object-cover object-top opacity-55"
-            sizes="50vw"
-            style={{ filter: "brightness(1.4) contrast(1.05) sepia(0.15)" }}
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#05070b] via-[#05070b]/80 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#05070b] to-transparent" />
-        </div>
+      <div className="corner corner-l">
+        <div className="engraved">№ 1776 · Series 2026</div>
+        <div className="rule" />
+      </div>
+      <div className="corner corner-r">
+        <div className="engraved">One Hundred · USDC</div>
+        <div className="rule" />
+      </div>
 
-        {/* Corner ornaments — banknote corner flourishes */}
-        <div className="pointer-events-none absolute left-8 top-24 hidden lg:block">
-          <div className="fr-engraved text-[#FFD700]/50">№ 1776</div>
-          <div className="mt-1 h-px w-12 bg-[#FFD700]/30" />
-        </div>
-        <div className="pointer-events-none absolute right-8 top-24 hidden lg:block">
-          <div className="fr-engraved text-right text-[#FFD700]/50">Series 2026</div>
-          <div className="mt-1 ml-auto h-px w-12 bg-[#FFD700]/30" />
-        </div>
+      <div className="hero-wrap">
+        <div className="hero-inner">
+          <div className="eyebrow">
+            <span className="line" />
+            <span className="engraved label">The Autonomous Economic Agent</span>
+          </div>
 
-        {/* Content */}
-        <div className="relative z-10 mx-auto max-w-[1320px] px-4 pb-20 pt-28 sm:px-6 sm:pt-32 lg:px-8 lg:pt-36">
-          <div className="mx-auto max-w-[1120px]">
-            {/* Text — left-aligned on desktop to give room for portrait */}
-            <div className="text-center lg:text-left">
-              {/* Engraved eyebrow */}
-              <div className="fr-reveal mb-8 flex items-center justify-center gap-3 lg:justify-start">
-                <span className="h-px w-10 bg-[#FFD700]/50" />
-                <span className="fr-engraved text-[#FFD700]/80">
-                  The Autonomous Economic Agent
-                </span>
+          <h1 className="hero-title">
+            The AI agent
+            <br />
+            with a{" "}
+            <em className="shimmer" style={{ fontStyle: "italic" }}>
+              wallet
+            </em>
+            .
+          </h1>
+
+          <p className="hero-sub">
+            Other agents write code. Franklin writes code{" "}
+            <em style={{ fontStyle: "italic" }}>and spends money</em> to get it done —
+            models, data, images, search. You set the budget. It runs it.
+          </p>
+
+          <div className="hero-ctas">
+            <a className="btn-primary lg" href="#get-started">
+              Get Started Free
+            </a>
+            <a
+              className="btn-outline lg"
+              href="https://github.com/RunFranklin/Franklin"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <GitHubIcon className="h-4 w-4" />
+              Star on GitHub
+            </a>
+          </div>
+
+          <div className="install">
+            <InstallBox />
+          </div>
+
+          <div className="pill-row">
+            <span>
+              <span className="gold">YOPO</span> — You Only Pay Outcome
+            </span>
+            <span className="sep">◆</span>
+            <span>
+              USDC on <span className="white">Base</span> &amp;{" "}
+              <span className="white">Solana</span>
+            </span>
+            <span className="sep">◆</span>
+            <span>
+              Native <span className="white">x402</span>
+            </span>
+          </div>
+
+          <div className="terminal">
+            <div className="term-titlebar">
+              <span className="dot r" />
+              <span className="dot y" />
+              <span className="dot g" />
+              <span className="term-path">~ franklin --trust</span>
+              <span className="term-live">LIVE</span>
+            </div>
+            <div className="term-body">
+              <div className="prompt-line">
+                <span className="prompt-caret">❯ </span>
+                <span className="prompt-text">{prompt}</span>
+                <span className="caret" />
               </div>
-
-              <h1 className="fr-reveal fr-reveal-delay-1 font-[family-name:var(--font-serif)] text-[3.5rem] leading-[0.92] tracking-[-0.04em] text-white sm:text-[4rem] md:text-[5rem] lg:text-[6.2rem]">
-                The AI agent<br className="hidden sm:block" />{" "}
-                with a{" "}
-                <span className="fr-gold-shimmer italic">wallet</span>.
-              </h1>
-
-              <p className="fr-reveal fr-reveal-delay-2 mx-auto mt-7 max-w-[720px] text-[16px] leading-7 text-white/65 sm:text-[17px] lg:mx-0 lg:max-w-[560px]">
-                Other agents write code. Franklin writes code and spends money to get things
-                done. It holds your USDC, picks the best model per task, buys trading data,
-                generates images, searches the web &mdash; and decides what&rsquo;s worth paying
-                for. You set the budget. It runs it.
-              </p>
-
-              {/* CTAs */}
-              <div className="fr-reveal fr-reveal-delay-3 mt-10 flex items-center justify-center gap-4 lg:justify-start">
-                <a
-                  href="#get-started"
-                  className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-[2px] bg-[#FFD700] px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.12em] text-[#0a0d12] shadow-[0_8px_24px_-8px_rgba(255,215,0,0.5)] transition-all hover:shadow-[0_12px_32px_-6px_rgba(255,215,0,0.65)]"
-                >
-                  <span className="relative z-10">Get Started Free</span>
-                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                </a>
-                <a
-                  href="https://github.com/BlockRunAI/franklin"
-                  className="inline-flex items-center justify-center gap-2 rounded-[2px] border border-white/20 bg-white/[0.04] px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur-sm transition-all hover:border-[#FFD700]/40 hover:bg-white/[0.08]"
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-                  Star on GitHub
-                </a>
-              </div>
-
-              {/* Install command */}
-              <div className="fr-reveal fr-reveal-delay-4 mx-auto mt-8 max-w-[520px] lg:mx-0">
-                <div className="group flex items-center gap-3 rounded-[2px] border border-white/10 bg-black/40 px-4 py-3 text-[13px] backdrop-blur-sm transition-colors hover:border-[#FFD700]/25">
-                  <span className="select-none font-mono text-[#FFD700]/50">$</span>
-                  <code className="flex-1 font-mono text-white/75">{INSTALL_COMMAND}</code>
-                  <button
-                    type="button"
-                    onClick={handleCopy}
-                    className="text-white/30 transition-colors hover:text-white/70"
-                    aria-label="Copy install command"
+              <div className="term-resp">
+                {responseLines.map((line, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      color: line.color || "rgba(255,255,255,.6)",
+                    }}
                   >
-                    {copied ? <CheckIcon /> : <CopyIcon />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="fr-reveal fr-reveal-delay-5 mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.15em] text-white/25 lg:justify-start">
-                <span><span className="text-[#FFD700]/85">YOPO</span> — You Only Pay Outcome</span>
-                <span className="text-[#FFD700]/30">◆</span>
-                <span>USDC on <span className="text-white/55">Base</span> &amp; <span className="text-white/55">Solana</span></span>
-                <span className="text-[#FFD700]/30">◆</span>
-                <span>Powered by <span className="text-white/55">x402</span></span>
+                    {line.text || "\u00A0"}
+                  </div>
+                ))}
               </div>
             </div>
-
-            {/* CLI Demo — the star of the show */}
-            <div className="fr-reveal fr-reveal-delay-6 mx-auto mt-14 max-w-[780px]">
-              <TerminalDemo />
+            <div className="term-statusbar">
+              <span className="model">claude-opus-4.6</span>
+              <span>·</span>
+              <span className="cost">$4.80 USDC</span>
+              <span>·</span>
+              <span>esc to abort</span>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
