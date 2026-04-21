@@ -106,7 +106,7 @@ export function GettingStartedSection() {
           </a>
           <a
             className="btn-outline lg"
-            href="https://github.com/RunFranklin/Franklin"
+            href="https://github.com/blockrunai/franklin"
             target="_blank"
             rel="noreferrer"
           >

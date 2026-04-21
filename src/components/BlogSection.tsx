@@ -18,7 +18,7 @@ const POSTS: Post[] = [
     read: "8 min",
     title: "Why every AI agent will eventually hold a wallet.",
     body: "Subscriptions mispricing compute. API keys tying identity to vendors. Rate limits firing at the worst moment. The fix isn't a better dashboard — it's giving the agent the keys to its own bank account, and a hard balance it cannot exceed.",
-    href: "https://github.com/RunFranklin/Franklin/blob/main/docs/why-ai-agents-need-a-wallet.md",
+    href: "https://github.com/blockrunai/franklin/blob/main/docs/why-ai-agents-need-a-wallet.md",
     author: "Ben · BlockRun",
     lead: true,
   },
@@ -29,7 +29,7 @@ const POSTS: Post[] = [
     read: "6 min",
     title: "Subscription AI is dead.",
     body: "Three pressures — autonomy, vendor concentration, accountability — are converging on the flat-rate model. None of them resolve inside it.",
-    href: "https://github.com/RunFranklin/Franklin/blob/main/docs/subscription-ai-is-dead.md",
+    href: "https://github.com/blockrunai/franklin/blob/main/docs/subscription-ai-is-dead.md",
   },
   {
     num: "№ 03",
@@ -38,7 +38,7 @@ const POSTS: Post[] = [
     read: "12 min",
     title: "Anatomy of an economic agent.",
     body: "A walk-through of Franklin's internals — router, x402, brain, Telegram — shown on a single user prompt end-to-end.",
-    href: "https://github.com/RunFranklin/Franklin/blob/main/docs/anatomy-of-an-economic-agent.md",
+    href: "https://github.com/blockrunai/franklin/blob/main/docs/anatomy-of-an-economic-agent.md",
   },
   {
     num: "№ 04",
@@ -47,7 +47,7 @@ const POSTS: Post[] = [
     read: "10 min",
     title: "I gave Franklin $100 and asked it to launch a product.",
     body: "One terminal, one wallet, one week. Research brief, blog post, hero image, short video — all out of the same hundred dollars.",
-    href: "https://github.com/RunFranklin/Franklin/blob/main/docs/i-gave-franklin-100-dollars.md",
+    href: "https://github.com/blockrunai/franklin/blob/main/docs/i-gave-franklin-100-dollars.md",
   },
   {
     num: "№ 05",
@@ -56,7 +56,7 @@ const POSTS: Post[] = [
     read: "9 min",
     title: "The plugin SDK — ship your own vertical.",
     body: "Franklin is plugin-first. Trading, social, content — all live behind the same SDK. Here's the contract, the discovery path, and how to ship one in a weekend.",
-    href: "https://github.com/RunFranklin/Franklin/blob/main/docs/plugin-sdk.md",
+    href: "https://github.com/blockrunai/franklin/blob/main/docs/plugin-sdk.md",
   },
 ];
 
@@ -84,7 +84,7 @@ export function BlogSection() {
             </p>
             <a
               className="blog-all"
-              href="https://github.com/RunFranklin/Franklin/tree/main/docs"
+              href="https://github.com/blockrunai/franklin/tree/main/docs"
               target="_blank"
               rel="noreferrer"
             >

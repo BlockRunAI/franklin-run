@@ -44,7 +44,7 @@ export function Footer() {
                 <XIcon className="h-5 w-5" />
               </a>
               <a
-                href="https://github.com/RunFranklin/Franklin"
+                href="https://github.com/blockrunai/franklin"
                 aria-label="GitHub"
                 target="_blank"
                 rel="noreferrer"
@@ -96,7 +96,7 @@ export function Footer() {
             <ul>
               <li>
                 <a
-                  href="https://github.com/RunFranklin/Franklin/blob/main/docs/ARCHITECTURE.md"
+                  href="https://github.com/blockrunai/franklin/blob/main/docs/ARCHITECTURE.md"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -124,7 +124,7 @@ export function Footer() {
             <ul>
               <li>
                 <a
-                  href="https://github.com/RunFranklin/Franklin"
+                  href="https://github.com/blockrunai/franklin"
                   target="_blank"
                   rel="noreferrer"
                 >

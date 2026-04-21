@@ -39,7 +39,7 @@ export function Header() {
           </a>
           <a
             className="nav-link"
-            href="https://github.com/RunFranklin/Franklin/blob/main/docs/ARCHITECTURE.md"
+            href="https://github.com/blockrunai/franklin/blob/main/docs/ARCHITECTURE.md"
             target="_blank"
             rel="noreferrer"
           >
@@ -47,7 +47,7 @@ export function Header() {
           </a>
           <a
             className="btn-outline"
-            href="https://github.com/RunFranklin/Franklin"
+            href="https://github.com/blockrunai/franklin"
             target="_blank"
             rel="noreferrer"
           >
@@ -86,13 +86,13 @@ export function Header() {
           <a href="#compare" onClick={() => setMenuOpen(false)}>Compare</a>
           <a href="#blog" onClick={() => setMenuOpen(false)}>Blog</a>
           <a
-            href="https://github.com/RunFranklin/Franklin/blob/main/docs/ARCHITECTURE.md"
+            href="https://github.com/blockrunai/franklin/blob/main/docs/ARCHITECTURE.md"
             onClick={() => setMenuOpen(false)}
           >
             Docs
           </a>
           <a
-            href="https://github.com/RunFranklin/Franklin"
+            href="https://github.com/blockrunai/franklin"
             onClick={() => setMenuOpen(false)}
           >
             GitHub
