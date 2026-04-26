@@ -95,13 +95,7 @@ export function Footer() {
             <h4 className="engraved">Resources</h4>
             <ul>
               <li>
-                <a
-                  href="https://github.com/blockrunai/franklin/blob/main/docs/ARCHITECTURE.md"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Documentation
-                </a>
+                <a href="/docs">Documentation</a>
               </li>
               <li>
                 <a href="#blog">Blog</a>

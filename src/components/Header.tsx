@@ -37,12 +37,7 @@ export function Header() {
           <a className="nav-link" href="#blog">
             Blog
           </a>
-          <a
-            className="nav-link"
-            href="https://github.com/blockrunai/franklin/blob/main/docs/ARCHITECTURE.md"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a className="nav-link" href="/docs">
             Docs
           </a>
           <a
@@ -85,10 +80,7 @@ export function Header() {
           <a href="#features" onClick={() => setMenuOpen(false)}>Features</a>
           <a href="#compare" onClick={() => setMenuOpen(false)}>Compare</a>
           <a href="#blog" onClick={() => setMenuOpen(false)}>Blog</a>
-          <a
-            href="https://github.com/blockrunai/franklin/blob/main/docs/ARCHITECTURE.md"
-            onClick={() => setMenuOpen(false)}
-          >
+          <a href="/docs" onClick={() => setMenuOpen(false)}>
             Docs
           </a>
           <a
