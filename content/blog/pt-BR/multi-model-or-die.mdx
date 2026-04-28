@@ -1,0 +1,129 @@
+---
+title: "Multi-modelo ou morte: por que seu agente de código não deveria apostar em um só fornecedor"
+description: "O Claude Code queimou 27% do limite semanal de um usuário em loops de retry com saída zero. O Cursor cai por horas. O Copilot não alcança o Grok. O Franklin é o agente open-source que roteia entre 55 modelos, começa grátis sem cadastro, e para de cobrar no momento em que não há nada para entregar."
+slug: "multi-model-or-die"
+locale: "pt-BR"
+pillar: "multi-model"
+publishedAt: "2026-03-03"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "multi-model-or-die"
+heroPrompt: "Banknote allegory of Multitudes."
+heroSeed: 11042099
+tags: ["franklin", "multi-modelo", "claude-code", "smart-router", "yopo", "open-source"]
+featured: true
+num: "№ 02"
+cat: "Arquitetura"
+---
+
+A reclamação mais votada no issue tracker do Claude Code esta semana são variações da mesma frase: **"Paguei por retries que não produziram nada."**
+
+[Issue #54143](https://github.com/anthropics/claude-code/issues/54143): a sessão `codex:resume` de um usuário queimou 27% do limite semanal em 12 horas com progresso zero. [Issue #54177](https://github.com/anthropics/claude-code/issues/54177): "Limite atingido" com uso 0% / 5%. [Issue #54190](https://github.com/anthropics/claude-code/issues/54190): timeout de API deduziu tokens sem completar. [Issue #54146](https://github.com/anthropics/claude-code/issues/54146): CLI não segue instruções extremamente claras.
+
+Não são bugs aleatórios. É o **modo de falha estrutural de agentes de código de fornecedor único**: quando há exatamente um modelo atrás da sua ferramenta e exatamente uma relação de cobrança, qualquer degradação em qualquer dos sistemas cai direto no developer tentando lançar.
+
+O Franklin é construído na premissa oposta. **Multi-modelo não é uma feature no roadmap do Franklin. É a arquitetura.** Com essa premissa, as outras quatro — tier grátis, preço por resultado, imunidade a queda de fornecedor, alcance geográfico sem cadastro — não só são possíveis, são inevitáveis.
+
+## Os três impostos do "fornecedor único"
+
+**Imposto da queda do fornecedor.** Quando a Anthropic engasga, o Claude Code para. Não há botão "próximo modelo." O Cursor caiu seis horas em março.
+
+**Imposto do drift de modelo.** O Sonnet afiado de janeiro não é o mesmo Sonnet em abril. A Anthropic empurra mudanças.
+
+**Imposto do poder de preço.** Quando o agente e o modelo são do mesmo fornecedor, o fornecedor controla o teto de preço. Pode cobrar retries, throttle em uso baixo, e o único conserto é "espere o limite semanal renovar."
+
+O agente multi-modelo remove os três. Anthropic degradada — Franklin roteia para Grok ou Gemini e termina a chamada. **O agente não está mais apostando no dia bom de nenhum fornecedor único.**
+
+## Smart Router em números concretos
+
+O Smart Router do Franklin foi treinado em **2 milhões de requests reais**. Classifica cada prompt e escolhe o modelo com a melhor relação qualidade-custo para a classe:
+
+```text
+> refactor this auth module to use JWT
+  CODING kimi-k2.6  ·  12.4K in / 2.1K out  ·  $0.0023  saved 84%
+
+> what's BTC outlook for the week?
+  TRADING grok-4-1-fast-reasoning  ·  8.2K in / 1.8K out  ·  $0.0008  saved 95%
+
+> prove this algorithm is O(n log n)
+  REASONING claude-sonnet-4.6  ·  15.1K in / 3.4K out  ·  $0.0312  premium tier
+```
+
+Quatro perfis fixáveis por sessão:
+
+| Perfil | Estratégia | Quando |
+|---|---|---|
+| `auto` | Melhor qualidade-custo | Padrão |
+| `eco` | Mais barato com qualidade ok | Volume |
+| `premium` | Qualidade máxima | Crítico |
+| `free` | NVIDIA + Qwen3 só | Saldo 0 |
+
+## "Grátis" não é um tier — é o padrão
+
+A maioria dos "tiers grátis" em ferramentas de IA é trial de 5 dias com cartão. O grátis do Franklin é diferente. Usa **NVIDIA Nemotron e Qwen3 Coder** — genuinamente grátis na fonte:
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+# modelos grátis funcionam imediatamente. sem carteira, email, cartão.
+```
+
+Você só fundeia carteira quando quer modelos de fronteira. **$5 em USDC desbloqueia todos os modelos pagos e ferramentas do gateway.** Sem assinatura, sem mínimo.
+
+## YOPO: a resposta linha-a-linha para "paguei por retries que não produziram nada"
+
+O modelo de preço do Franklin tem um nome — **YOPO, You Only Pay Outcome**. Funciona porque a camada de liquidação (x402 sobre USDC) liquida por chamada, on-chain, sem risco de chargeback. Se a chamada falha, o merchant não assina o pagamento. A carteira não é debitada.
+
+Três consequências:
+
+1. **Sem assinaturas.** Uma semana $0,50, próxima $50.
+2. **Sem rate limits.** Sem tetos artificiais.
+3. **Sem cheque especial.** O saldo da carteira é o limite duro.
+
+$1 em capacidade real:
+
+| Recurso | Para $1 |
+|---|---|
+| GPT-4o input tokens | ~400 mil |
+| DeepSeek tokens | ~7 milhões |
+| Gemini 2.5 Flash tokens | ~13 milhões |
+| Imagens DALL-E 3 | ~20 |
+| Buscas Exa | ~40 |
+| NVIDIA GPT-OSS / Qwen3 | ilimitado (grátis) |
+
+## Comparação
+
+|  | Agentes de código | Editor IDEs | Chatbots | **Franklin** |
+|---|---|---|---|---|
+| Escreve código | sim | sim | parcial | sim |
+| Gasta dinheiro por você | não | não | não | **sim — USDC, x402** |
+| Compra dados/APIs/imagens | não | não | não | **sim — 55+ APIs** |
+| Melhor modelo por tarefa | não | não | não | **sim — 55+ modelos** |
+| Modelo de preço | assinatura | assinatura | assinatura | **YOPO** |
+| Mensalidade | $20–200 | $20–40 | $20+ | **$0** |
+| Rate-limited | sim | sim | sim | **não** |
+| Funciona quando provedor cai | não | não | não | **sim — roteia para outro** |
+| Identidade | conta de vendor | conta de vendor | conta/email | **carteira, sem cadastro** |
+| Começa grátis, sem KYC | não | não | não | **sim** |
+| Fonte | fechado | fechado | fechado | **Apache 2.0** |
+
+## O que você faz amanhã
+
+Se você é usuário do Claude Code e já teve sessão queimando budget em retries — a alternativa multi-modelo são dois comandos:
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+```
+
+No tier grátis rodando NVIDIA Nemotron e Qwen3 Coder, sem cartão, sem cadastro. Quer fixar Sonnet para uma tarefa — fundeie $5 e use `--profile premium`. Modelo deriva — troque profil. Provedor caiu — router fail-over para o próximo.
+
+[Fonte completa](https://github.com/blockrunai/franklin) no GitHub. [Docs do smart router](/docs/user-guide/smart-router).
+
+A aposta do Franklin é direta: **agentes de código de fornecedor único são produto transicional.** Os agentes que roteiam vão vencer. Os que prendem você vão perder. A única pergunta é quando.
+
+Se seu limite semanal queimou de novo nesta semana — esse "quando" é agora.
+
+---
+
+_Franklin é open-source (Apache 2.0). 386 stars, 5M+ requests, 50+ países, crescimento orgânico via integrações OpenClaw e boca-a-boca. Não aceitamos investimento dos provedores de modelo para os quais roteamos._

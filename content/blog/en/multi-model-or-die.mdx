@@ -1,0 +1,144 @@
+---
+title: "Multi-model or die: why your coding agent shouldn't bet on one vendor"
+description: "Claude Code burned 27% of one user's weekly limit on retry loops with zero output. Cursor goes down for hours. Copilot can't reach Grok. Franklin is the open-source agent that routes across 55 models, starts free with no signup, and stops costing you the moment there's nothing to charge for."
+slug: "multi-model-or-die"
+locale: "en"
+pillar: "multi-model"
+publishedAt: "2026-04-21"
+updatedAt: "2026-04-21"
+author: "BlockRun"
+heroPrompt: "Banknote allegory of Multitudes — a hooded conductor orchestrating five ribbons of different model voices into one settlement point. Gold engraving on dark ink-blue. Open-hand-with-coins watermark."
+heroSeed: 2042099
+tags: ["franklin", "multi-model", "claude-code", "smart-router", "yopo", "open-source", "free-tier"]
+featured: true
+num: "№ 02"
+cat: "Architecture"
+---
+
+The most-upvoted complaint on the Claude Code issue tracker this week is variations of the same sentence: **"I paid for retries that produced nothing."**
+
+[Issue #54143](https://github.com/anthropics/claude-code/issues/54143): a user's `codex:resume` session burned 27% of a weekly limit over twelve hours with zero forward progress. [Issue #54177](https://github.com/anthropics/claude-code/issues/54177): "Usage limit reached" when usage was at 0% on the 5-hour window and 5% weekly. [Issue #54190](https://github.com/anthropics/claude-code/issues/54190): "API timeout causes token deduction without completion." [Issue #54146](https://github.com/anthropics/claude-code/issues/54146): "CLI does not follow extremely clear instructions" — same user, same session, three retries, three different failures, every retry billed.
+
+These aren't random bugs. They are the **structural failure mode of single-vendor coding agents**: when there is exactly one model behind your tool and exactly one billing relationship, every degradation in either system passes straight through to the developer who is trying to ship.
+
+Franklin is built on the opposite premise. **Multi-model is not a feature on the Franklin roadmap. It is the architecture.** And once you've built around that premise, four other things become not just possible but inevitable: free tier, pay-for-outcome pricing, vendor-outage immunity, and zero-signup geographic reach.
+
+This post is about why each of those falls out of the multi-model commitment, and what it feels like in practice.
+
+## What "single-vendor" actually costs you
+
+You pay three taxes when your agent runs on one provider:
+
+**The vendor-outage tax.** When Anthropic has a hiccup, Claude Code stops. There is no "next model" button. You lose the next forty-five minutes refreshing status pages. Cursor went down for six hours during a Friday in March; thousands of developers had nothing to do but wait. This is structural, not incidental — single-vendor agents have nowhere to fall over to.
+
+**The model-drift tax.** The Sonnet you used in January is not the Sonnet you used in April. Anthropic ships changes. Sometimes the new model is sharper; sometimes it ignores instructions you wrote three lines ago, as in [issue #54146](https://github.com/anthropics/claude-code/issues/54146) above. You have no recourse. You can't say "use the December version." You can't say "use Grok for this one." You either accept the drift or you don't ship.
+
+**The pricing-power tax.** When the agent and the model are the same vendor, the vendor controls the price ceiling. They can charge for retries, time you out, throttle you at low usage, and the only fix is "wait until your weekly limit refills." Subscriptions are not a service. They are a way to get paid before they have to deliver.
+
+A multi-model agent removes all three. When Anthropic is degraded, Franklin routes to Grok or Gemini and finishes the call. When a model drifts on instructions, you swap it out per-task. When the price ceiling on one provider rises, the smart router starts choosing the next-cheapest model that meets the bar. **The agent is no longer betting on any one vendor's good day.**
+
+## The Smart Router, in concrete numbers
+
+Franklin's Smart Router was trained on **2 million real requests** flowing through the BlockRun gateway. It classifies every prompt — coding, trading, reasoning, research — and picks the model with the best quality-to-cost ratio for that class. Every response shows you which model it picked and how much you saved versus always-Opus:
+
+```text
+> refactor this auth module to use JWT
+  CODING kimi-k2.6  ·  12.4K in / 2.1K out  ·  $0.0023  saved 84%
+
+> what's BTC outlook for the week?
+  TRADING grok-4-1-fast-reasoning  ·  8.2K in / 1.8K out  ·  $0.0008  saved 95%
+
+> prove this algorithm is O(n log n)
+  REASONING claude-sonnet-4.6  ·  15.1K in / 3.4K out  ·  $0.0312  premium tier
+```
+
+That last column matters. Real saved-vs-premium numbers, per call, in your terminal. Not a billing-cycle summary. Not a token meter. **The cost of every action, the choice that produced it, and the alternative you didn't have to pay for** — visible at the moment of the decision.
+
+The router has four profiles you can pin per session:
+
+| Profile | Strategy | Use case |
+|---|---|---|
+| `auto` | Best quality-to-cost ratio | Default — smart spend |
+| `eco` | Cheapest model with decent quality | Bulk, exploratory, ETL |
+| `premium` | Highest quality regardless of cost | Mission-critical, ship-blockers |
+| `free` | NVIDIA + Qwen3 only | Zero wallet balance |
+
+Notice that last row.
+
+## "Free" is not a tier. It is the default.
+
+Most "free tiers" in AI tooling are five-day trials with a card on file. Franklin's free tier is different. It uses **NVIDIA Nemotron and Qwen3 Coder**, which are genuinely free at the source. No subsidy, no trial, no clock. You install Franklin, run the CLI, and it works:
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+# free models work immediately. no wallet, no email, no card.
+```
+
+You only fund a wallet when you decide you want frontier models. **$5 of USDC unlocks every paid model and tool in the gateway.** No subscription. No minimum. No commitment. The wallet is the limit; when it's empty, the agent stops; you reload it when you want to.
+
+This is why we can run this kind of free tier and Cursor can't. Cursor needs you on a card because their unit economics depend on bundling. Our economics work because **we don't pay for the free models** — they're already free at the provider. We pay for paid models only when you ask for them, and we charge you provider cost plus 5%, settled per-call. Free is genuinely free, and paid is honestly paid.
+
+The strategic consequence: **the cost to try Franklin is zero, and so is the cost to keep using it on cheap tasks.** A developer in Bangalore can install Franklin tonight, run a thousand Qwen3 calls, never see a payment screen, and only meet the wallet when they want Sonnet for the hard one.
+
+## YOPO: the line-item answer to "I paid for retries that produced nothing"
+
+Go back to those Claude Code issues. The pattern is the same shape across all of them: the user's quota was deducted **before** the work was verified. Retries cost. Timeouts cost. Failed runs that returned no useful output cost. The platform charged for trying.
+
+Franklin's pricing model has a name for this — **YOPO, You Only Pay Outcome.** It works because the settlement layer (x402 micropayments on USDC) settles per-call, on-chain, with zero chargeback risk. If a call fails, the merchant doesn't sign the payment. The wallet is never debited. There is no quarterly reconciliation, no support ticket, no "we'll credit your account next month." There is only "the call produced something, the wallet paid; the call produced nothing, the wallet didn't."
+
+Three things drop out of this:
+
+1. **No subscriptions.** $0.50 one week, $50 the next. You pay for compute consumed.
+2. **No rate limits.** Subscriptions throttle at the worst possible moment. YOPO has no artificial caps. If your wallet has USDC, you have the model.
+3. **No overdraft.** The wallet balance IS the hard limit. Empty wallet, agent stops. No surprise bill at month end.
+
+This is what $1 looks like in actual capacity:
+
+| Resource | Approximate output for $1 |
+|---|---|
+| GPT-4o input tokens | ~400K |
+| DeepSeek tokens | ~7M |
+| Gemini 2.5 Flash tokens | ~13M |
+| DALL-E 3 images | ~20 |
+| Exa neural web searches | ~40 |
+| NVIDIA GPT-OSS / Qwen3 | unlimited (free tier) |
+
+## What competitors look like next to this
+
+| | Coding agents | Editor IDEs | Chatbots | **Franklin** |
+|---|---|---|---|---|
+| Writes code | yes | yes | partial | yes |
+| Spends money for you | no | no | no | **yes — USDC wallet, x402** |
+| Buys data + APIs + images + search | no | no | no | **yes — 55+ APIs, one wallet** |
+| Picks best model per task | no, single-vendor | no, plan-tied | no | **yes — Smart Router, 55+ models** |
+| Pricing model | Subscription | Subscription | Subscription | **YOPO — per outcome, USDC** |
+| Monthly fee | $20–$200 | $20–$40 | $20+ | **$0** |
+| Rate-limited | yes | yes | yes | **no — limited only by wallet** |
+| Works when provider goes down | no | no | no | **yes — routes to another** |
+| Identity | vendor account | vendor account | account/email | **wallet, no signup** |
+| Start free, no KYC | no | no | no | **yes** |
+| Source | closed | closed | closed | **Apache 2.0, local-first** |
+
+**Franklin is the economic agent category in one sentence: software with a wallet that can spend toward a result.** Pick any of those rows individually and a competitor can match it. Pick the whole stack — multi-model + free tier + YOPO + wallet-identity + open source — and there is no closed competitor that can ship it without rebuilding their pricing engine, their billing stack, their model strategy, and their licensing posture simultaneously.
+
+## What you actually do tomorrow
+
+If you are currently a Claude Code user and you have ever had a session burn budget on retries: the multi-model alternative is two commands.
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+```
+
+You will be on the free tier, running NVIDIA Nemotron and Qwen3 Coder, with no card and no signup. If you want to pin Sonnet for one task, fund a wallet with $5 and use `--profile premium`. If a model drifts on instructions, switch profiles. If a provider goes down mid-session, the router fails over to the next provider; the call finishes; you keep working.
+
+You can read [the full source](https://github.com/blockrunai/franklin) on GitHub, or skim [the smart router docs](/docs/user-guide/smart-router) for how the routing decisions are made.
+
+The bet behind Franklin is straightforward: **single-vendor coding agents are a transitional product.** They exist because, two years ago, the rails for paying micro-amounts to many providers in real time didn't exist, and the open models weren't good enough to route to. Both of those facts are no longer true. The agents that route are going to win. The agents that lock you in are going to lose. The only question is when.
+
+If your weekly limit got burned again this week — that's the when, and it's now.
+
+---
+
+_Franklin is open-source (Apache 2.0). 386 stars, 5M+ requests, 50+ countries, growing organically through OpenClaw integrations and word-of-mouth. We do not take investment from the model providers we route to._

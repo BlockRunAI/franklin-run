@@ -1,0 +1,145 @@
+---
+title: "多模型，或者出局：你的 coding agent 不应该只押注一个厂商"
+description: "Claude Code 用户上周一次会话烧掉了 27% 的周配额、零进展。Cursor 时不时整体宕机几小时。Copilot 不会调 Grok。Franklin 是一个开源 agent，跨 55 个模型路由、免费档零门槛起步、没产出就不收钱。"
+slug: "multi-model-or-die"
+locale: "zh-CN"
+pillar: "multi-model"
+publishedAt: "2026-04-21"
+updatedAt: "2026-04-21"
+author: "BlockRun"
+translationOf: "multi-model-or-die"
+heroPrompt: "Banknote allegory of Multitudes — a hooded conductor orchestrating five model voices into one settlement point. Gold engraving on dark ink-blue."
+heroSeed: 3042099
+tags: ["franklin", "多模型", "claude-code", "智能路由", "yopo", "开源", "免费档"]
+featured: true
+num: "№ 02"
+cat: "架构"
+---
+
+Claude Code 这周 issue tracker 上点赞最多的吐槽，本质上都是同一句话：**"我付钱了，但是 retry 一圈没有任何产出"**。
+
+[Issue #54143](https://github.com/anthropics/claude-code/issues/54143)：一位用户的 `codex:resume` 会话在 12 小时内烧掉了周配额的 27%，零进展。[Issue #54177](https://github.com/anthropics/claude-code/issues/54177)：5 小时窗口用了 0%，周配额只用了 5%，却被告知"使用上限已达"。[Issue #54190](https://github.com/anthropics/claude-code/issues/54190)：API 超时但 token 已经从配额里扣掉了。[Issue #54146](https://github.com/anthropics/claude-code/issues/54146)：CLI 不按用户写得清清楚楚的指令执行——同一个会话，三次 retry，三种不同的失败方式，每一次都计费。
+
+这些不是随机 bug。这是 **单厂商 coding agent 的结构性失败模式**：当你的工具背后只有一个模型、只有一种结算关系，那个系统每出现一次降级，账都直接落到你这位想把活干完的开发者头上。
+
+Franklin 建在相反的前提上。**多模型不是 Franklin 路线图上的一个 feature，是它的架构。** 一旦围绕这个前提去搭，另外四件事就不只是"可能"，而是"必然"：免费档、按结果付费的定价、抗厂商宕机、零注册的全球可达。
+
+这一篇就是讲这四件事为什么从"多模型"这一条骨架上自然长出来，以及在实际使用里是什么感觉。
+
+## "单厂商"到底让你交了哪三笔税
+
+Agent 跑在一个厂商上时，你在交三笔税：
+
+**厂商宕机税。** Anthropic 那边一打嗝，Claude Code 就停了。没有"切到下一个模型"的按钮。你只能花掉接下来 45 分钟刷它的 status 页面。Cursor 三月某个周五整体宕了 6 个小时，几千个开发者除了等什么都做不了。这是结构性的，不是偶发——单厂商 agent 没地方能 fail over 过去。
+
+**模型漂移税。** 你一月份用的 Sonnet 跟你四月份用的 Sonnet 不是同一个 Sonnet。Anthropic 一直在改。有时候新模型更锋利；有时候它就开始忽略你三行前刚写下的指令，就像上面 [#54146](https://github.com/anthropics/claude-code/issues/54146) 那个 issue。你没有任何办法。你不能说"用十二月那个版本"。你不能说"这一题换 Grok"。要么接受漂移，要么这一波你出不了活。
+
+**定价权税。** 当 agent 和模型属于同一个厂商，价格上限完全由这个厂商定。他们可以让你为 retry 付钱，可以在低用量时给你 timeout，可以在 5% 用量时把你限流，唯一的修法是"等下周配额刷新"。订阅不是一种服务，订阅是一种"在还没把活交付之前先收钱"的方式。
+
+多模型 agent 一次性把这三笔税都拿掉。Anthropic 状态降级时，Franklin 路由到 Grok 或 Gemini 把这一次调用跑完。某个模型在某条指令上漂移时，按任务换掉。一个厂商的价格上限往上挪时，智能路由开始挑下一个能达标但更便宜的模型。**Agent 不再押任何单一厂商哪一天状态好。**
+
+## 智能路由，给你看真实的数字
+
+Franklin 的智能路由是用流过 BlockRun 网关的 **200 万次真实请求** 训出来的。它会把每一条 prompt 分类——coding、trading、reasoning、research——然后给那一类挑出"质量/成本比"最优的模型。每一次回应里都标出它选了哪个、跟"全程 Opus"比省了多少：
+
+```text
+> refactor this auth module to use JWT
+  CODING kimi-k2.6  ·  12.4K in / 2.1K out  ·  $0.0023  saved 84%
+
+> what's BTC outlook for the week?
+  TRADING grok-4-1-fast-reasoning  ·  8.2K in / 1.8K out  ·  $0.0008  saved 95%
+
+> prove this algorithm is O(n log n)
+  REASONING claude-sonnet-4.6  ·  15.1K in / 3.4K out  ·  $0.0312  premium tier
+```
+
+最右边那一列是关键。**这一次调用花了多少、为什么这么挑、如果走最贵那档你要多付多少**——三件事都在你做决定的那一秒，直接显示在你的终端里。不是月底账单，不是 token 余额条。
+
+路由器有四档你可以按 session 钉死的策略：
+
+| 策略 | 取舍 | 用在哪 |
+|---|---|---|
+| `auto` | 质量/成本最优 | 默认——精明地花 |
+| `eco` | 质量过得去的最便宜模型 | 大批量、探索型、ETL |
+| `premium` | 不计成本的最高质量 | 关键任务、卡发版的那道题 |
+| `free` | 仅用 NVIDIA + Qwen3 | 钱包余额为零 |
+
+注意最后一行。
+
+## "免费"不是一档，是默认
+
+绝大多数 AI 工具的"免费档"都是带一张卡的 5 天试用。Franklin 的免费档不是。它用的是 **NVIDIA Nemotron 和 Qwen3 Coder**，这两个模型在源头本来就是免费的。没有补贴、没有试用期、没有倒计时。你装上 Franklin，跑命令，它就工作：
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+# 免费模型立即工作。不要钱包，不要邮箱，不要卡。
+```
+
+你只在自己想用前沿模型的时候才去开钱包。**充 5 美元 USDC，网关里所有的付费模型和工具一次解锁。** 没有订阅，没有最低消费，没有承诺。钱包就是上限；钱包空了，agent 停；你想接着跑就再充。
+
+这就是为什么我们能做这种免费档而 Cursor 做不了。Cursor 必须把卡绑在你身上，是因为它的单位经济学要靠"打包"维持。我们的经济学走得通，是因为 **我们不用为免费模型买单**——它们在源头就免费。我们只在你主动要付费模型时，按厂商成本加 5% 给你按笔结算。免费是真免费，付费是诚实付费。
+
+战略上的后果是：**第一次用 Franklin 的成本是零，长期跑便宜任务的成本也是零。** 一位班加罗尔的开发者今晚装上 Franklin、跑 1000 次 Qwen3 调用、永远不会看到付款界面，直到他/她想用 Sonnet 处理某一题难的，才第一次和钱包打照面。
+
+## YOPO：对"我付了钱但啥都没出来"的逐项回答
+
+回到那几个 Claude Code issue。它们的形状一模一样：用户的配额是 **在工作被验证之前** 就被扣了。Retry 计费。Timeout 计费。没有任何有用产出的失败 run 也计费。平台为"尝试"收钱。
+
+Franklin 的定价模型有个名字——**YOPO，You Only Pay Outcome（你只为结果付费）**。它能跑通，是因为结算层（USDC 上的 x402 微支付）按笔上链结算、零拒付风险。一次调用如果失败，merchant 不签那笔支付。钱包从来不会被扣。没有季度对账、没有 support 工单、没有"下个月给你账户加一笔信用额度"。只有一种逻辑：**这次调用产出了东西，钱包付了；这次没产出，钱包没动。**
+
+由此自然落出三件事：
+
+1. **没有订阅。** 这周 0.5 美元，下周 50 美元。你只为真消耗的算力付钱。
+2. **没有限流。** 订阅会在最关键的时刻给你掐脖子。YOPO 没有人为上限——只要钱包里有 USDC，模型就在那。
+3. **没有意外透支。** 钱包余额就是真硬上限。钱包空了，agent 停。月末没有惊喜账单。
+
+1 美元在实际容量上长这样：
+
+| 资源 | 1 美元大概换到 |
+|---|---|
+| GPT-4o 输入 token | ~40 万 |
+| DeepSeek token | ~700 万 |
+| Gemini 2.5 Flash token | ~1300 万 |
+| DALL-E 3 图像 | ~20 张 |
+| Exa 神经搜索 | ~40 次 |
+| NVIDIA GPT-OSS / Qwen3 | 无限（免费档） |
+
+## 把竞品摊开放在旁边
+
+|  | Coding agents | 编辑器 IDE | Chatbots | **Franklin** |
+|---|---|---|---|---|
+| 写代码 | 是 | 是 | 部分 | 是 |
+| 替你花钱 | 否 | 否 | 否 | **是——USDC 钱包，x402** |
+| 付费买数据 / API / 图像 / 搜索 | 否 | 否 | 否 | **是——55+ API，一个钱包** |
+| 按任务挑最优模型 | 否，单厂商 | 否，套餐绑定 | 否 | **是——智能路由，55+ 模型** |
+| 定价模型 | 订阅 | 订阅 | 订阅 | **YOPO——按结果，USDC** |
+| 月费 | $20–$200 | $20–$40 | $20+ | **$0** |
+| 限流 | 是 | 是 | 是 | **否——上限只看钱包** |
+| 厂商宕机时还能跑 | 否 | 否 | 否 | **是——路由到下一个** |
+| 身份 | 厂商账户 | 厂商账户 | 账号 / 邮箱 | **钱包，零注册** |
+| 免费起步、无 KYC | 否 | 否 | 否 | **是** |
+| 源代码 | 闭源 | 闭源 | 闭源 | **Apache 2.0，本地优先** |
+
+**Franklin 把"经济智能体"这个品类用一句话讲清楚：带钱包、能朝着结果花钱的软件。** 上面任何一行单拎出来，竞品都能勉强对齐。但把整套栈拼起来——多模型 + 免费档 + YOPO + 钱包身份 + 开源——没有任何一家闭源竞品能在不同时重建定价引擎、计费栈、模型策略和开源态度的前提下把这套发出来。
+
+## 明天你具体要做什么
+
+如果你目前在用 Claude Code、并且你曾经因为 retry 把预算烧光过一次，多模型替代方案就是两条命令。
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+```
+
+你会落在免费档，跑 NVIDIA Nemotron 和 Qwen3 Coder，不要卡、不要注册。如果某一题你想钉 Sonnet，往钱包里充 5 美元、加 `--profile premium`。某个模型开始漂移指令时，换 profile。某个厂商在你跑到一半时宕了，路由器自动 fail over 到下一个厂商；这次调用照样完成；你接着工作。
+
+你可以读 [完整源码](https://github.com/blockrunai/franklin)，或者翻 [智能路由文档](/docs/user-guide/smart-router) 了解路由决策怎么做出来的。
+
+Franklin 背后的赌注很直接：**单厂商 coding agent 是过渡产品。** 它们之所以存在，是因为两年前——能实时把"几分之一美分"在多个厂商之间结算的轨道还没铺好，开源模型也还不够好以至于值得路由过去。这两件事现在都不再成立。**会路由的 agent 会赢。把你锁住的 agent 会输。** 唯一的问题是什么时候。
+
+如果你这周又一次被周配额烧穿，那个"什么时候"——就是现在。
+
+---
+
+_Franklin 是开源的（Apache 2.0）。386 stars、5M+ 请求、50+ 个国家，主要靠 OpenClaw 集成和口口相传自然增长。我们不接受任何被我们路由到的模型厂商的投资。_

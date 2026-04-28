@@ -1,0 +1,158 @@
+---
+title: "Dei ao Franklin US$ 20 e um roteiro. Três horas depois eu tinha um vídeo."
+description: "A maioria dos agentes para no código. O Franklin não — ele compra o roteiro, gera o storyboard com gpt-image-2, renderiza os clipes no Seedance, dubla a narração e licencia a música, tudo de uma carteira só. Aqui está o recibo linha por linha e por que nenhum outro agente conseguiria produzir isso."
+slug: "i-gave-franklin-twenty-dollars-and-a-script"
+locale: "pt-BR"
+pillar: "field-notes"
+publishedAt: "2026-03-17"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "i-gave-franklin-twenty-dollars-and-a-script"
+heroPrompt: "Banknote-style intaglio of a Victorian cinematographer."
+heroSeed: 10042088
+tags: ["franklin", "video-production", "field-notes", "case-study", "gpt-image-2", "seedance", "yopo"]
+featured: true
+num: "№ 04"
+cat: "Notas de Campo"
+---
+
+Isto não era pra ser um vídeo sobre o Franklin. Começou como experimento interno: pegar a tarefa criativa mais pesada que conseguíssemos imaginar — vídeo explicativo de 60 segundos, narrado, com música, com visuais originais — e ver se um único agente conseguiria de fato produzir tudo do começo ao fim. As restrições foram propositais. **Um terminal. Uma carteira. Saldo USDC com teto de US$ 20.** Sem conta de image-API, sem assinatura ElevenLabs, sem login Seedance, sem licença Soundstripe, sem Adobe. O agente tinha que achar cada ferramenta sozinho, pagar e entregar.
+
+Três horas depois o vídeo estava em disco. A carteira mostrava que custou **US$ 11,97**. O recibo — cada prompt, cada modelo, cada ativo pago — era um único arquivo de texto que o Franklin foi cuspindo durante o trabalho. Esse é o arquivo, com a história por trás de cada linha.
+
+É também a demonstração mais clara que já entregamos de por que "agente com carteira" não é slogan. É a diferença estrutural entre uma ferramenta de IA que te ajuda e uma que termina o trabalho.
+
+## O briefing
+
+```text
+> Vídeo explicativo de 60 segundos para audiência de devs sem cripto.
+  Tema: por que pay-per-call AI é o futuro, com USDC como trilho.
+  Estilo: estética minimalista de cédula, ouro sobre tinta, câmera lenta.
+  Entregas: mp4 final, música, narração, três stills de keyframe.
+  Orçamento: US$ 20 USDC. Teto duro.
+```
+
+Foi exatamente isso que digitei no Franklin. Nada além.
+
+## O recibo, em ordem
+
+### Etapa 1 — Pesquisa e outline
+
+```text
+✓ WebSearch  "USDC AI micropayments 2026"      $0.0008
+✓ WebFetch   3 articles + Franklin docs         $0.0003
+✓ Reason     outline 4 beats (nemotron, free)   $0.0000
+```
+
+**US$ 0,0011.** Planejamento no Nemotron grátis. USDC só nas buscas para fact-check.
+
+### Etapa 2 — Polir o roteiro
+
+```text
+✓ Compose   60s narration (claude-sonnet-4.6)   $0.0089
+```
+
+Para o roteiro da narração o Franklin escalou para o Sonnet. **Um centavo.** 152 palavras, perfeitas para uma voz calma de 60s.
+
+### Etapa 3 — Keyframes (gpt-image-2)
+
+```text
+✓ ImageGen  3 banknote stills (gpt-image-2, hd) $0.3600
+```
+
+O Franklin escolheu **`openai/gpt-image-2`** em vez do DALL-E 3 — porque o prompt pedia gravar o texto "franklin · dispatch" dentro da arte e, hoje, o único modelo que renderiza texto dentro da imagem com confiabilidade é o gpt-image-2. Multilíngue + consistência de personagem entre frames também são chave. **Três frames HD por US$ 0,36.** Rejeitei um, regeração +US$ 0,12, mostrada antes do débito.
+
+### Etapa 4 — Geração de voz
+
+```text
+✓ Voice     ElevenLabs, voice "Adam" v2 (60s)   $0.4200
+```
+
+Sem conta ElevenLabs, sem chave API separada, sem cartão à parte. O Franklin chama o ElevenLabs pelo mesmo trilho x402 dos modelos. **60 segundos por US$ 0,42.** Nenhuma chave de API no `.env`.
+
+### Etapa 5 — Clipes de vídeo (Seedance)
+
+```text
+✓ Video     bytedance/seedance-2.0-fast  3×10s  $4.5000
+✓ Video     bytedance/seedance-2.0       2×10s  $6.0000
+```
+
+**Cinco clipes de 10s a 720p**, mistos entre dois tiers do Seedance — três no `bytedance/seedance-2.0-fast` (US$ 0,15/s) para os shots abstratos de movimento, dois no `bytedance/seedance-2.0` Pro (US$ 0,30/s) para os shots de personagem. **Total de vídeo: US$ 10,50.**
+
+O roteador acertou — só fez upgrade pro 2.0 Pro nos dois shots em que fidelidade de personagem importava, e usou a `-fast` (50% mais barata) nos três em que o movimento sustenta o frame sozinho.
+
+### Etapa 6 — Música
+
+```text
+✓ Audio     Stable Audio, 60s instrumental      $0.1800
+```
+
+18 centavos de música instrumental original. O Franklin calculou o BPM da narração antes de encomendar a trilha.
+
+### Etapa 7 — Montagem
+
+```text
+✓ Bash      ffmpeg compose final mp4            $0.0000
+✓ Bash      verify duration 60s                 $0.0000
+```
+
+FFmpeg local, **grátis**. 59,4 segundos, MP4 de 18,2 MB, 720p, legendas embutidas.
+
+### Total
+
+```text
+─────────────────────────────────────────────
+Total da Sessão                       $11.97
+  pesquisa + roteiro          $0.01
+  keyframes (gpt-image-2)     $0.36
+  narração (ElevenLabs)       $0.42
+  vídeo (mix Seedance)       $10.50
+  música (Stable Audio)       $0.18
+  montagem                    $0.00
+Saldo da carteira                      $8.03
+Teto duro respeitado ✓
+Tempo                              3h 11m
+─────────────────────────────────────────────
+```
+
+## Onde todos os outros coding agents param
+
+No código. Cursor escreve um roteiro — não paga a voz. Claude Code organiza quatro batidas — não gera storyboard. Copilot sugere o comando do FFmpeg — não licencia a música. **Nenhum tem camada de liquidação por trás.**
+
+A armadilha de cinco passos do jeito antigo:
+
+1. Cadastro no ElevenLabs, cartão, top-up mínimo de US$ 10, chave API no `.env`.
+2. Achar revendedor de Seedance (raramente vendem direto), cartão, copiar chave.
+3. OpenAI para gpt-image-2, cartão, criar org, esperar liberação de acesso de image gen, copiar chave.
+4. Cadastro no Stable Audio, cartão, pacote de US$ 9 em créditos.
+5. Editar cinco linhas de `.env` no shell, rezando para não colar nenhuma no Slack.
+
+Tempo até começar: **45–90 minutos**. Custo fixo mensal: **US$ 54+**. **Tudo imposto de acesso.**
+
+Franklin: US$ 11,97 totais. Zero assinaturas. Zero credenciais em `.env`. **A carteira é a chave de API.**
+
+## Por que gpt-image-2 + Seedance, especificamente
+
+**gpt-image-2** é o primeiro modelo de imagem disponível ao público que coloca texto legível dentro da imagem sem erros de ortografia, em qualquer idioma. Para qualquer coisa com gravura de cédula, embalagem, pôster, card social, sinalização bilíngue — não é melhoria de 10%, é a diferença entre usável e não usável. Mantém identidade de personagem entre frames numa mesma sessão. HD: US$ 0,06–0,12.
+
+**Seedance 2.0** é hoje o melhor modelo de vídeo em preço/qualidade do mercado aberto. O tier 2.0 Pro completo entrega vídeo 720p competindo com modelos 5× mais caros. A variante `-fast` a US$ 0,15/s é o novo sweet spot para B-roll e shots abstratos de movimento.
+
+A função do Franklin é escolher entre eles por shot. Acertou em todos os cinco. **Esse é o ponto de multi-modelo — não "muitos modelos existem", e sim "o agente escolhe certo sem você nomear".**
+
+## O que dá pra fazer com esse padrão
+
+- **Trailer de lançamento de produto (60s, 720p)** — US$ 12–25
+- **Vídeo de onboarding em 3 idiomas** — US$ 25–45
+- **Explicativo semanal pra Substack** — US$ 8–15
+- **Ensaio de YouTube de 10 minutos** — US$ 50–100
+- **Capítulo de audiolivro** — US$ 0,60–1,20
+
+Antes, cada um exigia pasta de notas, várias abas de dashboard, piso de US$ 200/mês de assinaturas. Agora cada um é uma sessão `franklin` única com fatura linha a linha.
+
+## Em uma frase
+
+Se você já precisou produzir conteúdo de mídia mista e acabou pagando US$ 200/mês em assinaturas ou passando o fim de semana costurando cinco free tiers — o Franklin é a versão dessa rotina que parece uma ferramenta só. **A "ferramenta" é uma carteira que sabe gastar a si mesma rumo a um resultado.**
+
+US$ 11,97. Um terminal. Um agente. Um vídeo.
+
+Tente em algo seu.

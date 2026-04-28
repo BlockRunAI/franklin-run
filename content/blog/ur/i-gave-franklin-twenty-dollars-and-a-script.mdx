@@ -1,0 +1,158 @@
+---
+title: "میں نے Franklin کو 20 ڈالر اور ایک script دیا۔ تین گھنٹے بعد میرے پاس ایک ویڈیو تھی۔"
+description: "زیادہ تر agents code پر رک جاتے ہیں۔ Franklin نہیں رکتا — وہ script خریدتا ہے، gpt-image-2 سے storyboard بناتا ہے، Seedance پر clips render کرتا ہے، narration ریکارڈ کرتا ہے، اور موسیقی license کرتا ہے، سب ایک ہی wallet سے۔ یہاں مکمل bill اور وجہ کہ کوئی اور agent یہ کیوں نہیں بنا سکتا۔"
+slug: "i-gave-franklin-twenty-dollars-and-a-script"
+locale: "ur"
+pillar: "field-notes"
+publishedAt: "2026-03-23"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "i-gave-franklin-twenty-dollars-and-a-script"
+heroPrompt: "Banknote-style intaglio of a Victorian cinematographer."
+heroSeed: 9042088
+tags: ["franklin", "video-production", "field-notes", "case-study", "gpt-image-2", "seedance", "yopo"]
+featured: true
+num: "№ 04"
+cat: "فیلڈ نوٹس"
+---
+
+یہ Franklin کے بارے میں ویڈیو نہیں بننا تھی۔ یہ ایک internal experiment کے طور پر شروع ہوا: سب سے بھاری creative task جو ہم سوچ سکتے ہیں چنیں — narration، music اور original visuals کے ساتھ 60 سیکنڈ کی explainer ویڈیو — اور دیکھیں کیا ایک ہی agent اسے end-to-end بنا سکتا ہے۔ پابندیاں جان بوجھ کر سخت تھیں۔ **ایک terminal۔ ایک wallet۔ 20 ڈالر پر capped USDC balance۔** کوئی image-API account نہیں، ElevenLabs subscription نہیں، Seedance login نہیں، Soundstripe license نہیں، Adobe seat نہیں۔ Agent کو ہر tool خود ڈھونڈنا تھا، خود pay کرنا تھا، اور ship کرنا تھا۔
+
+تین گھنٹے بعد ویڈیو disk پر تھی۔ Wallet نے دکھایا کہ **$11.97** خرچ ہوئے۔ Receipt — ہر prompt، ہر model، ہر paid asset — ایک ہی text file تھی جو Franklin نے کام کرتے ہوئے emit کی۔ یہ وہی file ہے، ہر line کے پیچھے کی کہانی کے ساتھ۔
+
+یہ، میرے خیال میں، "wallet والا agent" کے slogan نہ ہونے کا واضح ترین ثبوت ہے۔ یہ AI tool جو مدد کرتا ہے اور AI tool جو کام مکمل کرتا ہے کے درمیان structural فرق ہے۔
+
+## Brief
+
+```text
+> غیر-crypto developer audience کے لیے 60 سیکنڈ کی explainer ویڈیو۔
+  موضوع: pay-per-call AI کیوں مستقبل ہے، USDC بطور rail۔
+  انداز: minimalist banknote aesthetic، ink پر سونا، آہستہ camera۔
+  Deliverables: final mp4، music، narration، تین keyframe stills۔
+  Budget: 20 USDC۔ Hard cap۔
+```
+
+میں نے Franklin میں صرف یہی ٹائپ کیا۔ اور کچھ نہیں۔
+
+## Receipt، ترتیب میں
+
+### Step 1 — Research اور outline
+
+```text
+✓ WebSearch  "USDC AI micropayments 2026"      $0.0008
+✓ WebFetch   3 articles + Franklin docs         $0.0003
+✓ Reason     outline 4 beats (nemotron, free)   $0.0000
+```
+
+**$0.0011۔** Planning مفت Nemotron پر۔ USDC صرف fact-check searches پر۔
+
+### Step 2 — Script polish
+
+```text
+✓ Compose   60s narration (claude-sonnet-4.6)   $0.0089
+```
+
+Franklin Sonnet پر escalate ہو گیا۔ **ایک سنٹ۔** 152 الفاظ، 60 سیکنڈ کی پر سکون آواز کے لیے بالکل صحیح۔
+
+### Step 3 — Storyboard keyframes (gpt-image-2)
+
+```text
+✓ ImageGen  3 banknote stills (gpt-image-2, hd) $0.3600
+```
+
+Franklin نے DALL-E 3 کی بجائے **`openai/gpt-image-2`** چنا — کیونکہ prompt نے image کے اندر "franklin · dispatch" text engrave کرنے کو کہا، اور image کے اندر text reliably render کرنے والا واحد model gpt-image-2 ہی ہے۔ Multilingual اور frame-to-frame character consistency بھی کلیدی۔ **تین HD frames کے $0.36۔** ایک reject کیا، regeneration +$0.12، charge سے پہلے surface کیا۔
+
+### Step 4 — Voice generation
+
+```text
+✓ Voice     ElevenLabs, voice "Adam" v2 (60s)   $0.4200
+```
+
+ElevenLabs account بھی نہیں، الگ API key بھی نہیں، الگ کارڈ بھی نہیں۔ Franklin اسی x402 micropayment rail سے ElevenLabs کو call کرتا ہے۔ **60 سیکنڈ $0.42۔** `.env` میں کوئی API key نہیں۔
+
+### Step 5 — Video clips (Seedance)
+
+```text
+✓ Video     bytedance/seedance-2.0-fast  3×10s  $4.5000
+✓ Video     bytedance/seedance-2.0       2×10s  $6.0000
+```
+
+**پانچ 10 سیکنڈ کے 720p video clips**، Seedance کے دو tiers میں mixed — تین `bytedance/seedance-2.0-fast` ($0.15/sec) پر abstract motion shots کے لیے، دو مکمل `bytedance/seedance-2.0` Pro ($0.30/sec) پر character-heavy shots کے لیے۔ **Video کل $10.50۔**
+
+Router نے صحیح کیا — صرف ان دو shots پر 2.0 Pro میں upgrade کیا جہاں character fidelity اہم تھی، اور تین shots پر 50% سستی -fast variant استعمال کی۔
+
+### Step 6 — Music
+
+```text
+✓ Audio     Stable Audio, 60s instrumental      $0.1800
+```
+
+18 سنٹ کی اصل instrumental۔ Franklin نے narration audio سے BPM حساب کیا پھر music order کیا۔
+
+### Step 7 — Assembly
+
+```text
+✓ Bash      ffmpeg compose final mp4            $0.0000
+✓ Bash      verify duration 60s                 $0.0000
+```
+
+Local FFmpeg، **مفت**۔ 59.4 سیکنڈ، 18.2 MB MP4، 720p، embedded subtitles۔
+
+### Total
+
+```text
+─────────────────────────────────────────────
+Session کل                            $11.97
+  research + script           $0.01
+  storyboard (gpt-image-2)    $0.36
+  narration (ElevenLabs)      $0.42
+  video (Seedance mix)       $10.50
+  music (Stable Audio)        $0.18
+  assembly                    $0.00
+Wallet باقی                            $8.03
+Hard cap respected ✓
+وقت                              3h 11m
+─────────────────────────────────────────────
+```
+
+## ہر دوسرا coding agent کہاں رکتا ہے
+
+Code۔ سب code پر رکتے ہیں۔ Cursor script لکھ سکتا ہے — voice کے لیے pay نہیں کر سکتا۔ Claude Code چار beats outline کر سکتا — storyboard generate نہیں کر سکتا۔ Copilot FFmpeg command suggest کر سکتا — music license نہیں کر سکتا۔ **ان کے پیچھے کوئی settlement layer نہیں۔**
+
+پرانے طریقے کا پانچ-step trap:
+
+1. ElevenLabs پر sign up۔ Card شامل کریں۔ $10 minimum top-up۔ API key `.env` میں copy۔
+2. Seedance reseller ڈھونڈیں (زیادہ تر براہ راست retail نہیں بیچتے)۔ Card۔ Key copy۔
+3. gpt-image-2 کے لیے OpenAI۔ Card۔ Org بنائیں۔ Image gen access verification کا انتظار کریں۔ Key copy۔
+4. Stable Audio پر sign up۔ Card۔ $9 credit pack خریدیں۔
+5. پانچ `.env` lines edit کریں۔ دعا کریں Slack میں paste نہ ہو۔
+
+شروع کرنے سے پہلے وقت: **45–90 منٹ**۔ Fixed monthly: **$54+**۔ **سب access tax۔**
+
+Franklin نے کل $11.97 دیے۔ صفر subscriptions۔ `.env` میں کوئی credentials نہیں۔ **Wallet ہی API key ہے۔**
+
+## کیوں gpt-image-2 + Seedance، خاص طور پر
+
+**gpt-image-2** پہلا generally-available image model ہے جو image کے اندر readable text بغیر spelling errors کے، کسی بھی زبان میں put کرتا ہے۔ Banknote engraving، packaging، posters، social cards، دو لسانی signage — یہ 10% improvement نہیں، "usable" اور "not" کا فرق ہے۔ ایک session میں frames کے درمیان character identity بھی stable رکھتا ہے۔ HD کے لیے $0.06–$0.12۔
+
+**Seedance 2.0** آج open market میں سب سے بہتر price/quality video model ہے۔ مکمل 2.0 Pro tier 720p video دیتا ہے جو 5× قیمت کے models سے ٹکر لیتا ہے۔ `-fast` variant $0.15/sec پر B-roll اور motion-heavy abstract shots کے لیے نیا sweet spot ہے۔
+
+Franklin کا کام per-shot ان دونوں کے درمیان چننا ہے۔ پانچوں shots صحیح چنے۔ **یہی multi-model کا اصل مطلب ہے — "بہت سے models موجود ہیں" نہیں، بلکہ "agent بغیر نام لیے صحیح چنتا ہے"۔**
+
+## اس pattern سے کیا کر سکتے ہیں
+
+- **Product launch trailer (60s, 720p)** — $12–$25
+- **تین-زبان onboarding video** — $25–$45
+- **Substack کے لیے ہفتہ وار explainer** — $8–$15
+- **10-منٹ YouTube essay** — $50–$100
+- **Audiobook chapter** — $0.60–$1.20
+
+پہلے ہر ایک کے لیے receipts کا folder، dashboards کے tabs، $200/month subscription floor چاہیے تھا۔ اب ہر ایک individual `franklin` session ہے itemized bill کے ساتھ۔
+
+## ایک جملے میں
+
+اگر آپ کو کبھی mixed-media content produce کرنا پڑا اور آپ یا تو $200/month subscriptions دے رہے تھے یا weekend پانچ free tiers جوڑنے میں گزار رہے تھے — Franklin اس workflow کا "ایک tool جیسا لگتا ہے" version ہے۔ **"Tool" وہ wallet ہے جو outcome کی طرف خود کو خرچ کرنا جانتا ہے۔**
+
+$11.97۔ ایک terminal۔ ایک agent۔ ایک ویڈیو۔
+
+اپنے کسی کام پر آزمائیں۔

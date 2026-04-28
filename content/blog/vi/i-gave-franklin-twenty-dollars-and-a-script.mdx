@@ -1,0 +1,158 @@
+---
+title: "Tôi đưa Franklin 20 đô và một kịch bản. Ba giờ sau tôi có một video."
+description: "Hầu hết agent dừng ở code. Franklin thì không — nó mua kịch bản, dựng storyboard bằng gpt-image-2, render clip trên Seedance, lồng tiếng narration, và license nhạc, tất cả từ một ví. Đây là chi tiết hóa đơn từng dòng và lý do không agent nào khác làm được."
+slug: "i-gave-franklin-twenty-dollars-and-a-script"
+locale: "vi"
+pillar: "field-notes"
+publishedAt: "2026-03-11"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "i-gave-franklin-twenty-dollars-and-a-script"
+heroPrompt: "Banknote-style intaglio of a Victorian cinematographer."
+heroSeed: 11042088
+tags: ["franklin", "video-production", "field-notes", "case-study", "gpt-image-2", "seedance", "yopo"]
+featured: true
+num: "№ 04"
+cat: "Ghi chú thực địa"
+---
+
+Đây không phải là một video về Franklin. Bắt đầu là thí nghiệm nội bộ: chọn nhiệm vụ sáng tạo nặng nhất chúng tôi nghĩ ra — video giải thích 60 giây có narration, có nhạc, có hình ảnh gốc — và xem một agent đơn lẻ có thực sự làm trọn được không. Ràng buộc cố tình khắt khe. **Một terminal. Một ví. Số dư USDC trần $20.** Không tài khoản image-API, không subscription ElevenLabs, không login Seedance, không license Soundstripe, không ghế Adobe. Agent phải tự tìm mọi công cụ, tự trả tiền và tự ship.
+
+Ba giờ sau video nằm trên ổ. Ví hiển thị tốn **$11.97**. Hóa đơn — mọi prompt, mọi mô hình, mọi tài sản trả phí — là một file text Franklin xuất ra trong lúc làm. Đây là file đó, kèm câu chuyện sau từng dòng.
+
+Theo tôi, đây là minh chứng rõ nhất cho việc "agent có ví" không phải khẩu hiệu. Đó là khác biệt cấu trúc giữa AI tool giúp bạn và AI tool kết thúc công việc.
+
+## Brief
+
+```text
+> Video giải thích 60 giây cho dev không phải dân crypto.
+  Chủ đề: tại sao AI pay-per-call là tương lai, USDC là đường ray.
+  Phong cách: banknote tối giản, vàng trên mực, máy quay chậm.
+  Bàn giao: mp4 cuối, nhạc, narration, 3 still keyframe.
+  Ngân sách: $20 USDC. Trần cứng.
+```
+
+Tôi gõ vào Franklin chỉ thế. Không hơn.
+
+## Hóa đơn, theo thứ tự
+
+### Bước 1 — Nghiên cứu và outline
+
+```text
+✓ WebSearch  "USDC AI micropayments 2026"      $0.0008
+✓ WebFetch   3 articles + Franklin docs         $0.0003
+✓ Reason     outline 4 beats (nemotron, free)   $0.0000
+```
+
+**$0.0011.** Lập kế hoạch trên Nemotron miễn phí. USDC chỉ tốn cho fact-check.
+
+### Bước 2 — Tinh chỉnh kịch bản
+
+```text
+✓ Compose   60s narration (claude-sonnet-4.6)   $0.0089
+```
+
+Franklin escalate lên Sonnet. **Một xu.** 152 từ, vừa khớp giọng đọc 60 giây bình tĩnh.
+
+### Bước 3 — Keyframe (gpt-image-2)
+
+```text
+✓ ImageGen  3 banknote stills (gpt-image-2, hd) $0.3600
+```
+
+Franklin chọn **`openai/gpt-image-2`** thay vì DALL-E 3 — vì prompt yêu cầu khắc text "franklin · dispatch" trong ảnh, và mô hình hình ảnh duy nhất render text trong ảnh đáng tin cậy hiện nay là gpt-image-2. Đa ngôn ngữ + nhất quán nhân vật giữa các frame cũng quan trọng. **Ba frame HD $0.36.** Từ chối một cái, regen +$0.12, hiển thị trước khi tính phí.
+
+### Bước 4 — Tạo giọng
+
+```text
+✓ Voice     ElevenLabs, voice "Adam" v2 (60s)   $0.4200
+```
+
+Không tài khoản ElevenLabs, không API key riêng, không thẻ riêng. Franklin gọi ElevenLabs qua cùng đường ray x402 micropayment. **60 giây $0.42.** Không API key trong `.env`.
+
+### Bước 5 — Clip video (Seedance)
+
+```text
+✓ Video     bytedance/seedance-2.0-fast  3×10s  $4.5000
+✓ Video     bytedance/seedance-2.0       2×10s  $6.0000
+```
+
+**Năm clip 10 giây 720p**, trộn qua hai tier Seedance — ba trên `bytedance/seedance-2.0-fast` ($0.15/giây) cho shot chuyển động trừu tượng, hai trên `bytedance/seedance-2.0` Pro đầy đủ ($0.30/giây) cho shot tập trung nhân vật. **Tổng video $10.50.**
+
+Router đúng — chỉ nâng cấp lên 2.0 Pro ở hai shot mà độ trung thực nhân vật quan trọng, dùng `-fast` rẻ hơn 50% ở ba shot mà chuyển động tự gánh frame.
+
+### Bước 6 — Nhạc
+
+```text
+✓ Audio     Stable Audio, 60s instrumental      $0.1800
+```
+
+18 xu nhạc instrumental gốc. Franklin tính BPM từ file audio narration trước khi đặt nhạc.
+
+### Bước 7 — Lắp ráp
+
+```text
+✓ Bash      ffmpeg compose final mp4            $0.0000
+✓ Bash      verify duration 60s                 $0.0000
+```
+
+FFmpeg cục bộ, **miễn phí**. 59.4 giây, MP4 18.2 MB, 720p, sub embedded.
+
+### Tổng
+
+```text
+─────────────────────────────────────────────
+Tổng phiên                            $11.97
+  nghiên cứu + kịch bản       $0.01
+  keyframe (gpt-image-2)      $0.36
+  narration (ElevenLabs)      $0.42
+  video (mix Seedance)       $10.50
+  nhạc (Stable Audio)         $0.18
+  lắp ráp                     $0.00
+Số dư ví                              $8.03
+Trần cứng được tôn trọng ✓
+Thời gian                          3h 11m
+─────────────────────────────────────────────
+```
+
+## Mọi coding agent khác dừng ở đâu
+
+Code. Cursor có thể viết kịch bản — không trả tiền giọng. Claude Code có thể outline bốn beat — không tạo storyboard. Copilot có thể gợi ý lệnh FFmpeg — không license nhạc. **Phía sau không có lớp settlement.**
+
+Năm bước bẫy theo cách cũ:
+
+1. Đăng ký ElevenLabs, thẻ, top-up tối thiểu $10, copy key vào `.env`.
+2. Tìm reseller Seedance (hiếm bán trực tiếp), thẻ, copy key.
+3. OpenAI cho gpt-image-2, thẻ, tạo org, chờ duyệt access image gen, copy key.
+4. Đăng ký Stable Audio, thẻ, mua gói $9 credit.
+5. Sửa năm dòng `.env`, cầu nguyện không paste vào Slack.
+
+Thời gian trước khi bắt đầu: **45–90 phút**. Phí cố định hàng tháng: **$54+**. **Tất cả thuế truy cập.**
+
+Franklin: tổng $11.97. Không subscription. Không credentials trong `.env`. **Ví là API key.**
+
+## Tại sao gpt-image-2 + Seedance, cụ thể
+
+**gpt-image-2** là mô hình hình ảnh phổ biến đầu tiên đặt text đọc được vào trong ảnh không lỗi chính tả, ở bất kỳ ngôn ngữ nào. Cho mọi thứ có khắc tiền giấy, bao bì, poster, social card, biển song ngữ — không phải cải tiến 10%, là khác biệt giữa dùng được và không. Giữ identity nhân vật ổn định giữa frame trong cùng phiên. HD: $0.06–$0.12.
+
+**Seedance 2.0** hiện là mô hình video tốt nhất giá/chất lượng trên thị trường mở. Tier 2.0 Pro đầy đủ ra video 720p cạnh tranh với mô hình giá 5× cao hơn. Variant `-fast` $0.15/giây là sweet spot mới cho B-roll và shot chuyển động trừu tượng.
+
+Việc của Franklin là chọn giữa chúng cho từng shot. Năm shot đều đúng. **Đây là cốt lõi multi-model — không phải "nhiều mô hình tồn tại", mà "agent chọn đúng mà không cần bạn nêu tên".**
+
+## Bạn có thể làm gì với pattern này
+
+- **Trailer ra mắt sản phẩm (60s, 720p)** — $12–$25
+- **Video onboarding ba ngôn ngữ** — $25–$45
+- **Bài giải thích hàng tuần cho Substack** — $8–$15
+- **Bài luận YouTube 10 phút** — $50–$100
+- **Chương sách nói** — $0.60–$1.20
+
+Trước đây mỗi cái cần thư mục biên lai, tab dashboard, sàn subscription $200/tháng. Giờ mỗi cái là một phiên `franklin` đơn lẻ với hóa đơn chi tiết.
+
+## Một câu
+
+Nếu bạn từng cần sản xuất nội dung trộn media và rốt cuộc trả $200/tháng subscription hoặc mất cuối tuần ráp năm free tier — Franklin là phiên bản workflow đó cảm giác như một công cụ. **"Công cụ" là cái ví biết tự tiêu mình hướng tới kết quả.**
+
+$11.97. Một terminal. Một agent. Một video.
+
+Thử với điều của riêng bạn.

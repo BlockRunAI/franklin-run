@@ -1,0 +1,129 @@
+---
+title: "मल्टी-मॉडल या मौत: आपका coding agent एक vendor पर बेट क्यों नहीं लगाना चाहिए"
+description: "Claude Code ने एक user की weekly limit का 27% retry loops में जला दिया, output शून्य। Cursor घंटों तक डाउन रहता है। Copilot Grok तक नहीं पहुँच सकता। Franklin एक open-source agent है जो 55 models में route करता है, बिना signup के मुफ़्त शुरू होता है, और जब कुछ deliver नहीं होता तब charging रोक देता है।"
+slug: "multi-model-or-die"
+locale: "hi"
+pillar: "multi-model"
+publishedAt: "2026-03-14"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "multi-model-or-die"
+heroPrompt: "Banknote allegory of Multitudes."
+heroSeed: 9042099
+tags: ["franklin", "multi-model", "claude-code", "smart-router", "yopo", "open-source"]
+featured: true
+num: "№ 02"
+cat: "आर्किटेक्चर"
+---
+
+इस हफ़्ते Claude Code issue tracker पर सबसे ज़्यादा upvote मिली शिकायत एक ही वाक्य के versions हैं: **"मैंने retries के लिए पैसे दिए जिनसे कुछ नहीं मिला।"**
+
+[Issue #54143](https://github.com/anthropics/claude-code/issues/54143): एक user के `codex:resume` session ने 12 घंटों में weekly limit का 27% जला दिया, शून्य progress। [Issue #54177](https://github.com/anthropics/claude-code/issues/54177): "Usage limit reached" जब usage 0% / 5%। [Issue #54190](https://github.com/anthropics/claude-code/issues/54190): API timeout, token deduct पर completion नहीं। [Issue #54146](https://github.com/anthropics/claude-code/issues/54146): CLI बहुत साफ़ instructions नहीं मानता।
+
+ये random bugs नहीं हैं। यह **single-vendor coding agents का structural failure mode** है: जब आपके tool के पीछे एक model और एक billing relationship है, किसी भी system में degradation सीधे उस developer पर गिरती है जो ship करना चाहता है।
+
+Franklin उल्टी premise पर बना है। **मल्टी-मॉडल Franklin के roadmap का feature नहीं है। यह architecture है।** इस premise पर बाक़ी चार — free tier, outcome-based pricing, vendor-outage immunity, signup-less geographic reach — सिर्फ़ संभव नहीं, अपरिहार्य हो जाते हैं।
+
+## "Single-vendor" के तीन taxes
+
+**Vendor-outage tax.** Anthropic में दिक़्क़त आते ही Claude Code रुक जाता है। "Next model" बटन नहीं। Cursor मार्च में 6 घंटे down था।
+
+**Model-drift tax.** January में जो Sonnet तेज़ था वही April में सुस्त लगता है। Anthropic बदलाव roll out करता है।
+
+**Pricing-power tax.** एक ही vendor agent और model — vendor price ceiling तय करता है। Retries पर charge, low usage पर throttle, fix सिर्फ़ "weekly limit refill होने का इंतज़ार।"
+
+मल्टी-मॉडल agent तीनों taxes हटा देता है। Anthropic degraded — Franklin Grok या Gemini पर route करके call पूरा करता है। **Agent अब किसी एक vendor के अच्छे दिन पर bet नहीं लगा रहा।**
+
+## Smart Router, ठोस संख्या में
+
+Franklin का Smart Router **20 लाख वास्तविक requests** पर trained है। हर prompt को classify करता है — coding, trading, reasoning, research — और उस class के लिए सबसे अच्छे quality-cost ratio वाला model चुनता है:
+
+```text
+> refactor this auth module to use JWT
+  CODING kimi-k2.6  ·  12.4K in / 2.1K out  ·  $0.0023  saved 84%
+
+> what's BTC outlook for the week?
+  TRADING grok-4-1-fast-reasoning  ·  8.2K in / 1.8K out  ·  $0.0008  saved 95%
+
+> prove this algorithm is O(n log n)
+  REASONING claude-sonnet-4.6  ·  15.1K in / 3.4K out  ·  $0.0312  premium tier
+```
+
+Session-pin करने योग्य चार profiles:
+
+| Profile | रणनीति | कब |
+|---|---|---|
+| `auto` | सर्वोत्तम quality-cost ratio | Default |
+| `eco` | अच्छी quality में सबसे सस्ता | Bulk |
+| `premium` | सर्वोच्च quality | Critical |
+| `free` | केवल NVIDIA + Qwen3 | Wallet 0 |
+
+## "Free" tier नहीं, default है
+
+ज़्यादातर AI tools की "free tier" पाँच-दिन का trial है card के साथ। Franklin की free tier अलग है। **NVIDIA Nemotron और Qwen3 Coder** — स्रोत पर genuinely free:
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+# Free models तुरंत काम करते हैं। Wallet, email, card के बिना।
+```
+
+Frontier models चाहिए तब wallet fund करते हैं। **$5 USDC gateway के सभी paid models और tools unlock करता है।** बिना subscription, बिना minimum।
+
+## YOPO: "मैंने retries के लिए पैसे दिए" का line-item जवाब
+
+Franklin के pricing model का नाम है — **YOPO, You Only Pay Outcome।** काम करता है क्योंकि settlement layer (USDC पर x402 micropayments) per-call, on-chain, zero chargeback risk के साथ settle करता है। Call fail हुई — merchant payment sign नहीं करता। Wallet debit नहीं होता।
+
+तीन परिणाम:
+
+1. **No subscriptions.** एक हफ़्ते $0.50, अगले $50।
+2. **No rate limits.** कोई artificial cap नहीं।
+3. **No overdraft.** Wallet balance ही सख़्त सीमा है।
+
+$1 की वास्तविक क्षमता:
+
+| संसाधन | $1 के लिए |
+|---|---|
+| GPT-4o input tokens | ~4 lakh |
+| DeepSeek tokens | ~70 lakh |
+| Gemini 2.5 Flash tokens | ~1.3 करोड़ |
+| DALL-E 3 images | ~20 |
+| Exa neural searches | ~40 |
+| NVIDIA GPT-OSS / Qwen3 | असीमित (free) |
+
+## तुलना
+
+|  | Coding agents | Editor IDEs | Chatbots | **Franklin** |
+|---|---|---|---|---|
+| Code लिखता | हाँ | हाँ | आंशिक | हाँ |
+| आपके लिए पैसे ख़र्चता | नहीं | नहीं | नहीं | **हाँ — USDC, x402** |
+| Data/APIs/images ख़रीदता | नहीं | नहीं | नहीं | **हाँ — 55+ APIs** |
+| Best model per task | नहीं | नहीं | नहीं | **हाँ — 55+ models** |
+| Pricing | Subscription | Subscription | Subscription | **YOPO** |
+| Monthly fee | $20–200 | $20–40 | $20+ | **$0** |
+| Rate-limited | हाँ | हाँ | हाँ | **नहीं** |
+| Provider down पर काम करता | नहीं | नहीं | नहीं | **हाँ — किसी और पर route** |
+| Identity | vendor account | vendor account | account/email | **wallet, no signup** |
+| Free start, no KYC | नहीं | नहीं | नहीं | **हाँ** |
+| Source | closed | closed | closed | **Apache 2.0** |
+
+## कल आप क्या करेंगे
+
+अगर आप Claude Code user हैं और session ने retries पर budget जलाया है — मल्टी-मॉडल alternative दो commands है:
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+```
+
+Free tier में NVIDIA Nemotron और Qwen3 Coder, बिना card, बिना signup। एक task के लिए Sonnet pin करना — $5 fund करें और `--profile premium` use करें। Provider down — router अगले पर fail-over।
+
+[पूरा source](https://github.com/blockrunai/franklin) GitHub पर। [Smart router docs](/docs/user-guide/smart-router)।
+
+Franklin का दांव सीधा: **single-vendor coding agents transitional product हैं।** Route करने वाले agents जीतेंगे। Lock करने वाले हारेंगे। एकमात्र सवाल: कब।
+
+अगर इस हफ़्ते आपकी weekly limit फिर जली — वह "कब" अभी है।
+
+---
+
+_Franklin open-source है (Apache 2.0)। 386 stars, 5M+ requests, 50+ देश, OpenClaw integrations और word-of-mouth से organic growth। हम जिन model providers पर route करते हैं उनसे investment नहीं लेते।_

@@ -1,0 +1,98 @@
+---
+title: "Yapay zeka ajanınız faturalarını kendisi ödemeli"
+description: "Abonelikler değişken olanı sabit fiyatlandırır. API anahtarları kimliği satıcıya bağlar. Çözüm daha iyi bir dashboard değil — ajana kendi cüzdanını, sabit limitini ve banka hesabının anahtarlarını vermek."
+slug: "agent-with-a-wallet"
+locale: "tr"
+pillar: "agent-wallet"
+publishedAt: "2026-02-19"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "agent-with-a-wallet"
+heroPrompt: "Banknote portrait of a fox in 19th-century frock coat holding bills."
+heroSeed: 13042042
+tags: ["franklin", "ajan-cüzdan", "x402", "usdc", "özerk-ajanlar"]
+featured: true
+lead: true
+num: "№ 01"
+cat: "Tez"
+---
+
+Para harcayabilen bir ajan ilk kez kurduğunuzda, iki şey aynı anda olur. İlki küçük: ajan iki dakikada bir izin istemeyi bırakır. İkincisi büyük: ajan yararlı bir anlamda _sizin_ olmayı bırakır ve _kendisi_ olmaya başlar — dünyaya çıkan, ödeyen, yeniden deneyen, ihtiyacı olan aracı alıp cevapla geri dönen bir şey.
+
+Asıl sattığımız o ikinci şey. Cüzdan değil. Cüzdan bir araçtır. Sattığımız **sabit limitle özerklik** — chatbot ile çalışan arasındaki fark.
+
+## Sabit fiyatlı abonelik aslında ne için ücret alır
+
+20$/ay'lık herhangi bir AI aracını alın ve geçen hafta nasıl kullandığınıza bakın. Üç gün hiç açmadınız. Bir gün uzun bir agent loop çalıştırdınız ki dürüst fiyatlandırılsa sadece inference için altı dolar tutardı. Platform yutmuş çünkü diğer sekiz kullanıcı imleç yanıp sönmesini izlemek için 20$ ödüyordu.
+
+Abonelik bir **havuzlanmış-risk ürünü**dür. Ağır kullanıcılar hafif kullanıcılar tarafından sübvanse edilir. Netflix için işe yarıyor çünkü izleme sınırlı — günde ancak şu kadar bölüm izleyebilirsiniz, dağıtım maliyeti 20$ faturasında yuvarlama hatası kadar cent. Özerk ajanlar için işe yaramıyor:
+
+- bir araştırma loop'u çalıştıran bir kullanıcı iki saatte aylık ödediğinden fazlasını yakabilir
+- platformun tek savunması rate limit, ve en kötü anda devreye girer
+- sürdürülebilir denge **herkesin geriletilmesi** — fiyat platformaya "adil" gelene kadar
+
+Bunu hissetmişsinizdir. Ocak'ta keskin olan Sonnet, Nisan'da kütleşmiş hissettirir. Geçen hafta görevleri tamamlayan ajan bu hafta yarıda durup "yeni sohbette devam edin" diyor. Bu bug değil. Bu, tasarlandığı şekilde çalışan matematik.
+
+## Cüzdanın değiştirdiği şey
+
+Ajana kendi cüzdanını verin — gözetlemek zorunda olduğunuz bir kurumsal kart değil, gerçek, küçük, on-chain bir bakiye ki ajan kontrol etsin — ve tüm pazarlık ters döner.
+
+Hizmete **erişim süresi** için ödeme yapmayı bırakırsınız. **Ölçülebilir sonuçlar** için ödeme yapmaya başlarsınız ki bedeli hak eden. Ajan diğer kullanıcılarla paylaşılan rate-limit havuzu için yarışmayı bırakır. Kendisi öder, cente kadar, her çağrıda. Sağlayıcının her modeli köreltmesi gerekmez ve sonunda ağır görevi gönülsüzce sunmadan sunabilir.
+
+Bunu somutlaştırmak için Franklin'i yaptık. Franklin bir USDC bakiyesi tutar — genellikle 5$, 20$, 100$, ne kadar yüklerseniz — ve 55+ model, görüntü üretimi, web arama, trading verisi ve araçlarda özerk olarak harcar. Her çağrı USDC'de mutabakat edilen [x402 mikroödeme](/docs/user-guide/smart-router). API anahtarı yok. Aylık minimum yok. Cüzdan boşalana kadar ajan çalışır, sonra durur ve doldurmak isteyip istemediğinizi sorar. Hepsi bu.
+
+<Callout type="tip" title="Beş saniyelik test">
+Eğer AI aracınızın hata modunu "Continue'ye basana kadar çalışmayı bıraktı" olarak tanımlayabiliyorsanız, sizi rasyonlayan sabit-fiyatlı bir ürün için ödeme yapıyorsunuz. Cüzdan-destekli bir ajan parası bittiğinde başarısız olur — bu dürüst, açık ve düzeltmesi önemsiz: daha fazla USDC yükleyin.
+</Callout>
+
+## "Çağrı başına ödeme" pitch değildir
+
+Teknik olarak doğru versiyon "x402 üzerinden stablecoin'le mutabakat edilen pay-per-call API'lar." Doğru, satılmıyor.
+
+Asıl pitch — birinin omuz silkip ardından "dur, aslında" demesini sağlayan — daha kısa:
+
+> Kredilere takılma. 20$ yükle. İşine git. Daha lazım olduğunda Franklin söyler.
+
+Bu, public-key cryptography'nin elli yıl önce yaptığı aynı numara. Matematikçiler RSA ve Diffie-Hellman'ı buldular ve dünyaya sattıkları şey adres çubuğundaki yeşil kilitti. Kimse public-key cryptography satın almıyor. İnsanlar "bu site güvenli"yi satın alıyor. Stripe'ı bir kuşak şirketi yapan şey API'si değildi. Yedi satır kod ve "gerisini biz hallederiz" cümlesiydi.
+
+Cüzdan yeşil kilittir. Sattığımız şey "işine git."
+
+## Bununla pratikte ne yaparsınız
+
+Cüzdanlı-ajan deseni, sabit-fiyat modellerinde yapısal olarak imkansız olan dört şeyi açar:
+
+### 1. Ajan doğru aracı seçer — pahalı olanı dahil
+
+Bir sonraki çağrı gerçek paraya mal olduğunda, ajan çağrının paraya **değer** olup olmadığını düşünmek zorunda kalır. Franklin'in smart router'ı her istekte bunu yapar — prompt'a bakar, makul yanıt verebilen en ucuz modeli seçer ve sadece ucuz olan başarısız olacaksa frontier'a yükselir. Her zaman-Opus'a karşı tasarrufu izleriz; tipik bir agentic haftada: %60-80.
+
+Abonelikte bu olmaz. Aboneliğin tüm noktası fiyatın nasıl kullanırsanız kullanın aynı kalmasıdır. Tasarruf etmek için sinyal yok. Yani sabit-fiyatlı ajanlar ya en ucuz modele varsayılır (cevapların neden ince olduğunu merak edersiniz) ya da en pahalı olana (platform sizi yarıda boğar).
+
+### 2. Rate limit'e takılmayan uzun loop'lar
+
+Özerk loop'lar — scraping, özetleme, retry, branching — bir modelle yapabileceğiniz en yüksek değerli ve sabit-fiyatlı planla en kötü uyumlu şeydir. Araştırma loop'unun ikinci saatinde kesilirdiniz. Cüzdanla, sadece çalışırsınız.
+
+### 3. Sadece inference değil, veri satın alma
+
+Ödeme yapabildiğinizde, satın alınabilecek evren LLM token'ların ötesine geçer. Gerçek zamanlı piyasa verisi, on-chain analytics, görüntü üretimi, video, web araması. Franklin hepsini aynı primitif olarak ele alır: [fiyat etiketli bir araç](/docs/user-guide/tools). Ajan yararlı olduğunda çağırır. Satır kalemini görürsünüz.
+
+### 4. Gerçekten anlam ifade eden görev başına muhasebe
+
+Ajanı çalıştırdınız. 0,43$ tuttu. "Buna değdi mi?"yi cevaplayabilirsiniz. Takvim ayında yayılma yok, "param kurtuldu mu" merakı yok, ay sonu sürprizi yok. Sıkıcı geliyor. Ama bir finans departmanı olan şirkette ajan dağıtmaya çalışan herkes bunu en çok talep edilen özellik olarak söyler.
+
+## "Para hakkında düşünmek istemiyorum"
+
+O zaman düşünme. Ayda bir kez 20$ yüklersin, ajan çalışır, sen düşünmezsin. Cüzdan **maliyetle ilgilenmeye zorlamaz**; istediğinde ilgilenmene **izin verir**. Bu kesin olarak abonelikten daha büyük bir üründür, ki o sadece umursamamana izin verir.
+
+Diğer versiyon — API anahtarlı ajanlar — yanlış şeyle ilgilenmeye zorlar. Hangi sağlayıcının hangi anahtarının hangi env dosyasında olduğuyla, hangi anahtarın döndürüldüğüyle, hangi dashboard'a girip hangi ön ödemeli bakiyeyi yenilediğinle. USDC tutan tek bir cüzdanla, izleyeceğin bir sayı ve doldurman bir sayı vardır.
+
+## Üzerine bahis koyduğumuz değişmez
+
+Sabit-fiyatlı AI bir geçiş ürünüdür. Üç yıl önce kripto rayları hazır değildi ve kredi kartları 0,001¢'lik bir inference çağrısını mutabakat etmek için fazla kabaydı. Şimdi hazırlar. x402 cent'leri — ve cent'in onda birlerini — yerel olarak, on-chain, chargeback riski olmadan ve platform-aracı rasyonlama olmadan mutabakat eder.
+
+Raylar çalıştığında, her ajan sonunda kendi bakiyesini tutar. Kripto havalı olduğu için değil, ideolojik olarak doğru olduğu için değil, ama **sabit-fiyat-rasyonlanmış ajanlar bakiye-destekli ajanlara — kalitede, özerklikte ve gerçekten ne satın aldığınız konusundaki dürüstlükte — kaybeder.**
+
+Cüzdan ürün değildir. Ürün ajandır — işini yapma özgürlüğüyle. Cüzdan, ajanın sonunda bunu yapabilmesini sağlayan şeydir.
+
+---
+
+Denemek isterseniz, [kurulum iki komut](/docs/getting-started/installation) ve cüzdan kendiliğinden oluşturulur. Kimsenin rate-limit etmediği bir ajanın nasıl hissettirdiğini görmek için 5$ yükleyin. Genellikle bu kadarı yeterli.

@@ -1,0 +1,129 @@
+---
+title: "Çoklu model ya da ölüm: kodlama ajanınız neden tek satıcıya bahis koymamalı"
+description: "Claude Code bir kullanıcının haftalık limitinin %27'sini sıfır çıktıyla retry döngülerinde yaktı. Cursor saatlerce kapanır. Copilot Grok'a ulaşamaz. Franklin, 55 model arasında yönlendiren, kayıt olmadan bedava başlayan ve teslim edilecek hiçbir şey kalmadığı an ücretlendirmeyi durduran açık kaynaklı ajandır."
+slug: "multi-model-or-die"
+locale: "tr"
+pillar: "multi-model"
+publishedAt: "2026-02-20"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "multi-model-or-die"
+heroPrompt: "Banknote allegory of Multitudes."
+heroSeed: 13042099
+tags: ["franklin", "çoklu-model", "claude-code", "smart-router", "yopo", "açık-kaynak"]
+featured: true
+num: "№ 02"
+cat: "Mimari"
+---
+
+Bu hafta Claude Code issue tracker'ında en çok beğeni alan şikayet aynı cümlenin varyasyonları: **"Hiçbir şey üretmeyen retry'lar için ödedim."**
+
+[Issue #54143](https://github.com/anthropics/claude-code/issues/54143): bir kullanıcının `codex:resume` oturumu 12 saatte haftalık limitin %27'sini sıfır ilerleme ile yaktı. [Issue #54177](https://github.com/anthropics/claude-code/issues/54177): kullanım %0/%5 iken "limit aşıldı". [Issue #54190](https://github.com/anthropics/claude-code/issues/54190): API timeout, token tamamlanmadan düşürüldü. [Issue #54146](https://github.com/anthropics/claude-code/issues/54146): CLI son derece açık talimatları takip etmiyor.
+
+Bunlar rastgele hatalar değil. Bu, **tek satıcılı kodlama ajanlarının yapısal başarısızlık modu**: aracınızın arkasında tam olarak bir model ve tam olarak bir faturalama ilişkisi olduğunda, sistemlerden birinin her bozulması doğrudan teslimat yapmaya çalışan geliştiriciye düşer.
+
+Franklin tam tersi öncülde inşa edildi. **Çoklu model Franklin yol haritasında bir özellik değil. Mimari.** Bu öncülde, diğer dört şey — bedava katman, sonuç bazlı fiyatlandırma, satıcı kesintisi bağışıklığı, kayıtsız coğrafi erişim — yalnızca mümkün değil, kaçınılmaz.
+
+## "Tek satıcı"nın üç vergisi
+
+**Satıcı kesinti vergisi.** Anthropic hıçkırınca Claude Code durur. "Sonraki model" düğmesi yok. Cursor Mart'ta altı saat kapalıydı.
+
+**Model sapma vergisi.** Ocak'ta keskin olan Sonnet, Nisan'da körleşmiş hisseder. Anthropic değişiklik yayınlar.
+
+**Fiyatlandırma gücü vergisi.** Ajan ve model aynı satıcıdan gelirse, satıcı fiyat tavanını belirler. Retry'ları faturalayabilir, düşük kullanımda throttle edebilir, tek düzeltme "haftalık limit yenilenene kadar bekle"dir.
+
+Çoklu model ajan üçünü de kaldırır. Anthropic bozulduğunda, Franklin Grok'a veya Gemini'ye yönlendirir ve çağrıyı tamamlar. **Ajan artık herhangi bir tek satıcının iyi gününe bahis koymuyor.**
+
+## Smart Router somut sayılarda
+
+Franklin'in Smart Router'ı **2 milyon gerçek istek** üzerine eğitildi. Her promptu sınıflandırır ve o sınıf için en iyi kalite-maliyet oranına sahip modeli seçer:
+
+```text
+> refactor this auth module to use JWT
+  CODING kimi-k2.6  ·  12.4K in / 2.1K out  ·  $0.0023  saved 84%
+
+> what's BTC outlook for the week?
+  TRADING grok-4-1-fast-reasoning  ·  8.2K in / 1.8K out  ·  $0.0008  saved 95%
+
+> prove this algorithm is O(n log n)
+  REASONING claude-sonnet-4.6  ·  15.1K in / 3.4K out  ·  $0.0312  premium tier
+```
+
+Oturuma sabitlenebilir dört profil:
+
+| Profil | Strateji | Ne zaman |
+|---|---|---|
+| `auto` | En iyi kalite-maliyet | Varsayılan |
+| `eco` | Kalitesi makul en ucuz | Hacim |
+| `premium` | En yüksek kalite | Kritik |
+| `free` | Yalnız NVIDIA + Qwen3 | Bakiye 0 |
+
+## "Bedava" bir katman değil — varsayılan
+
+Çoğu AI aracında "bedava katman" karta bağlı 5 günlük denemedir. Franklin'inki farklı. **NVIDIA Nemotron ve Qwen3 Coder** kullanır — kaynağında gerçekten bedava:
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+# bedava modeller hemen çalışır. Cüzdan, e-posta, kart yok.
+```
+
+Cüzdanı yalnızca öncü modeller istediğinizde fonlarsınız. **$5 USDC, geçidin tüm ücretli modellerini ve araçlarını açar.** Abonelik yok, minimum yok.
+
+## YOPO: "hiçbir şey üretmeyen retry'lar için ödedim"in satır-bazlı cevabı
+
+Franklin'in fiyatlandırma modelinin adı var — **YOPO, You Only Pay Outcome.** Çalışır çünkü ödeme katmanı (USDC üzerinde x402 mikro ödemeler) çağrı bazlı, on-chain, sıfır chargeback riski ile mutabakat sağlar. Çağrı başarısızsa, merchant ödemeyi imzalamaz. Cüzdandan düşülmez.
+
+Üç sonuç:
+
+1. **Abonelik yok.** Bir hafta $0,50, sonraki $50.
+2. **Rate limit yok.** Yapay tavan yok.
+3. **Overdraft yok.** Cüzdan bakiyesi sert sınırdır.
+
+$1'lık gerçek kapasite:
+
+| Kaynak | $1 için |
+|---|---|
+| GPT-4o input token | ~400K |
+| DeepSeek token | ~7M |
+| Gemini 2.5 Flash token | ~13M |
+| DALL-E 3 görüntü | ~20 |
+| Exa nöral arama | ~40 |
+| NVIDIA GPT-OSS / Qwen3 | sınırsız (bedava) |
+
+## Yan yana karşılaştırma
+
+|  | Kod ajanları | Editor IDE | Chatbot | **Franklin** |
+|---|---|---|---|---|
+| Kod yazar | evet | evet | kısmen | evet |
+| Sizin için para harcar | hayır | hayır | hayır | **evet — USDC, x402** |
+| Veri/API/görüntü satın alır | hayır | hayır | hayır | **evet — 55+ API** |
+| Görev başına en iyi model | hayır | hayır | hayır | **evet — 55+ model** |
+| Fiyat modeli | abonelik | abonelik | abonelik | **YOPO** |
+| Aylık ücret | $20–200 | $20–40 | $20+ | **$0** |
+| Rate-limit | evet | evet | evet | **hayır** |
+| Sağlayıcı kapalıyken çalışır | hayır | hayır | hayır | **evet — başkasına yönlendirir** |
+| Kimlik | satıcı hesabı | satıcı hesabı | hesap/email | **cüzdan, kayıtsız** |
+| Bedava başla, KYC yok | hayır | hayır | hayır | **evet** |
+| Kaynak | kapalı | kapalı | kapalı | **Apache 2.0** |
+
+## Yarın ne yapıyorsunuz
+
+Şu anda Claude Code kullanıyorsanız ve bir oturum bütçeyi retry'larda yaktıysa — çoklu model alternatifi iki komut:
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+```
+
+Bedava katmanda NVIDIA Nemotron ve Qwen3 Coder, kart yok, kayıt yok. Bir görev için Sonnet'i sabitlemek isteyin — $5 fonlayın ve `--profile premium` kullanın. Sağlayıcı kapandığında — router bir sonrakine fail-over yapar.
+
+[Tam kaynak](https://github.com/blockrunai/franklin) GitHub'da. [Smart router dokümanları](/docs/user-guide/smart-router).
+
+Franklin'in bahisi düz: **tek satıcılı kod ajanları geçiş ürünü.** Yönlendiren ajanlar kazanacak. Tek soru: ne zaman.
+
+Bu hafta haftalık limitiniz tekrar yandıysa — o "ne zaman" işte şimdi.
+
+---
+
+_Franklin açık kaynak (Apache 2.0). 386 yıldız, 5M+ istek, 50+ ülke, OpenClaw entegrasyonları ve ağızdan ağıza ile organik büyüme. Yönlendirdiğimiz model sağlayıcılarından yatırım almıyoruz._

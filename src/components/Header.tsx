@@ -4,21 +4,34 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { GitHubIcon } from "./icons";
+import { cdnUrl } from "@/lib/cdn";
 
-export function Header() {
+interface HeaderProps {
+  variant?: "ink" | "paper";
+}
+
+export function Header({ variant = "ink" }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  // On blog/docs pages, anchor links must resolve against the homepage,
+  // not against the current URL.
+  const offHome = variant === "paper";
+  const featuresHref = offHome ? "/#features" : "#features";
+  const compareHref = offHome ? "/#compare" : "#compare";
+  const blogHref = offHome ? "/blog" : "#blog";
+  const getStartedHref = offHome ? "/#get-started" : "#get-started";
 
   return (
-    <header className="site-header">
+    <header className={`site-header${variant === "paper" ? " site-header-paper" : ""}`}>
       <div className="hdr-inner">
         <Link href="/" className="logo">
           <div className="logo-ring">
             <Image
-              src="/images/franklin-portrait.jpg"
+              src={cdnUrl("/images/franklin-portrait.jpg")}
               alt="Franklin"
               width={36}
               height={36}
               priority
+              unoptimized
             />
           </div>
           <div>
@@ -28,13 +41,13 @@ export function Header() {
         </Link>
 
         <nav className="nav-btns" aria-label="Primary">
-          <a className="nav-link" href="#features">
+          <a className="nav-link" href={featuresHref}>
             Features
           </a>
-          <a className="nav-link" href="#compare">
+          <a className="nav-link" href={compareHref}>
             Compare
           </a>
-          <a className="nav-link" href="#blog">
+          <a className="nav-link" href={blogHref}>
             Blog
           </a>
           <a className="nav-link" href="/docs">
@@ -49,7 +62,7 @@ export function Header() {
             <GitHubIcon className="h-3.5 w-3.5" />
             GitHub
           </a>
-          <a className="btn-primary" href="#get-started">
+          <a className="btn-primary" href={getStartedHref}>
             Get Started
           </a>
         </nav>
@@ -77,9 +90,9 @@ export function Header() {
 
       {menuOpen && (
         <div className="mobile-menu">
-          <a href="#features" onClick={() => setMenuOpen(false)}>Features</a>
-          <a href="#compare" onClick={() => setMenuOpen(false)}>Compare</a>
-          <a href="#blog" onClick={() => setMenuOpen(false)}>Blog</a>
+          <a href={featuresHref} onClick={() => setMenuOpen(false)}>Features</a>
+          <a href={compareHref} onClick={() => setMenuOpen(false)}>Compare</a>
+          <a href={blogHref} onClick={() => setMenuOpen(false)}>Blog</a>
           <a href="/docs" onClick={() => setMenuOpen(false)}>
             Docs
           </a>
@@ -89,7 +102,7 @@ export function Header() {
           >
             GitHub
           </a>
-          <a href="#get-started" onClick={() => setMenuOpen(false)} className="mobile-menu-cta">
+          <a href={getStartedHref} onClick={() => setMenuOpen(false)} className="mobile-menu-cta">
             Get Started
           </a>
         </div>

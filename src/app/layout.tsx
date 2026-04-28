@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Instrument_Serif, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
+import { cdnUrl } from "@/lib/cdn";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,7 +62,7 @@ export const metadata: Metadata = {
     siteName: "Franklin",
     images: [
       {
-        url: "/images/og-image.png",
+        url: cdnUrl("/images/og-image.png"),
         width: 1200,
         height: 630,
         alt: "Franklin — The AI agent with a wallet",
@@ -75,7 +76,7 @@ export const metadata: Metadata = {
     title: "Franklin — The AI Agent with a Wallet",
     description:
       "The AI agent with a wallet. 55+ models, trading data, image gen — it holds your USDC and spends it for you. Open source.",
-    images: ["/images/og-image.png"],
+    images: [cdnUrl("/images/og-image.png")],
   },
   robots: {
     index: true,
@@ -90,11 +91,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
+      { url: cdnUrl("/favicon.svg"), type: "image/svg+xml" },
+      { url: cdnUrl("/favicon.png"), type: "image/png", sizes: "32x32" },
     ],
-    shortcut: "/favicon.png",
-    apple: "/apple-touch-icon.png",
+    shortcut: cdnUrl("/favicon.png"),
+    apple: cdnUrl("/apple-touch-icon.png"),
   },
 };
 
@@ -128,12 +129,57 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
               name: "Franklin",
-              description: "The AI agent with a wallet. Holds USDC, picks models, buys data, and spends autonomously via x402. Open source.",
+              alternateName: "@blockrun/franklin",
+              description:
+                "Open-source AI agent with a USDC wallet. Routes across 55+ frontier models (Claude, GPT, Gemini, Grok, DeepSeek, Kimi) and pays per call via the x402 micropayment protocol. No subscriptions, no API keys.",
               url: SITE_URL,
               applicationCategory: "DeveloperApplication",
+              applicationSubCategory: "AI Agent",
               operatingSystem: "macOS, Linux, Windows (WSL)",
+              softwareVersion: "3.8.x",
+              license: "https://www.apache.org/licenses/LICENSE-2.0",
               offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-              author: { "@type": "Organization", name: "BlockRun", url: "https://blockrun.ai" },
+              downloadUrl: "https://www.npmjs.com/package/@blockrun/franklin",
+              codeRepository: "https://github.com/blockrunai/franklin",
+              programmingLanguage: "TypeScript",
+              author: {
+                "@type": "Organization",
+                name: "BlockRun",
+                url: "https://blockrun.ai",
+                sameAs: [
+                  "https://github.com/blockrunai",
+                  "https://x.com/BlockRunAI",
+                  "https://t.me/blockrunAI",
+                  "https://www.npmjs.com/org/blockrun",
+                ],
+              },
+              keywords:
+                "AI agent, autonomous agent, USDC, x402, micropayments, multi-model, smart router, YOPO, pay per outcome, open source, BlockRun, economic agent",
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "@id": `${SITE_URL}/#organization`,
+              name: "BlockRun",
+              alternateName: "BlockRun.ai",
+              url: "https://blockrun.ai",
+              logo: cdnUrl("/favicon.png").startsWith("http")
+                ? cdnUrl("/favicon.png")
+                : `${SITE_URL}${cdnUrl("/favicon.png")}`,
+              description:
+                "BlockRun builds Franklin (the AI agent with a wallet) and ClawRouter (the gateway and payments layer). Crypto-native infrastructure for the economic-agent era.",
+              sameAs: [
+                "https://github.com/blockrunai",
+                "https://x.com/BlockRunAI",
+                "https://t.me/blockrunAI",
+                "https://www.npmjs.com/org/blockrun",
+                "https://franklin.run",
+              ],
             }),
           }}
         />

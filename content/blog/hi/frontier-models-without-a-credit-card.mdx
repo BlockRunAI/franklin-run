@@ -1,0 +1,93 @@
+---
+title: "बिना credit card वाली आधी दुनिया के लिए frontier models"
+description: "अगर आप चीन, रूस, इंडोनेशिया, पाकिस्तान या सऊदी में रहते हैं, तो frontier AI तक आपकी पहुँच एक ऐसी Visa से रुकी है जो आपको नहीं मिलेगी। Franklin एक USDC wallet, 55+ models, और कोई card नहीं। Inference की भौगोलिक रचना फिर से खींची जा रही है।"
+slug: "frontier-models-without-a-credit-card"
+locale: "hi"
+pillar: "frontier-underbanked"
+publishedAt: "2026-03-15"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "frontier-models-without-a-credit-card"
+heroPrompt: "Banknote-style world map portrait."
+heroSeed: 9042044
+tags: ["franklin", "वैश्विक-पहुँच", "usdc", "underbanked"]
+featured: true
+num: "№ 03"
+cat: "भूगोल"
+---
+
+AI दुनिया को आधा काटने वाली एक चुप रेखा है। कोई इस बारे में खुलकर बात नहीं करता। यह GPU supply से नहीं, language से नहीं, यहाँ तक कि skill से भी नहीं खींची गई। यह **"क्या developer के पास ऐसा Visa या Mastercard है जो issuing model provider स्वीकार करेगा"** से खींची गई है — और यह रेखा ग्रह की लगभग आधी आबादी को frontier AI के अग्रिम मोर्चे से हटा देती है।
+
+पाँच मिनट में confirm कर सकते हैं। किसी भी US-headquartered model provider का signup page खोलिए और कल्पना कीजिए कि आप कराची, मॉस्को, या जकार्ता में रहते हैं। Form आपका card number स्वीकार करेगा, फिर address verification step पर चुपचाप fail हो जाएगा — क्योंकि आपके बैंक ने ऐसा card जारी किया है जिसका US-routable AVS endpoint नहीं है। या provider का risk model आपके IP को adversarial मानकर 3DS पर silently decline कर देगा। सबसे ज़्यादा होता है कि आपका bank उस international micropayment को सीधे reject कर देता है।
+
+आपने कोई गलती नहीं की। Product बस आपके लिए नहीं है।
+
+## यह असल में किसे प्रभावित करता है
+
+पाँच markets जिनसे हम हर रोज़ feedback सुनते हैं:
+
+- **चीन।** एक अरब से ज़्यादा लोग, बहुत बड़ा developer talent pool, AI services के लिए international card schemes के साथ interoperate न करने वाला payment system।
+- **रूस।** 2022 से रूसी bank के card US-headquartered AI providers से functionally cut off हैं।
+- **इंडोनेशिया।** सक्रिय, अंग्रेज़ी-बोलने वाला developer scene। Local debit cards शायद ही कभी international AI provider checkout पास करते हैं।
+- **पाकिस्तान।** आकार में इंडोनेशिया जैसा + international remittance और FX volatility budget का ऊपरी हिस्सा खा जाते हैं।
+- **सऊदी अरब + खाड़ी।** Cards ज़्यादा बार चलते हैं। Corporate-procurement requirements (W-9, US tax IDs, USD invoicing) कम होती जाती हैं।
+
+ये edge cases नहीं हैं। मिलाकर 2 अरब से ज़्यादा लोग।
+
+## "बिना card" का असल में क्या मतलब है
+
+हमारा मक़सद "underbanked markets के लिए AI access layer" बनाना नहीं था। हम autonomous agents के लिए wallet बना रहे थे। लेकिन USDC settlement rail की पसंद — fractional-cent inference की unit economics से मजबूर — ने एक और, बड़ी, राजनीतिक रूप से असुविधाजनक समस्या भी हल की:
+
+**आपको credit card नहीं चाहिए।** Model provider के risk system द्वारा भरोसेमंद bank नहीं चाहिए। US billing address नहीं चाहिए। काम करता हुआ W-9 नहीं चाहिए। आपको USDC balance चाहिए — किसी भी phone पर, किसी भी देश में, पाँच मिनट से कम में मिल जाता है।
+
+जब आपके पास वह balance हो, Franklin आपको देता है:
+
+- **55+ frontier models** — उनमें से जिनके लिए आप अपनी जगह से सीधे payment नहीं कर सकते — आपके wallet से per-call settle।
+- **Image/video generation, trading data, web search** — वही wallet, वही rail।
+- **एक installation।** US-routable card नहीं, +1 number पर SMS verification नहीं, corporate procurement form नहीं।
+
+किसी की ToS bypass नहीं हो रही। Franklin जिस BlockRun gateway पर चलता है वह upstream providers का authorized customer है, उन्हें standard rails के ज़रिए USD में भुगतान करता है। Franklin आपको करने देता है **उस पहले से चुकाई गई capacity के लिए USDC trade करना** — cents में, on-chain, कहीं भी जहाँ Node.js binary चला सकने वाला phone हो।
+
+<Callout type="info" title="यह sanctions बाईपास की कहानी नहीं है">
+USDC एक regulated US-issued stablecoin है। हम इसके issuer के KYC और sanctions program का पालन करते हैं। हम — और Franklin — sanctioned पते या व्यक्तियों से frontier models तक पहुँच का तरीक़ा नहीं हैं। हम जो करते हैं: non-sanctioned देशों के लाखों developers के लिए तरीक़ा बनाते हैं जो बस international Visa नहीं प्राप्त कर सकते लेकिन जिन्हें वे AI services use करनी चाहिए।
+</Callout>
+
+## जिस असमिति का कोई नाम नहीं लेता
+
+इस बातचीत का polite version है: सब सहमत हैं कि "बेशक frontier AI globally accessible होना चाहिए," और फिर सालों तक कुछ नहीं बदलता।
+
+Impolite version:
+
+जो provider risk model पाकिस्तानी Visa को decline करता है वह "broken" नहीं है। बिल्कुल design के अनुसार चल रहा है। Provider के नज़रिए से उस card को accept करने की marginal cost गैर-शून्य है (chargeback, fraud, support load), और marginal revenue छोटी है ($10/month API करने वाला developer)। तो math कहती है: decline। **Math local स्तर पर सही है। Global स्तर पर तबाही है** — क्योंकि उन developers से लंबी अवधि का revenue, जब वे products बनाने लगते हैं, बहुत बड़ा है।
+
+USDC rail math को तोड़ देती है। Chargeback risk: शून्य। Fraud risk: wallet balance से सीमित। Support load: हमारे ज़िम्मे, provider के नहीं। Marginal cost: cents। **Provider को Visa पर "नहीं" कहना पड़ता है, Franklin के ज़रिए "हाँ" कह सकता है।** सब जीतते हैं।
+
+## हम अपने analytics में क्या देखते हैं
+
+हम target geography चुने बिना launch हुए। User base ने ख़ुद को self-select किया। आज, 5M+ API users 50+ देशों में फैले हैं, और growth distribution US-marketed product जैसा **नहीं** है। सबसे मजबूत organic signals बिल्कुल ऊपर के markets + एक लंबी पूँछ — वियतनाम, तुर्की, ईरान-निकटवर्ती diasporas, ब्राज़ील, अर्जेंटीना, नाइजीरिया, मिस्र।
+
+हर ऐसे market में pattern एक जैसा है:
+
+1. एक developer किसी frontier provider पर "card declined" wall पर टकराता है।
+2. वे "बिना credit card के [model] कैसे use करें" search करते हैं।
+3. वे Franklin पाते हैं (अक्सर अपनी ही भाषा के forum post के ज़रिए)।
+4. Install करते हैं, $5 USDC fund करते हैं, कल जो call काम नहीं की उसे फिर चलाते हैं।
+5. तीन friends को बताते हैं।
+
+यह marketing strategy नहीं है। यह **distribution strategy है जो free में होती है, जब तक हम installation pleasant और wallet honest रखते हैं**।
+
+## अगले साल के लिए इसका क्या मतलब
+
+अगर आप ऊपर किसी भी market में रहते हैं और इसे अंग्रेज़ी में पढ़ रहे हैं, तो आपको पहले से पता है कि USDC balance कैसे प्राप्त करें और CLI tool कैसे install करें। हमें आपको सिखाना नहीं है। हमें **उस सेकंड आपके स्थानीय-भाषा search results में आना है जब आपका card decline हो**।
+
+हम दो चीज़ें कर रहे हैं:
+
+1. **Franklin के docs, blog और onboarding को उन developers की भाषाओं में अनुवाद करना जो हमें पहले से ढूँढ रहे हैं।** यह अंग्रेज़ी में पहला है। हिंदी, चीनी, रूसी, बहासा इंडोनेशिया, उर्दू और अरबी versions आएँगे — machine-translated drop-ins नहीं, बल्कि स्थानीय pain जानने वालों द्वारा लिखे गए।
+
+2. **Wallet experience को native बनाना।** कराची के एक developer को Franklin use करने के लिए "USDC on Base" का मतलब सीखना नहीं चाहिए। उन्हें सीखना चाहिए "wallet में $5 load करें" का मतलब, और बाकी सब wallet handle करे।
+
+अगर आप ऐसी जगह रहते हैं जहाँ आपका card AI के लिए काम नहीं करता, **आप वही user हैं जिनके लिए हमने यह बनाया है**। [Franklin install करें](/docs/getting-started/installation), [wallet सेट करें](/docs/getting-started/wallet-setup), और कल declined call को फिर try करें। Inference की geography बदल रही है। कोई कारण नहीं कि यह Visa की geography से match करनी चाहिए।
+
+---
+
+_अगर आप इस post में बताए गए market में हैं और Franklin के docs को अपनी भाषा में translate करने में मदद करना चाहते हैं, हम USDC में payment करते हैं। अपने काम का sample `care@blockrun.ai` पर भेजें।_

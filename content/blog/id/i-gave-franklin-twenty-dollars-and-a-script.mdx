@@ -1,0 +1,158 @@
+---
+title: "Aku kasih Franklin $20 dan satu skrip. Tiga jam kemudian aku punya video."
+description: "Kebanyakan agent berhenti di kode. Franklin tidak — ia membeli skrip, generate storyboard dengan gpt-image-2, render klip pakai Seedance, rekam narasi, dan lisensi musik, semua dari satu dompet. Inilah rincian biaya per baris dan kenapa tidak ada agent lain yang bisa menghasilkan ini."
+slug: "i-gave-franklin-twenty-dollars-and-a-script"
+locale: "id"
+pillar: "field-notes"
+publishedAt: "2026-04-07"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "i-gave-franklin-twenty-dollars-and-a-script"
+heroPrompt: "Banknote-style intaglio of a Victorian cinematographer."
+heroSeed: 6042088
+tags: ["franklin", "video-production", "field-notes", "case-study", "gpt-image-2", "seedance", "yopo"]
+featured: true
+num: "№ 04"
+cat: "Catatan Lapangan"
+---
+
+Ini sebenarnya tidak dimaksudkan jadi video tentang Franklin. Mulainya cuma eksperimen internal: ambil tugas kreatif paling berat yang bisa kami pikirkan — video penjelasan 60 detik dengan narasi, musik, visual orisinal — lalu lihat apakah satu agent bisa benar-benar menyelesaikannya end-to-end. Kendalanya sengaja keras. **Satu terminal. Satu dompet. Saldo USDC $20, plafon keras.** Tanpa akun image-API, tanpa langganan ElevenLabs, tanpa login Seedance, tanpa lisensi Soundstripe, tanpa kursi Adobe. Agent harus menemukan setiap tool yang dibutuhkan, bayar sendiri, dan kirim.
+
+Tiga jam kemudian video ada di disk. Dompet menunjukkan habis **$11.97**. Tagihan — setiap prompt, setiap model, setiap aset berbayar — adalah satu file teks yang Franklin keluarkan sambil bekerja. Inilah file itu, dengan cerita di balik setiap baris.
+
+Ini juga, saya kira, demonstrasi paling jelas tentang kenapa "agent dengan dompet" bukan slogan. Itulah perbedaan struktural antara tool AI yang membantu dan tool AI yang menyelesaikan kerjaan.
+
+## Briefnya
+
+```text
+> Video penjelasan 60 detik untuk audiens developer non-crypto.
+  Topik: kenapa AI pay-per-call adalah masa depan, USDC sebagai rel.
+  Gaya: estetika uang kertas minimalis, emas di atas tinta.
+  Deliverable: mp4 final, musik, narasi, 3 still keyframe.
+  Budget: $20 USDC. Plafon keras.
+```
+
+Itu yang saya ketik ke Franklin. Tidak lebih.
+
+## Tagihan, urut
+
+### Step 1 — Riset dan outline
+
+```text
+✓ WebSearch  "USDC AI micropayments 2026"      $0.0008
+✓ WebFetch   3 articles + Franklin docs         $0.0003
+✓ Reason     outline 4 beats (nemotron, free)   $0.0000
+```
+
+**$0.0011.** Perencanaan pakai Nemotron gratis, USDC cuma untuk fact-check.
+
+### Step 2 — Polish skrip
+
+```text
+✓ Compose   60s narration (claude-sonnet-4.6)   $0.0089
+```
+
+Untuk skrip narasi Franklin escalate ke Sonnet. **Satu sen.** 152 kata, pas untuk suara tenang 60 detik.
+
+### Step 3 — Keyframe (gpt-image-2)
+
+```text
+✓ ImageGen  3 banknote stills (gpt-image-2, hd) $0.3600
+```
+
+Franklin pilih **`openai/gpt-image-2`**, bukan DALL-E 3 — karena prompt minta ukir teks "franklin · dispatch" di dalam gambar, dan satu-satunya model gambar yang bisa render teks dalam gambar dengan andal saat ini cuma gpt-image-2. Multilingual + konsistensi karakter antar frame juga penting. **Tiga frame HD $0.36.** Satu ditolak, regenerasi +$0.12, ditampilkan sebelum charge.
+
+### Step 4 — Generasi suara
+
+```text
+✓ Voice     ElevenLabs, voice "Adam" v2 (60s)   $0.4200
+```
+
+Tanpa akun ElevenLabs, tanpa API key terpisah, tanpa kartu sendiri. Franklin panggil ElevenLabs lewat rel x402 micropayment yang sama dengan model. **60 detik $0.42.** Tidak ada API key di `.env`.
+
+### Step 5 — Klip video (Seedance)
+
+```text
+✓ Video     bytedance/seedance-2.0-fast  3×10s  $4.5000
+✓ Video     bytedance/seedance-2.0       2×10s  $6.0000
+```
+
+**Lima video 10 detik 720p**, dicampur lintas dua tier Seedance — tiga di `bytedance/seedance-2.0-fast` ($0.15/detik) untuk shot motion abstrak, dua di `bytedance/seedance-2.0` Pro penuh ($0.30/detik) untuk shot karakter-berat. **Total video $10.50.**
+
+Router-nya benar — meng-upgrade ke Seedance 2.0 hanya pada dua shot di mana fidelity karakter penting, dan menggunakan varian -fast 50% lebih murah pada tiga shot di mana motion saja yang membawa frame.
+
+### Step 6 — Musik
+
+```text
+✓ Audio     Stable Audio, 60s instrumental      $0.1800
+```
+
+18 sen musik instrumental original. Franklin hitung BPM dari file audio narasi sebelum komisi musik.
+
+### Step 7 — Assembly
+
+```text
+✓ Bash      ffmpeg compose final mp4            $0.0000
+✓ Bash      verify duration 60s                 $0.0000
+```
+
+FFmpeg lokal, **gratis**. 59.4 detik, 18.2 MB MP4, 720p, subtitle embedded.
+
+### Total
+
+```text
+─────────────────────────────────────────────
+Total Sesi                            $11.97
+  riset + skrip                $0.01
+  storyboard (gpt-image-2)     $0.36
+  narasi (ElevenLabs)          $0.42
+  video (campuran Seedance)   $10.50
+  musik (Stable Audio)         $0.18
+  assembly                     $0.00
+Sisa dompet                            $8.03
+Plafon keras dihormati ✓
+Waktu                              3j 11m
+─────────────────────────────────────────────
+```
+
+## Di mana coding agent lain berhenti
+
+Kode. Semua berhenti di kode. Cursor bisa tulis skrip — tidak bisa bayar suara. Claude Code bisa outline empat ketukan — tidak bisa generate storyboard. Copilot bisa sarankan perintah FFmpeg — tidak bisa lisensi musik. **Mereka tidak punya layer settlement di belakangnya.**
+
+Lima langkah jebakan cara lama:
+
+1. Daftar ElevenLabs, kartu, top-up minimum $10, copy API key ke `.env`.
+2. Cari reseller Seedance (jarang yang jual langsung retail), kartu, copy key.
+3. Daftar OpenAI untuk gpt-image-2, kartu, buat org, tunggu approval akses image gen, copy key.
+4. Daftar Stable Audio, kartu, beli paket kredit $9.
+5. Edit lima baris `.env` ke shell session, doa supaya tidak ke-paste ke Slack.
+
+Waktu sebelum bisa mulai: **45–90 menit**. Biaya bulanan tetap: **$54+**. **Semua pajak akses.**
+
+Franklin: total $11.97. Tanpa langganan. Tanpa kredensial di `.env`. **Dompet adalah API key.**
+
+## Kenapa gpt-image-2 + Seedance, spesifik
+
+**gpt-image-2** adalah model gambar tersedia umum pertama yang bisa menempatkan teks terbaca di dalam gambar tanpa typo, dalam bahasa apa pun. Untuk apa pun dengan ukiran uang, packaging, poster, kartu sosial, signage dwibahasa di frame — bukan peningkatan 10%, ini perbedaan antara dapat dipakai dan tidak. Identitas karakter juga stabil antar frame dalam satu sesi. HD $0.06–$0.12.
+
+**Seedance 2.0** saat ini model video dengan rasio harga/kualitas terbaik di pasar terbuka. Tier 2.0 Pro penuh hasilkan video 720p yang bersaing dengan model 5× harganya. Varian `-fast` $0.15/detik adalah sweet spot baru untuk B-roll dan shot motion-berat abstrak. Keduanya support klip hingga 10 detik, keduanya terima seed image untuk image-to-video.
+
+Tugas Franklin adalah memilih antara mereka per shot. Lima shot semua benar. **Itulah inti multi-model — bukan "banyak model ada", tapi "agent memilih dengan benar tanpa kamu menyebutnya".**
+
+## Apa yang bisa kamu lakukan dengan pola ini
+
+- **Trailer launch produk (60d, 720p)** — $12–$25
+- **Video onboarding tiga bahasa** — $25–$45
+- **Penjelas mingguan Substack** — $8–$15
+- **Esai YouTube 10 menit** — $50–$100
+- **Bab audiobook** — $0.60–$1.20
+
+Sebelumnya butuh folder kuitansi, tab dashboard, lantai langganan $200/bulan. Sekarang masing-masing sesi `franklin` tunggal dengan tagihan terperinci.
+
+## Satu kalimat
+
+Jika pernah perlu produksi konten media campuran dan akhirnya bayar $200/bulan langganan atau menghabiskan akhir pekan menyatukan lima tier gratis — Franklin adalah versi alur kerja itu yang terasa seperti satu tool. **"Tool" itu adalah dompet yang tahu cara menghabiskan dirinya menuju hasil.**
+
+$11.97. Satu terminal. Satu agent. Satu video.
+
+Coba di milikmu sendiri.

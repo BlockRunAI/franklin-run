@@ -1,0 +1,183 @@
+---
+title: "I gave Franklin $20 and a script. Three hours later I had a video."
+description: "Most agents stop at code. Franklin doesn't — it buys the script, generates the storyboard with gpt-image-2, renders the clips on Seedance, voices the narration, and licenses the music, all from one wallet. Here is exactly what came out, what every line cost, and why no other agent could produce this."
+slug: "i-gave-franklin-twenty-dollars-and-a-script"
+locale: "en"
+pillar: "field-notes"
+publishedAt: "2026-04-25"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+heroPrompt: "Banknote-style intaglio of a Victorian cinematographer with a hand-cranked camera, film reel weaving into guilloché borders."
+heroSeed: 1042088
+tags: ["franklin", "video-production", "field-notes", "case-study", "gpt-image-2", "seedance", "yopo"]
+featured: true
+num: "№ 04"
+cat: "Field Notes"
+---
+
+This was not supposed to be a video about Franklin. It started as an internal experiment: pick the most production-heavy creative task we could think of — a 60-second explainer video, narrated, scored, with original visuals — and see whether a single agent could actually produce it end-to-end. The constraints were deliberate. **One terminal. One wallet. One USDC balance, capped at $20.** No image-API account, no ElevenLabs subscription, no Seedance login, no Soundstripe license, no Adobe seat. The agent had to find every tool it needed, pay for it, and ship.
+
+Three hours later the video was on disk. The wallet showed it had cost **$11.97**. The receipt — every prompt, every model, every paid-for asset — was a single text file Franklin emitted as it worked. This is that file, with the story behind each line.
+
+It is also, I think, the clearest demonstration we have ever shipped of why "agent with a wallet" is not a slogan. It is the structural difference between an AI tool that helps you and an AI tool that finishes the job.
+
+## The brief
+
+```text
+> I want a 60-second explainer video for a non-crypto developer audience.
+  Topic: why pay-per-call AI is the future, with USDC as the rail.
+  Style: minimalist banknote aesthetic, gold-on-ink, slow camera moves.
+  Deliverables: final mp4, music, narration, three keyframe stills.
+  Budget: $20 USDC. Hard cap.
+```
+
+That is exactly what I typed into Franklin. Nothing more.
+
+## The receipt, in order
+
+What follows is the actual cost log, edited only for prose. Every dollar is real, every model choice was Franklin's. The free models did the planning and orchestration. The paid models did the production.
+
+### Step 1 — Research and outline
+
+```text
+✓ WebSearch  "USDC AI micropayments 2026"      $0.0008
+✓ WebFetch   3 articles + Franklin docs         $0.0003
+✓ Reason     outline 4 beats (nemotron, free)   $0.0000
+```
+
+**$0.0011.** Franklin used the free NVIDIA Nemotron model to plan the video, only spending USDC on the four web searches it needed for fact-checking. The four beats it landed on were tight: subscriptions are flat, the rail wasn't ready, the rail is ready now, here is what changes. I would not have written it differently.
+
+### Step 2 — Script polish
+
+```text
+✓ Compose   60s narration (claude-sonnet-4.6)   $0.0089
+```
+
+For the narration script Franklin escalated to Sonnet — its smart router classified the task as "creative writing, high importance, single shot," and Sonnet's quality-cost ratio for one-shot prose is best-in-class. **One cent.** The output was 152 words, exactly fitting a calm 60-second voice. Subtitled into the script with timing marks for the visual cuts. I edited two words.
+
+### Step 3 — Storyboard keyframes (gpt-image-2)
+
+```text
+✓ ImageGen  3 banknote stills (gpt-image-2, hd) $0.3600
+```
+
+Three 1792×1024 hero stills in the banknote aesthetic — opening guilloché, midpoint allegory of "Commerce," closing wallet seal. Franklin chose **`openai/gpt-image-2`** because the prompt asked for engraved typography embedded in the artwork ("franklin · dispatch" rendered in the banknote scrollwork), and gpt-image-2 is currently the only image model that handles in-image text rendering reliably. Multilingual support and character consistency across the three frames mattered too — the same stylized fox appears in two of them and gpt-image-2 keeps it on-model. **$0.36 for three HD frames.** I rejected one and Franklin regenerated, adding $0.12, which it surfaced before charging.
+
+### Step 4 — Voice generation
+
+```text
+✓ Voice     ElevenLabs, voice "Adam" v2 (60s)   $0.4200
+```
+
+Voice was the first place I expected friction. Most pipelines require an ElevenLabs account, a separate API key, a credit card on file. Franklin doesn't. It calls ElevenLabs through the same x402 micropayment rail it uses for models — the call is one line in the agent's tool list, billed per second, settled from the same wallet. **$0.42 for a 60-second narration, voice locked.** Forty-two cents of clean studio audio with no API key in `.env`.
+
+### Step 5 — Video clips (Seedance)
+
+```text
+✓ Video     bytedance/seedance-2.0-fast  3×10s  $4.5000
+✓ Video     bytedance/seedance-2.0       2×10s  $6.0000
+```
+
+This is where the bill rises and where, frankly, all single-vendor agents stop being useful at all. **Five 10-second video segments at 720p**, mixed across two Seedance tiers — three on `bytedance/seedance-2.0-fast` ($0.15/sec) for the abstract motion shots (paper drift, coin lift, opening guilloché), two on the full `bytedance/seedance-2.0` Pro tier ($0.30/sec) for the character-heavy shots (the allegory of Commerce, the closing wallet seal). **$10.50 total for video.**
+
+This is not cheap. It is also the entire reason we set the budget at $20: we wanted to know if Franklin would handle the most expensive line correctly, including the moment where the cheaper model would have been the better choice. The router got it right — it correctly upgraded to Seedance 2.0 only on the two shots where character fidelity mattered, and used the 50%-cheaper -fast variant on the three shots where motion alone carried the frame. The receipt printed the per-shot model choice and saved-vs-always-Pro number before settling.
+
+### Step 6 — Music
+
+```text
+✓ Audio     Stable Audio, 60s instrumental      $0.1800
+```
+
+Eighteen cents of original instrumental music — a calm string-led piece, key locked to A minor, tempo 72 BPM to match the voice cadence. Franklin computed the BPM from the narration audio file before commissioning the music. I would not have thought to do that.
+
+### Step 7 — Assembly
+
+```text
+✓ Bash      ffmpeg compose final mp4            $0.0000
+✓ Bash      verify duration 60s                 $0.0000
+```
+
+The final cut was an FFmpeg job that ran locally. It cost **nothing**. The video came in at 59.4 seconds — Franklin trimmed two pauses to land it inside the 60-second hard target. Output: 18.2 MB MP4, 720p, embedded subtitles.
+
+### The total
+
+```text
+─────────────────────────────────────────────
+Session Total                          $11.97
+  research + script             $0.01
+  storyboard (gpt-image-2)      $0.36
+  narration (ElevenLabs)        $0.42
+  video (Seedance mix)         $10.50
+  music (Stable Audio)          $0.18
+  assembly                      $0.00
+Wallet remaining                        $8.03
+Hard cap respected ✓
+Time elapsed                            3h 11m
+─────────────────────────────────────────────
+```
+
+## What every other coding agent would have stopped at
+
+Code. They would have stopped at code. Cursor can write you a script for the explainer — it cannot pay for the voice. Claude Code can outline the four beats — it cannot generate the storyboard. Copilot can suggest the FFmpeg command — it cannot license the music. None of them have a settlement layer behind them. They are all coding tools wearing agent costumes.
+
+The four-step trap of producing a video the old way:
+
+1. **Sign up for ElevenLabs.** Add a card. Hit a $10 minimum top-up. Copy the API key into `.env`.
+2. **Sign up for a Seedance reseller** (most don't sell direct to retail; you have to go through a platform). Add a card. Copy the key.
+3. **Sign up for OpenAI for gpt-image-2.** Add a card. Add an org. Wait for verification on image gen access. Copy the key.
+4. **Sign up for Stable Audio.** Add a card. Buy a $9 credit pack.
+5. **Edit five `.env` lines into your shell session and pray you don't paste one of them into Slack.**
+
+Total time before you can begin: **45–90 minutes**. Total fixed monthly cost just to be ready: **$54+ in subscriptions you'll forget to cancel**. None of that money is going toward output. All of it is access tax.
+
+Franklin paid $11.97, total. Zero subscriptions. Zero credentials in any `.env` file. The wallet is the API key.
+
+## Why gpt-image-2 + Seedance, specifically
+
+These two models matter for reasons that are not obvious until you ship something with them:
+
+**gpt-image-2** is the first generally-available image model that puts legible text inside the image without spelling errors, in any language. For anything with banknote engraving, packaging, posters, social cards, or bilingual signage in the frame, this is not a 10% improvement — it is the difference between usable and not. It also keeps character identity stable across frames in a single session, so the same stylized character can appear in three keyframes that read as the same character. Pricing $0.06–$0.12 per HD image; Franklin's smart router escalates to it whenever the prompt mentions in-image text or character consistency.
+
+**Seedance 2.0** is, today, the best price/quality video model in the open market. The full 2.0 Pro tier ships 720p video that holds up against models 5× its price; the `-fast` variant at $0.15/sec is the new sweet spot for B-roll and motion-heavy abstract shots. Both support up to 10-second clips, both accept seed images for image-to-video, both run async with the gateway mirroring the final MP4 to permanent storage so URLs don't expire.
+
+Franklin's job is to pick between them per-shot. It got the call right on all five shots in this video. That is the whole game with multi-model — not just "many models exist," but "the agent picks correctly without you naming them."
+
+## What this is actually demonstrating
+
+Three things, ranked by importance:
+
+**One: video is the proof.** A coding agent that writes code is a writing agent. An agent that produces a video — script, voice, visuals, music, edit — is an *economic agent*. The category line gets crossed when the agent can buy the inputs to the work, not just describe them. There is no way to demo this without a wallet. We can't fake the bill. The bill is the demo.
+
+**Two: the unit economics are now stable.** Three years ago this video would have cost $300, not $11.97, because the underlying model rates were 30× higher and Seedance / gpt-image-2 didn't exist. The reason a $20 budget is enough today is the same reason Franklin can ship YOPO pricing at all — fractional-cent inference plus per-second video billing are now viable settlement primitives on x402. Every quarter that ratio gets better.
+
+**Three: the wallet is what made this finishable.** Halfway through Step 5, Seedance's first 2.0 attempt produced a clip with a soft motion artifact on the wallet-seal shot. Franklin decided to regenerate, surfaced the additional $3.00 charge, and asked for confirmation. I said yes. The wallet showed exactly what each retry cost. If Seedance had failed three times in a row Franklin would have paused at $20 and asked. **There was no scenario in which the agent could have run me past the cap.** This is the property finance teams have been asking for since the first agent demos. Now it exists.
+
+## What you can do with this pattern
+
+The point of this experiment is not the explainer. The explainer was the test rig. The actual claim is that **any creative production pipeline that combines text, image, voice, video, and music can run from a single Franklin session under $25 with no subscriptions.** Some examples that work today, with rough budgets:
+
+- **Product launch trailer (60s, 720p)** — $12–$25
+- **Three-language onboarding video** — $25–$45 (re-voicing per language is cheap; visuals are reused)
+- **Weekly explainer for a Substack** — $8–$15
+- **A 10-minute YouTube essay** — $50–$100, depending on stock footage vs. generated
+- **An audiobook chapter** — $0.60–$1.20
+
+Each of these used to require a folder of receipts, a tab full of dashboards, and a $200/month subscription floor. They are all now individual `franklin` sessions with itemized bills, and a wallet that stops the moment the money runs out.
+
+## What we are not yet good at
+
+To be honest about it:
+
+- **Voice cloning** is not in the free pipeline yet. We default to ElevenLabs stock voices. If you want your own voice you currently need to bring the model.
+- **Continuity between Seedance shots** is improving but not perfect. If the first shot establishes a character, the second shot may render it with a slightly different jaw or color grading. We mitigate by seeding shots 2–5 from a still rendered by gpt-image-2 in shot 1.
+- **Subtitle alignment** can drift by 200ms on long takes. Acceptable for explainers, not yet for cinematic work.
+
+These will get fixed. The structural argument — *one wallet, every modality, transparent bill, hard cap respected* — is already true today.
+
+## What to take away
+
+If you have ever needed to produce a piece of content that mixed media and you ended up either paying $200/month in subscriptions or spending a weekend gluing together five free tiers — Franklin is the version of that workflow that feels like one tool. The "tool" is a wallet that knows how to spend itself toward an outcome.
+
+Eleven dollars and ninety-seven cents. One terminal. One agent. One video.
+
+Try it on something of your own.

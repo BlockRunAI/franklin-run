@@ -1,0 +1,158 @@
+---
+title: "Franklin'e $20 ve bir senaryo verdim. Üç saat sonra elimde bir video vardı."
+description: "Çoğu ajan kodda durur. Franklin durmaz — senaryoyu satın alır, gpt-image-2 ile storyboard üretir, Seedance'da klipleri render eder, anlatımı seslendirir, müziği lisanslar — hepsi tek bir cüzdandan. İşte tam fatura ve hiçbir başka ajanın bunu üretemeyeceğinin nedeni."
+slug: "i-gave-franklin-twenty-dollars-and-a-script"
+locale: "tr"
+pillar: "field-notes"
+publishedAt: "2026-03-06"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "i-gave-franklin-twenty-dollars-and-a-script"
+heroPrompt: "Banknote-style intaglio of a Victorian cinematographer."
+heroSeed: 12042088
+tags: ["franklin", "video-production", "field-notes", "case-study", "gpt-image-2", "seedance", "yopo"]
+featured: true
+num: "№ 04"
+cat: "Saha Notları"
+---
+
+Bu, Franklin hakkında bir video olmayacaktı. Şirket içi bir deney olarak başladı: aklımıza gelen en üretim-ağır yaratıcı görevi seçelim — anlatımlı, müzikli, özgün görsellerle 60 saniyelik açıklayıcı video — ve tek bir ajan bunu uçtan uca gerçekten üretebiliyor mu görelim. Kısıtlamalar bilerek sıkıydı. **Bir terminal. Bir cüzdan. $20 tavanlı USDC bakiyesi.** Image-API hesabı yok, ElevenLabs aboneliği yok, Seedance girişi yok, Soundstripe lisansı yok, Adobe koltuğu yok. Ajan ihtiyacı olan her aracı kendisi bulmalı, ödemeli ve teslim etmeliydi.
+
+Üç saat sonra video diskteydi. Cüzdan **$11.97**'a mâl olduğunu gösteriyordu. Fatura — her prompt, her model, her ödenen varlık — Franklin'in çalışırken çıkardığı tek bir metin dosyasıydı. İşte o dosya, her satırın arkasındaki hikâyeyle.
+
+Bence bu, "cüzdanlı ajan"ın slogan olmadığının şimdiye kadar gönderdiğimiz en net kanıtı. Bu, sana yardım eden bir AI aracı ile işi bitiren bir AI aracı arasındaki yapısal fark.
+
+## Brief
+
+```text
+> Crypto-dışı geliştirici izleyicisi için 60 saniyelik açıklayıcı video.
+  Konu: pay-per-call AI neden gelecek, USDC ray olarak.
+  Stil: minimalist banknot estetiği, mürekkep üzerine altın, yavaş kamera.
+  Teslimat: nihai mp4, müzik, anlatım, üç keyframe still.
+  Bütçe: $20 USDC. Sert tavan.
+```
+
+Franklin'e tam olarak bunu yazdım. Daha fazlasını değil.
+
+## Fatura, sırayla
+
+### Adım 1 — Araştırma ve outline
+
+```text
+✓ WebSearch  "USDC AI micropayments 2026"      $0.0008
+✓ WebFetch   3 articles + Franklin docs         $0.0003
+✓ Reason     outline 4 beats (nemotron, free)   $0.0000
+```
+
+**$0.0011.** Planlama bedava Nemotron'da. USDC sadece fact-check aramalarına gitti.
+
+### Adım 2 — Senaryo cilası
+
+```text
+✓ Compose   60s narration (claude-sonnet-4.6)   $0.0089
+```
+
+Franklin Sonnet'e yükseltti. **Bir cent.** 152 kelime, 60 saniyelik sakin sese tam oturuyor.
+
+### Adım 3 — Keyframe (gpt-image-2)
+
+```text
+✓ ImageGen  3 banknote stills (gpt-image-2, hd) $0.3600
+```
+
+Franklin DALL-E 3 yerine **`openai/gpt-image-2`** seçti — çünkü prompt görüntü içine "franklin · dispatch" metnini kazımayı istiyordu ve görüntü içi metni güvenilir şekilde işleyen tek model şu anda gpt-image-2. Çok dilli + frame'ler arası karakter tutarlılığı da kritik. **Üç HD frame $0.36.** Birini reddettim, regen +$0.12, tahsilat öncesi gösterildi.
+
+### Adım 4 — Ses üretimi
+
+```text
+✓ Voice     ElevenLabs, voice "Adam" v2 (60s)   $0.4200
+```
+
+ElevenLabs hesabı yok, ayrı API anahtarı yok, ayrı kart yok. Franklin ElevenLabs'i modellerle aynı x402 mikro ödeme rayından çağırıyor. **60 saniye $0.42.** `.env`'de hiçbir API anahtarı yok.
+
+### Adım 5 — Video klipler (Seedance)
+
+```text
+✓ Video     bytedance/seedance-2.0-fast  3×10s  $4.5000
+✓ Video     bytedance/seedance-2.0       2×10s  $6.0000
+```
+
+**Beş 10 saniyelik 720p video**, iki Seedance kademesinde karışık — üçü `bytedance/seedance-2.0-fast` ($0.15/sn) üzerinde soyut hareket çekimleri için, ikisi tam `bytedance/seedance-2.0` Pro ($0.30/sn) üzerinde karakter-yoğun çekimler için. **Video toplam $10.50.**
+
+Yönlendirici doğru yaptı — sadece karakter sadakatinin önemli olduğu iki çekimde 2.0 Pro'ya yükseltti, hareketin tek başına çerçeveyi taşıdığı üç çekimde %50 daha ucuz `-fast` varyantını kullandı.
+
+### Adım 6 — Müzik
+
+```text
+✓ Audio     Stable Audio, 60s instrumental      $0.1800
+```
+
+18 cent özgün enstrümantal. Franklin müziği sipariş etmeden önce anlatım sesinden BPM hesapladı.
+
+### Adım 7 — Birleştirme
+
+```text
+✓ Bash      ffmpeg compose final mp4            $0.0000
+✓ Bash      verify duration 60s                 $0.0000
+```
+
+Yerel FFmpeg, **bedava**. 59.4 saniye, 18.2 MB MP4, 720p, gömülü altyazılar.
+
+### Toplam
+
+```text
+─────────────────────────────────────────────
+Oturum Toplamı                        $11.97
+  araştırma + senaryo         $0.01
+  keyframe (gpt-image-2)      $0.36
+  anlatım (ElevenLabs)        $0.42
+  video (Seedance karışım)   $10.50
+  müzik (Stable Audio)        $0.18
+  birleştirme                 $0.00
+Cüzdan kalanı                          $8.03
+Sert tavan saygılı ✓
+Geçen süre                         3s 11d
+─────────────────────────────────────────────
+```
+
+## Diğer tüm kodlama ajanlarının durduğu yer
+
+Kod. Hepsi kodda durur. Cursor sana bir senaryo yazabilir — sesi ödeyemez. Claude Code dört vuruşu özetleyebilir — storyboard üretemez. Copilot FFmpeg komutu önerebilir — müziği lisanslayamaz. **Arkalarında uzlaşma katmanı yok.**
+
+Eski yöntemin beş adımlık tuzağı:
+
+1. ElevenLabs'a kayıt, kart, $10 minimum top-up, anahtar `.env`'e kopyala.
+2. Seedance bayisi ara (çoğu doğrudan perakende satmaz), kart, anahtar kopyala.
+3. gpt-image-2 için OpenAI, kart, organizasyon oluştur, image gen erişim onayını bekle, anahtar kopyala.
+4. Stable Audio'ya kayıt, kart, $9 kredi paketi al.
+5. Beş `.env` satırını shell oturumuna düzenle, Slack'e yapıştırmaman için dua et.
+
+Başlayabilmeden önce süre: **45–90 dakika**. Sabit aylık: **$54+**. **Hepsi erişim vergisi.**
+
+Franklin: toplam $11.97. Sıfır abonelik. Hiçbir `.env` dosyasında kimlik bilgisi yok. **Cüzdan API anahtarıdır.**
+
+## Neden gpt-image-2 + Seedance, özellikle
+
+**gpt-image-2**, görüntü içine okunabilir metni herhangi bir dilde imla hatası olmadan koyan ilk genel kullanılabilir görüntü modelidir. Banknot oyması, ambalaj, poster, sosyal kart, iki dilli tabela içeren her şey için — %10'luk iyileşme değil, kullanılabilir ile değil arasındaki fark. Aynı oturumda frame'ler arası karakter kimliğini de stabil tutar. HD başına $0.06–$0.12.
+
+**Seedance 2.0** bugün açık piyasadaki en iyi fiyat/kalite video modeli. Tam 2.0 Pro tier, 5× fiyatlı modellere kafa tutan 720p video sunuyor. `-fast` varyantı $0.15/sn ile B-roll ve hareket-yoğun soyut çekimler için yeni sweet spot.
+
+Franklin'in işi çekim başına bunlar arasında seçim yapmak. Beş çekimde de doğru seçti. **Çoklu modelin özü budur — "birçok model var" değil, "ajan adlandırmadan doğru seçer".**
+
+## Bu pattern ile neler yapılabilir
+
+- **Ürün lansman trailer'ı (60s, 720p)** — $12–$25
+- **Üç dilli onboarding videosu** — $25–$45
+- **Substack için haftalık açıklayıcı** — $8–$15
+- **10 dakikalık YouTube denemesi** — $50–$100
+- **Sesli kitap bölümü** — $0.60–$1.20
+
+Eskiden her biri makbuz klasörü, dashboard sekmeleri, $200/ay abonelik tabanı gerektiriyordu. Şimdi her biri ayrıntılı faturayla tek bir `franklin` oturumu.
+
+## Bir cümleyle
+
+Eğer karma medya içeriği üretmen gerektiyse ve sonunda $200/ay abonelik ödedi veya hafta sonunu beş bedava katmanı yapıştırarak geçirdiyse — Franklin o iş akışının "tek bir araç gibi hissettiren" versiyonudur. **"Araç" sonuca doğru kendini harcamayı bilen cüzdandır.**
+
+$11.97. Bir terminal. Bir ajan. Bir video.
+
+Kendi bir şeyinde dene.

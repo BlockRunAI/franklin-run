@@ -146,6 +146,83 @@ img {
   z-index: 30;
 }
 
+/* Paper variant — for routes that start on a light/paper background (blog) */
+.site-header-paper {
+  position: sticky;
+  top: 0;
+  background: rgba(250, 244, 226, 0.86);
+  backdrop-filter: saturate(140%) blur(8px);
+  -webkit-backdrop-filter: saturate(140%) blur(8px);
+  border-bottom: 1px solid rgba(10, 13, 18, 0.08);
+}
+
+.site-header-paper .logo-name {
+  color: var(--ink);
+}
+
+.site-header-paper .logo-sub {
+  color: rgba(140, 111, 23, 0.85);
+}
+
+.site-header-paper .logo-ring {
+  border-color: rgba(140, 111, 23, 0.45);
+}
+
+.site-header-paper .nav-link {
+  color: rgba(10, 13, 18, 0.65);
+}
+
+.site-header-paper .nav-link:hover {
+  color: var(--ink);
+}
+
+.site-header-paper .btn-outline {
+  border-color: rgba(10, 13, 18, 0.18);
+  color: rgba(10, 13, 18, 0.82);
+}
+
+.site-header-paper .btn-outline:hover {
+  border-color: var(--gold-dim);
+  background: rgba(201, 162, 39, 0.06);
+}
+
+.site-header-paper .btn-primary {
+  background: var(--ink);
+  color: var(--paper-light);
+}
+
+.site-header-paper .btn-primary:hover {
+  background: var(--ink-deep);
+  box-shadow: 0 8px 24px -8px rgba(10, 13, 18, 0.35);
+}
+
+.site-header-paper .mobile-menu-btn {
+  color: rgba(10, 13, 18, 0.7);
+}
+
+.site-header-paper .mobile-menu-btn:hover {
+  color: var(--ink);
+}
+
+.site-header-paper .mobile-menu {
+  background: rgba(250, 244, 226, 0.96);
+  border-top: 1px solid rgba(10, 13, 18, 0.08);
+}
+
+.site-header-paper .mobile-menu a {
+  color: rgba(10, 13, 18, 0.78);
+  border-bottom: 1px solid rgba(10, 13, 18, 0.06);
+}
+
+.site-header-paper .mobile-menu a:hover {
+  color: var(--ink);
+}
+
+.site-header-paper .mobile-menu .mobile-menu-cta {
+  background: var(--ink);
+  color: var(--paper-light);
+}
+
 .hdr-inner {
   max-width: 1320px;
   margin: 0 auto;

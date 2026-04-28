@@ -1,0 +1,93 @@
+---
+title: "Kredi kartı olmayan dünyanın yarısı için sınır modeller"
+description: "Çin, Rusya, Endonezya, Pakistan ya da Suudi Arabistan'da yaşıyorsanız, sınır AI'a erişiminiz alamayacağınız bir Visa tarafından engelleniyor. Franklin bir USDC cüzdanı, 55+ model ve kart yok. Çıkarımın coğrafyası yeniden çiziliyor."
+slug: "frontier-models-without-a-credit-card"
+locale: "tr"
+pillar: "frontier-underbanked"
+publishedAt: "2026-02-21"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "frontier-models-without-a-credit-card"
+heroPrompt: "Banknote-style world map portrait."
+heroSeed: 13042044
+tags: ["franklin", "küresel-erişim", "usdc", "underbanked"]
+featured: true
+num: "№ 03"
+cat: "Coğrafya"
+---
+
+AI dünyasını ikiye bölen sessiz bir çizgi var. Kimse açıkça konuşmuyor. GPU arzıyla çizilmedi, dille değil, hatta beceriyle bile değil. **"Geliştiricinin model sağlayıcının kabul edeceği bir Visa veya Mastercard'ı var mı"** ile çiziliyor — ve bu çizgi gezegenin yaklaşık yarısını sınır AI'ın ön cephesinden çıkarıyor.
+
+Beş dakikada doğrulayabilirsiniz. ABD merkezli herhangi bir model sağlayıcının kayıt sayfasını açın ve Karaçi, Moskova ya da Cakarta'da yaşıyormuş gibi davranın. Form kart numaranızı kabul edecek, sonra adres doğrulama adımında sessizce başarısız olacak — çünkü bankanızın çıkardığı kartın ABD'ye yönlendirilebilir AVS endpoint'i yok. Veya sağlayıcının risk modeli IP'nizi düşman olarak değerlendirip 3DS'te sessizce reddedecek. En yaygın olanı: bankanız uluslararası mikro ödemeyi reddediyor.
+
+Yanlış bir şey yapmadınız. Ürün sadece sizin için değil.
+
+## Bu kimi gerçekten etkiliyor
+
+Sürekli geri bildirim aldığımız beş pazar:
+
+- **Çin.** Bir milyardan fazla insan, devasa geliştirici yetenek havuzu, AI hizmetleri için uluslararası kart şemalarıyla birlikte çalışmayan ödeme sistemi.
+- **Rusya.** 2022'den beri Rus banka kartları ABD merkezli AI sağlayıcılarından işlevsel olarak kesildi.
+- **Endonezya.** Aktif, İngilizce konuşan geliştirici sahnesi. Yerel banka kartları nadiren uluslararası AI sağlayıcı checkout'unu geçiyor.
+- **Pakistan.** Endonezya'ya benzer + uluslararası havale ve döviz dalgalanması bütçenin üst kısmını yiyor.
+- **Suudi + Körfez.** Kartlar daha sık çalışıyor. Kurumsal tedarik gereksinimleri (W-9, ABD vergi numarası, USD fatura) gittikçe daha az çalışıyor.
+
+Bunlar sınır vakaları değil. Birlikte iki milyardan fazla insan.
+
+## "Kart yok" gerçekte ne anlama geliyor
+
+"Az bankalı pazarlar için AI erişim katmanı" inşa etmeyi planlamadık. Otonom ajanlar için bir cüzdan inşa etmeyi planlıyorduk. Ama USDC mutabakat rayını seçmek — kesirli sentlik çıkarımın birim ekonomisi tarafından zorlanan — başka, daha büyük, politik olarak daha rahatsız edici bir sorunu da çözdü:
+
+**Kredi kartına ihtiyacınız yok.** Model sağlayıcının risk sisteminin güvendiği bir banka istemiyorsunuz. ABD fatura adresi gerekmiyor. Çalışan bir W-9 gerekmiyor. USDC bakiyesine ihtiyacınız var — herhangi bir telefonda, herhangi bir ülkede, beş dakikadan kısa sürede edinebilirsiniz.
+
+O bakiyeniz olduğunda, Franklin size şunu verir:
+
+- **55+ sınır model** — yerinden doğrudan ödeme yapamayacağınız modeller dahil — cüzdanınızdan çağrı başına mutabakat.
+- **Görüntü/video üretimi, ticaret verisi, web araması** — aynı cüzdan, aynı ray.
+- **Bir kurulum.** ABD'ye yönlendirilebilir kart yok, +1 numarasına SMS doğrulama yok, kurumsal tedarik formu yok.
+
+Hiçbir ToS ihlal edilmiyor. Franklin'in üzerinde çalıştığı BlockRun ağ geçidi, üst sağlayıcıların yetkili müşterisidir, onlara standart raylar üzerinden USD ile öder. Franklin'in size yapmanıza izin verdiği şey **o önceden ödenmiş kapasiteyi USDC ile takas etmek** — sentlerle, on-chain, Node.js binary çalıştırabilen bir telefonun olduğu her yerden.
+
+<Callout type="info" title="Bu yaptırım atlatma hikayesi değil">
+USDC, ABD'de düzenlenen düzenlenmiş bir stablecoin'dir. İhraççısının KYC ve yaptırım programına uyuyoruz. Biz — ve Franklin — yaptırım altındaki adresler veya bireylerin sınır modellere erişme yöntemi değiliz. Yaptığımız: yaptırım altında olmayan ülkelerdeki, sadece uluslararası Visa elde edemeyen ama kullanmaları gereken AI hizmetlerine erişim için milyonlarca geliştirici için bir yol.
+</Callout>
+
+## Kimsenin adlandırmadığı asimetri
+
+Konuşmanın kibar versiyonu: herkes "tabii ki sınır AI küresel olarak erişilebilir olmalı" diye anlaşıyor, sonra yıllar boyunca hiçbir şey değişmiyor.
+
+Kibar olmayan versiyon:
+
+Pakistan Visa'sını reddeden sağlayıcı risk modeli "bozuk" değil. Tasarlandığı gibi tam olarak çalışıyor. Sağlayıcının bakış açısından, bu kartı kabul etmenin marjinal maliyeti sıfır değil (chargeback, dolandırıcılık, destek yükü) ve marjinal gelir küçük (ayda 10$ API geliştiricisi). Bu yüzden matematik diyor ki: reddet. **Matematik yerel olarak doğru. Küresel olarak felaket** — çünkü bu geliştiricilerden ürün üretmeye başladıklarında uzun vadeli gelir muazzam.
+
+USDC ray matematiği kırıyor. Chargeback riski: sıfır. Dolandırıcılık riski: cüzdan bakiyesiyle sınırlı. Destek yükü: bizim üzerimizde, sağlayıcıda değil. Marjinal maliyet: sentler. **Sağlayıcı Visa üzerinden "hayır" demek zorunda, ama Franklin üzerinden "evet" diyebilir.** Herkes kazanıyor.
+
+## Analizlerimizde gördüğümüz
+
+Hedef coğrafya seçmeden başlattık. Kullanıcı tabanı kendini seçti. Bugün 5M+ API kullanıcısı 50+ ülkeye yayılmış ve büyüme dağılımı ABD'ye pazarlanan bir ürünün dağılımına **benzemiyor**. En güçlü organik sinyaller tam olarak yukarıdaki pazarlar + uzun bir kuyruk — Vietnam, Türkiye, İran komşusu diasporalar, Brezilya, Arjantin, Nijerya, Mısır.
+
+Her pazardaki örüntü aynı:
+
+1. Bir geliştirici sınır sağlayıcıda "kart reddedildi" duvarına çarpıyor.
+2. "Kredi kartı olmadan [model] nasıl kullanılır" diye arıyor.
+3. (Genelde kendi dilinde forum yazısı aracılığıyla) Franklin'i buluyor.
+4. Kuruyor, $5 USDC fonluyor, dün çalışmayan çağrıyı yeniden çalıştırıyor.
+5. Üç arkadaşına anlatıyor.
+
+Bu pazarlama stratejisi değil. Bu **kurulumu hoş ve cüzdanı dürüst tuttuğumuz sürece kendiliğinden gerçekleşen dağıtım stratejisi**.
+
+## Önümüzdeki yıl için ne anlama geliyor
+
+Yukarıdaki pazarlardan herhangi birinde yaşıyorsanız ve bunu İngilizce okuyorsanız, USDC bakiyesi nasıl alınacağını ve CLI aracını nasıl kuracağınızı zaten biliyorsunuz. Size öğretmemize gerek yok. **Kart reddedildiği saniyede yerel dilinizdeki arama sonuçlarında görünmemiz gerekiyor**.
+
+İki şey yapıyoruz:
+
+1. **Franklin'in dokümanlarını, blog'unu ve onboarding'ini "bizi zaten bulan geliştiricilerin" dillerine çeviriyoruz.** Bu İngilizce'deki ilk yazı. Mandarin, Rusça, Bahasa, Urduca ve Arapça versiyonları gelecek — makine çevirisi değil, yerel acıyı bilen insanlar tarafından yazılmış.
+
+2. **Cüzdan deneyimini yerli yapmak.** Karaçi'deki bir geliştiricinin Franklin'i kullanmaya başlamak için "USDC on Base"in ne olduğunu öğrenmesi gerekmemeli. Anlamaları gereken sadece "cüzdana $5 yükle" olmalı — gerisini cüzdan halleder.
+
+Kartınızın AI için çalışmadığı bir yerde yaşıyorsanız, **biz bunu sizin için inşa ettik**. [Franklin'i kurun](/docs/getting-started/installation), [cüzdanı ayarlayın](/docs/getting-started/wallet-setup), dün reddedilen çağrıyı yeniden deneyin. Çıkarımın coğrafyası değişiyor. Visa'nın coğrafyasıyla eşleşmesi için bir neden yok.
+
+---
+
+_Bu yazıda adı geçen pazarlardan birinde geliştiriciyseniz ve Franklin'in dokümanlarını kendi dilinize çevirmeye yardım etmek istiyorsanız, USDC ile ödüyoruz. Çalışma örneğinizi `care@blockrun.ai` adresine gönderin._

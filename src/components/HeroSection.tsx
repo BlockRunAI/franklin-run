@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckIcon, CopyIcon, GitHubIcon } from "./icons";
+import { cdnUrl } from "@/lib/cdn";
 
 type DemoLine = { text: string; color: string };
 type Demo = { prompt: string; response: DemoLine[] };
@@ -190,10 +191,11 @@ export function HeroSection() {
       <div className="hero-glow" />
       <div className="hero-portrait">
         <Image
-          src="/images/franklin-bill.jpg"
+          src={cdnUrl("/images/franklin-bill.jpg")}
           alt=""
           fill
           priority
+          unoptimized
           sizes="(min-width: 1024px) 55vw, 100vw"
           aria-hidden="true"
         />

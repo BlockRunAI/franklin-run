@@ -1,0 +1,133 @@
+---
+title: "Multi-model atau mati: kenapa coding agent kamu tidak boleh bertaruh pada satu vendor"
+description: "Claude Code menghabiskan 27% batas mingguan satu pengguna pada loop retry tanpa output. Cursor mati berjam-jam. Copilot tidak bisa menjangkau Grok. Franklin adalah agent open-source yang me-route ke 55 model, mulai gratis tanpa daftar, dan berhenti membebani saat tidak ada yang dihasilkan."
+slug: "multi-model-or-die"
+locale: "id"
+pillar: "multi-model"
+publishedAt: "2026-03-26"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "multi-model-or-die"
+heroPrompt: "Banknote allegory of Multitudes — hooded conductor with five model voices."
+heroSeed: 7042099
+tags: ["franklin", "multi-model", "claude-code", "smart-router", "yopo", "open-source"]
+featured: true
+num: "№ 02"
+cat: "Arsitektur"
+---
+
+Keluhan paling banyak di-upvote di issue tracker Claude Code minggu ini adalah variasi dari kalimat yang sama: **"Saya bayar untuk retry yang tidak menghasilkan apa-apa."**
+
+[Issue #54143](https://github.com/anthropics/claude-code/issues/54143): sesi `codex:resume` pengguna membakar 27% batas mingguan dalam 12 jam dengan progres nol. [Issue #54177](https://github.com/anthropics/claude-code/issues/54177): "Batas pemakaian tercapai" saat pemakaian 0% di window 5 jam dan 5% mingguan. [Issue #54190](https://github.com/anthropics/claude-code/issues/54190): timeout API mengurangi token tanpa penyelesaian. [Issue #54146](https://github.com/anthropics/claude-code/issues/54146): CLI tidak mengikuti instruksi yang sangat jelas — sesi yang sama, tiga retry, tiga kegagalan berbeda, semuanya ditagih.
+
+Ini bukan bug acak. Ini **mode kegagalan struktural dari coding agent vendor tunggal**: ketika ada tepat satu model di belakang tool kamu dan tepat satu hubungan tagihan, setiap degradasi salah satu sistem langsung jatuh ke developer yang sedang berusaha rilis.
+
+Franklin dibangun di premis yang berlawanan. **Multi-model bukan fitur di roadmap Franklin. Itu arsitekturnya.** Dengan premis itu, empat hal lain — tier gratis, harga berbasis hasil, kekebalan terhadap downtime vendor, jangkauan geografis tanpa daftar — bukan hanya mungkin tapi tak terhindarkan.
+
+## Tiga pajak yang kamu bayar untuk "vendor tunggal"
+
+**Pajak vendor down.** Saat Anthropic cegukan, Claude Code berhenti. Tidak ada tombol "model berikutnya." Cursor down enam jam di Maret; ribuan developer hanya menunggu.
+
+**Pajak model drift.** Sonnet yang tajam di Januari bukan Sonnet yang sama di April. Anthropic merilis perubahan. Kadang model baru lebih tajam, kadang mengabaikan instruksi tiga baris di atas — seperti #54146.
+
+**Pajak kekuatan harga.** Saat agent dan model dari vendor sama, vendor mengontrol plafon harga. Bisa menagih retry, throttle pemakaian rendah, dan satu-satunya perbaikan adalah "tunggu reset mingguan."
+
+Agent multi-model menghapus ketiganya. Saat Anthropic terdegradasi, Franklin me-route ke Grok atau Gemini dan menyelesaikan call. **Agent tidak lagi bertaruh pada hari baik vendor tunggal.**
+
+## Smart Router dalam angka
+
+Smart Router Franklin dilatih pada **2 juta request nyata**. Mengklasifikasikan setiap prompt — coding, trading, reasoning, research — dan memilih model dengan rasio kualitas-biaya terbaik untuk kelas itu:
+
+```text
+> refactor this auth module to use JWT
+  CODING kimi-k2.6  ·  12.4K in / 2.1K out  ·  $0.0023  saved 84%
+
+> what's BTC outlook for the week?
+  TRADING grok-4-1-fast-reasoning  ·  8.2K in / 1.8K out  ·  $0.0008  saved 95%
+
+> prove this algorithm is O(n log n)
+  REASONING claude-sonnet-4.6  ·  15.1K in / 3.4K out  ·  $0.0312  premium tier
+```
+
+Empat profil per session:
+
+| Profil | Strategi | Untuk |
+|---|---|---|
+| `auto` | Rasio kualitas-biaya terbaik | Default |
+| `eco` | Termurah dengan kualitas oke | Bulk, eksplorasi |
+| `premium` | Kualitas tertinggi | Mission-critical |
+| `free` | NVIDIA + Qwen3 saja | Saldo dompet 0 |
+
+## "Gratis" bukan tier — itu default
+
+Tier "gratis" kebanyakan AI tools adalah trial 5 hari dengan kartu di file. Tier gratis Franklin beda. Pakai **NVIDIA Nemotron dan Qwen3 Coder** — yang asli gratis di sumbernya.
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+# model gratis langsung jalan. tanpa dompet, email, kartu.
+```
+
+Kamu hanya isi dompet saat ingin model frontier. **$5 USDC membuka semua model dan tool berbayar di gateway.** Tanpa langganan, tanpa minimum.
+
+Kenapa kami bisa, Cursor tidak: Cursor butuh kartu karena ekonominya bergantung pada bundling. Ekonomi kami bekerja karena **kami tidak bayar untuk model gratis** — sudah gratis di sumbernya.
+
+Konsekuensi strategis: **biaya mencoba Franklin nol, dan biaya terus pakai untuk task murah juga nol.**
+
+## YOPO: jawaban per-baris untuk "saya bayar untuk retry yang tidak hasilkan apa-apa"
+
+Model harga Franklin punya nama untuk ini — **YOPO, You Only Pay Outcome.** Bekerja karena layer pembayaran (x402 pada USDC) menyelesaikan per-call, on-chain, tanpa risiko chargeback. Kalau call gagal, merchant tidak menandatangani pembayaran. Dompet tidak didebit.
+
+Tiga konsekuensi:
+
+1. **Tanpa langganan.** Minggu ini $0,50, minggu depan $50.
+2. **Tanpa rate limit.** Tanpa plafon buatan.
+3. **Tanpa overdraft.** Saldo dompet adalah batas keras.
+
+$1 dalam kapasitas nyata:
+
+| Sumber daya | Untuk $1 |
+|---|---|
+| Token input GPT-4o | ~400K |
+| Token DeepSeek | ~7 juta |
+| Token Gemini 2.5 Flash | ~13 juta |
+| Gambar DALL-E 3 | ~20 |
+| Pencarian Exa | ~40 |
+| NVIDIA GPT-OSS / Qwen3 | tanpa batas (gratis) |
+
+## Pembanding bersebelahan
+
+|  | Coding agent | Editor IDE | Chatbot | **Franklin** |
+|---|---|---|---|---|
+| Tulis kode | ya | ya | sebagian | ya |
+| Belanja untuk kamu | tidak | tidak | tidak | **ya — USDC, x402** |
+| Beli data/API/gambar | tidak | tidak | tidak | **ya — 55+ API** |
+| Pilih model terbaik per task | tidak | tidak | tidak | **ya — 55+ model** |
+| Model harga | langganan | langganan | langganan | **YOPO** |
+| Biaya bulanan | $20–200 | $20–40 | $20+ | **$0** |
+| Rate limit | ya | ya | ya | **tidak** |
+| Bekerja saat provider down | tidak | tidak | tidak | **ya — route ke lain** |
+| Identitas | akun vendor | akun vendor | akun/email | **dompet, tanpa daftar** |
+| Mulai gratis, tanpa KYC | tidak | tidak | tidak | **ya** |
+| Sumber | tertutup | tertutup | tertutup | **Apache 2.0** |
+
+## Apa yang kamu lakukan besok
+
+Kalau kamu pengguna Claude Code dan pernah punya sesi yang membakar budget di retry — alternatif multi-model adalah dua perintah:
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+```
+
+Tier gratis menjalankan NVIDIA Nemotron dan Qwen3 Coder, tanpa kartu, tanpa daftar. Mau pin Sonnet untuk satu task — isi $5 dan pakai `--profile premium`. Model drift di instruksi — ganti profil. Provider down di tengah sesi — router fail-over ke berikutnya, call selesai, kerja jalan.
+
+[Sumber lengkap](https://github.com/blockrunai/franklin) di GitHub. [Dokumentasi smart router](/docs/user-guide/smart-router) menjelaskan keputusan routing.
+
+Taruhan Franklin sederhana: **coding agent vendor tunggal adalah produk transisional.** Agent yang me-route akan menang. Yang mengunci kamu akan kalah. Pertanyaan satu-satunya: kapan.
+
+Kalau batas mingguan kamu terbakar lagi minggu ini — itu "kapan", dan sekarang.
+
+---
+
+_Franklin open-source (Apache 2.0). 386 stars, 5M+ request, 50+ negara, tumbuh organik melalui integrasi OpenClaw dan word-of-mouth. Kami tidak menerima investasi dari penyedia model yang kami route._

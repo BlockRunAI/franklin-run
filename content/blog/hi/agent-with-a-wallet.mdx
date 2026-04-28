@@ -1,0 +1,98 @@
+---
+title: "आपके AI एजेंट को अपने बिल खुद चुकाने चाहिए"
+description: "Subscriptions उतार-चढ़ाव को सपाट कर देती हैं। API keys identity को vendor से बाँध देती हैं। समाधान बेहतर dashboard नहीं — एजेंट को उसका अपना wallet, hard cap, और अपने bank account की चाबियाँ देना है।"
+slug: "agent-with-a-wallet"
+locale: "hi"
+pillar: "agent-wallet"
+publishedAt: "2026-03-13"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "agent-with-a-wallet"
+heroPrompt: "Banknote portrait of a fox in 19th-century frock coat holding bills."
+heroSeed: 9042042
+tags: ["franklin", "agent-wallet", "x402", "usdc", "स्वायत्त-एजेंट"]
+featured: true
+lead: true
+num: "№ 01"
+cat: "थीसिस"
+---
+
+जब आप पहली बार ऐसा एजेंट बनाते हैं जो पैसे खर्च कर सकता है, दो चीज़ें एक साथ होती हैं। पहली छोटी है: एजेंट हर दो मिनट में अनुमति माँगना बंद कर देता है। दूसरी बड़ी है: एजेंट किसी काम के अर्थ में _आपका_ होना बंद कर देता है और _खुद_ बनना शुरू कर देता है — एक ऐसी चीज़ जो दुनिया में जाती है, स्वाइप करती है, retry करती है, ज़रूरी tool उठाती है, और जवाब के साथ लौटती है।
+
+वही दूसरी बात ही है जो हम वास्तव में बेच रहे हैं। Wallet नहीं। Wallet एक ज़रिया है। हम जो बेच रहे हैं वो है **hard cap के साथ autonomy** — और यही चैटबॉट और कर्मचारी के बीच का फ़र्क़ है।
+
+## Flat-rate subscription असल में किस चीज़ का पैसा लेती है
+
+कोई भी $20/month वाला AI tool उठाइए और पिछले हफ़्ते का उपयोग देखिए। तीन दिन तो आपने खोला तक नहीं। एक दिन एक लंबा agent loop चलाया जो ईमानदारी से प्रतिस्पर्धा होती तो inference में ही छह डॉलर लग जाते। Platform ने सोख लिया क्योंकि बाक़ी आठ users $20 दे रहे थे cursor blink देखने के लिए।
+
+Subscription एक **pooled-risk product** है। Heavy users को light users subsidize करते हैं। Netflix पर यह काम करता है क्योंकि देखना bounded है — दिन भर में सिर्फ़ इतने ही episodes देख सकते हैं, और delivery cost $20 के सामने round-off cents है। Autonomous agents के लिए यह काम नहीं करता:
+
+- एक user जो research loop चलाता है, दो घंटे में महीने भर के payment से ज़्यादा खर्च कर सकता है
+- Platform का एकमात्र बचाव है rate limit, और वह बदतरीन वक़्त पर ट्रिगर होता है
+- Sustainable equilibrium यह है कि **सब downgrade** हो जाते हैं, जब तक platform को क़ीमत "उचित" न लगे
+
+आपने यह महसूस किया है। January में जो Sonnet तेज़ था वही April में सुस्त लगता है। पिछले हफ़्ते जो agent task पूरा कर रहा था, इस हफ़्ते आधे रास्ते रुक कर "नई chat में जारी रखें" कह रहा है। यह bug नहीं है। यह math अपने डिज़ाइन के मुताबिक़ काम कर रही है।
+
+## Wallet क्या बदलता है
+
+एजेंट को उसका अपना wallet दीजिए — कोई corporate card नहीं जिसे आप संभाले रखें, बल्कि एक असली, छोटा, on-chain balance जिसे एजेंट खुद नियंत्रित करता है — और पूरी बातचीत पलट जाती है।
+
+आप service के **time access** के लिए पैसे देना बंद करते हैं। आप **measurable outcomes** के लिए देना शुरू करते हैं जो अपनी क़ीमत के लायक़ हों। एजेंट दूसरे users के साथ shared rate-limit pool में मुक़ाबला नहीं करता। वह खुद हर call की क़ीमत penny तक चुकाता है। Provider को हर model को सुस्त नहीं करना पड़ता और वे आख़िरकार heavy task को बिना नाराज़गी सर्व कर सकते हैं।
+
+हमने Franklin बनाया इसी को ठोस बनाने के लिए। Franklin एक USDC balance रखता है — आमतौर पर $5, $20, $100, जितना भी आप fund करें — और 55+ models, image generation, web search, trading data, और tools के पार स्वायत्त रूप से खर्च करता है। हर call एक [x402 micropayment](/docs/user-guide/smart-router) है जो USDC में settle होती है। API key नहीं। न्यूनतम monthly नहीं। Wallet ख़त्म होने तक एजेंट चलता है, फिर रुक कर पूछता है कि top-up करना है या नहीं। बस यही।
+
+<Callout type="tip" title="पाँच-सेकंड का टेस्ट">
+अगर आप अपने AI tool के failure mode को इस तरह बता सकते हैं — "जब तक मैंने Continue नहीं दबाया, यह काम नहीं कर रहा था" — तो आप एक flat-rate product के लिए पैसा दे रहे हैं जो आपको ration कर रहा है। Wallet-backed agent एक ही तरह से fail करता है: पैसे ख़त्म होने पर — जो ईमानदार है, साफ़ है, और आसानी से ठीक होता है: USDC और load कर दें।
+</Callout>
+
+## "Pay-per-call" pitch नहीं है
+
+Tech-correct version है "x402 के ज़रिए stablecoins में settle होने वाले pay-per-call APIs।" यह सच है, और बिकता नहीं।
+
+असली pitch — जो लोगों को कंधे उचकाने के बाद "रुकिए, यह तो सही है" कहलवाता है — छोटा है:
+
+> Credits की चिंता मत करो। $20 load करो। काम पर लग जाओ। Franklin पहले से बता देगा जब और चाहिए होंगे।
+
+यह वही trick है जो public-key cryptography ने पचास साल पहले की थी। Mathematicians ने RSA और Diffie-Hellman खोजे, और दुनिया को बेचा address bar में हरा ताला। Public-key cryptography कोई नहीं ख़रीदता। लोग ख़रीदते हैं "यह site safe है।" Stripe को generational company बनाने वाली चीज़ उसका API नहीं था। सात lines of code और यह वाक्य था: "बाक़ी हम संभाल लेंगे।"
+
+Wallet वही हरा ताला है। हम बेच रहे हैं "काम पर लग जाओ।"
+
+## इसके साथ आप व्यवहार में क्या करते हैं
+
+Agent-with-a-wallet pattern चार चीज़ें खोलता है जो flat-rate models में संरचनात्मक रूप से नामुमकिन हैं:
+
+### 1. एजेंट सही tool चुनता है — महंगे वाले समेत
+
+जब अगला call असली पैसे ख़र्च करेगा, तब एजेंट को सोचना पड़ता है कि वह call उन पैसों **लायक़** है या नहीं। Franklin का smart router हर request पर यह करता है — prompt देखता है, सबसे सस्ता model चुनता है जो जवाब दे सके, और सिर्फ़ तब frontier पर escalate करता है जब सस्ता वाला विफल हो। हम हमेशा-Opus की तुलना में बचत track करते हैं; एक सामान्य agentic week में: 60–80%।
+
+Subscription में यह नहीं हो सकता। Subscription का पूरा मतलब है कि क़ीमत समान रहे चाहे कैसे भी use करो। बचत का signal नहीं है। तो flat-rate agents या तो सबसे सस्ता model default करते हैं (और आप सोचते हैं उत्तर पतले क्यों हैं) या सबसे महंगा (और platform बीच में throttle करता है)।
+
+### 2. लंबी loops जो rate limit नहीं marती
+
+स्वायत्त loops — scraping, summarizing, retrying, branching — Model से सबसे बहुमूल्य चीज़ है और flat-rate plan के लिए सबसे ख़राब-fit चीज़। Research loop के दूसरे घंटे में आपको cut-off कर दिया जाता। Wallet के साथ बस चलते रहते हैं।
+
+### 3. Data ख़रीदना, सिर्फ़ inference नहीं
+
+जब आप payment कर सकते हैं, ख़रीद की दुनिया LLM tokens से आगे फैलती है। Real-time market data, on-chain analytics, image generation, video, web search। Franklin इन सबको एक ही primitive मानता है: [price tag के साथ tool](/docs/user-guide/tools)। Agent जब useful होती हैं तब call करता है। आप line item देखते हैं।
+
+### 4. सच में मायने रखने वाली Spend-per-task accounting
+
+आपने agent चलाया। $0.43 लगे। आप जवाब दे सकते हैं "क्या यह worth था?" किसी calendar month में smearing नहीं, "क्या मेरा पैसा निकला" का संशय नहीं, महीने के अंत की कोई surprise नहीं। यह boring लगता है। लेकिन कोई भी जिसने company में agent deploy करने की कोशिश की है जिसमें finance department है — कहेगा कि यह सबसे ज़्यादा माँगा जाने वाला feature है।
+
+## "मैं पैसे के बारे में सोचना नहीं चाहता"
+
+तो मत सोचो। महीने में एक बार $20 load करो, एजेंट काम करता है, आप सोचते नहीं। Wallet **आपको** cost की परवाह करने पर मजबूर नहीं करता; यह आपको **अनुमति देता है** परवाह करने की जब आप चाहें। यह कड़ाई से बड़ा product है — subscription सिर्फ़ "परवाह न करने" की अनुमति देती है।
+
+दूसरा version — API keys वाले agents — आपको ग़लत चीज़ की परवाह करने पर मजबूर करता है। आप परवाह करते हैं कि कौन-सी provider की कौन-सी key किस env file में है, कौन-सी key rotate हुई है, किस dashboard में login करके किस prepaid balance को top up करना है। एक wallet जो USDC रखता है, के साथ आपके पास देखने को एक number है और refill करने को एक।
+
+## जो invariant हम पर bet लगाते हैं
+
+Flat-rate AI एक transitional product है। यह इसलिए मौजूद है क्योंकि तीन साल पहले crypto rails ready नहीं थे और credit cards 0.001¢ inference call settle करने के लिए बहुत मोटे थे। अब ready हैं। x402 cents — और cents के दसवें हिस्से — को natively, on-chain, बिना chargeback risk और बिना platform-middleman rationing के settle करता है।
+
+जब rails काम करती हैं, हर agent अंततः अपना balance रखता है। इसलिए नहीं कि crypto cool है, इसलिए नहीं कि वैचारिक रूप से सही है, बल्कि इसलिए कि **flat-rate-rationed agents balance-backed agents से quality, autonomy, और "आप क्या ख़रीद रहे हैं" की honesty में हारते हैं।**
+
+Wallet product नहीं है। Product है एजेंट — अपना काम करने को आज़ाद। Wallet वह चीज़ है जो एजेंट को आख़िरकार ऐसा करने में सक्षम बनाती है।
+
+---
+
+अगर आज़माना चाहते हैं, [installation दो commands है](/docs/getting-started/installation) और wallet ख़ुद generate होता है। $5 से fund करें यह देखने के लिए कि एक एजेंट कैसा महसूस होता है जब उसे कोई rate-limit नहीं कर रहा। आमतौर पर इतना ही काफ़ी होता है।

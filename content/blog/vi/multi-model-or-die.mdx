@@ -1,0 +1,129 @@
+---
+title: "Đa mô hình hoặc chết: tại sao agent code của bạn không nên đặt cược vào một nhà cung cấp"
+description: "Claude Code đã đốt 27% giới hạn hàng tuần của một người dùng vào các vòng retry với output bằng không. Cursor sập hàng giờ. Copilot không thể chạm tới Grok. Franklin là agent open-source định tuyến qua 55 mô hình, bắt đầu miễn phí không cần đăng ký, và ngừng tính phí ngay khoảnh khắc không có gì để bàn giao."
+slug: "multi-model-or-die"
+locale: "vi"
+pillar: "multi-model"
+publishedAt: "2026-02-26"
+updatedAt: "2026-04-28"
+author: "BlockRun"
+translationOf: "multi-model-or-die"
+heroPrompt: "Banknote allegory of Multitudes."
+heroSeed: 12042099
+tags: ["franklin", "đa-mô-hình", "claude-code", "smart-router", "yopo", "open-source"]
+featured: true
+num: "№ 02"
+cat: "Kiến trúc"
+---
+
+Phàn nàn được upvote nhiều nhất trên issue tracker Claude Code tuần này là biến thể của cùng một câu: **"Tôi đã trả tiền cho retry không tạo ra gì."**
+
+[Issue #54143](https://github.com/anthropics/claude-code/issues/54143): phiên `codex:resume` của một user đốt 27% giới hạn hàng tuần trong 12 giờ, không tiến triển. [Issue #54177](https://github.com/anthropics/claude-code/issues/54177): "Đã đạt giới hạn sử dụng" khi sử dụng 0% / 5%. [Issue #54190](https://github.com/anthropics/claude-code/issues/54190): API timeout trừ token mà không hoàn thành. [Issue #54146](https://github.com/anthropics/claude-code/issues/54146): CLI không tuân theo chỉ dẫn rất rõ ràng.
+
+Đây không phải bug ngẫu nhiên. Đây là **chế độ thất bại có cấu trúc của agent code đơn nhà cung cấp**: khi sau công cụ của bạn chỉ có một mô hình và một mối quan hệ thanh toán, mọi xuống cấp ở một trong hai hệ thống đều rơi thẳng xuống developer đang cố ship.
+
+Franklin được xây dựng trên tiền đề ngược lại. **Đa mô hình không phải tính năng trong roadmap Franklin. Nó là kiến trúc.** Với tiền đề đó, bốn cái còn lại — tier miễn phí, định giá theo kết quả, miễn dịch downtime, tầm với địa lý không cần đăng ký — không chỉ khả thi mà tất yếu.
+
+## Ba loại thuế của "đơn nhà cung cấp"
+
+**Thuế nhà cung cấp sập.** Khi Anthropic nấc, Claude Code dừng. Không có nút "mô hình kế tiếp." Cursor sập sáu giờ trong tháng Ba.
+
+**Thuế trôi mô hình.** Sonnet sắc sảo tháng Một không phải Sonnet tháng Tư. Anthropic ship thay đổi.
+
+**Thuế quyền lực giá.** Khi agent và mô hình cùng nhà cung cấp, nhà cung cấp kiểm soát trần giá. Có thể tính phí retry, throttle ở mức sử dụng thấp, fix duy nhất là "chờ giới hạn hàng tuần làm mới."
+
+Agent đa mô hình loại bỏ cả ba. Anthropic xuống cấp — Franklin định tuyến sang Grok hoặc Gemini và hoàn tất cuộc gọi. **Agent không còn đặt cược vào ngày tốt của bất kỳ nhà cung cấp đơn lẻ nào.**
+
+## Smart Router với con số cụ thể
+
+Smart Router của Franklin được huấn luyện trên **2 triệu request thật**. Phân loại mọi prompt và chọn mô hình có tỷ lệ chất lượng-chi phí tốt nhất cho lớp đó:
+
+```text
+> refactor this auth module to use JWT
+  CODING kimi-k2.6  ·  12.4K in / 2.1K out  ·  $0.0023  saved 84%
+
+> what's BTC outlook for the week?
+  TRADING grok-4-1-fast-reasoning  ·  8.2K in / 1.8K out  ·  $0.0008  saved 95%
+
+> prove this algorithm is O(n log n)
+  REASONING claude-sonnet-4.6  ·  15.1K in / 3.4K out  ·  $0.0312  premium tier
+```
+
+Bốn profile có thể ghim theo session:
+
+| Profile | Chiến lược | Khi nào |
+|---|---|---|
+| `auto` | Tốt nhất chất lượng-chi phí | Mặc định |
+| `eco` | Rẻ nhất chất lượng ổn | Khối lượng |
+| `premium` | Chất lượng cao nhất | Quan trọng |
+| `free` | Chỉ NVIDIA + Qwen3 | Số dư 0 |
+
+## "Free" không phải một tier — là mặc định
+
+Hầu hết "tier free" trong công cụ AI là trial 5 ngày với thẻ. Tier free của Franklin khác. Dùng **NVIDIA Nemotron và Qwen3 Coder** — thực sự miễn phí ở nguồn:
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+# mô hình free chạy ngay. Không ví, email, thẻ.
+```
+
+Chỉ nạp ví khi bạn muốn mô hình tiên phong. **$5 USDC mở khóa mọi mô hình trả phí và công cụ của gateway.** Không đăng ký, không tối thiểu.
+
+## YOPO: câu trả lời theo từng dòng cho "tôi trả tiền cho retry không tạo ra gì"
+
+Mô hình giá của Franklin có tên — **YOPO, You Only Pay Outcome.** Hoạt động vì lớp thanh toán (x402 trên USDC) thanh toán theo cuộc gọi, on-chain, không rủi ro chargeback. Nếu cuộc gọi thất bại, merchant không ký thanh toán. Ví không bị trừ.
+
+Ba hệ quả:
+
+1. **Không subscription.** Tuần này $0,50, tuần sau $50.
+2. **Không rate limit.** Không trần nhân tạo.
+3. **Không thấu chi.** Số dư ví là giới hạn cứng.
+
+$1 trong dung lượng thực:
+
+| Tài nguyên | Cho $1 |
+|---|---|
+| GPT-4o input tokens | ~400K |
+| DeepSeek tokens | ~7 triệu |
+| Gemini 2.5 Flash tokens | ~13 triệu |
+| Hình DALL-E 3 | ~20 |
+| Tìm kiếm Exa | ~40 |
+| NVIDIA GPT-OSS / Qwen3 | không giới hạn (free) |
+
+## So sánh cạnh nhau
+
+|  | Agent code | Editor IDE | Chatbot | **Franklin** |
+|---|---|---|---|---|
+| Viết code | có | có | một phần | có |
+| Tiêu tiền hộ bạn | không | không | không | **có — USDC, x402** |
+| Mua data/API/hình | không | không | không | **có — 55+ API** |
+| Mô hình tốt nhất per task | không | không | không | **có — 55+ mô hình** |
+| Mô hình giá | subscription | subscription | subscription | **YOPO** |
+| Phí tháng | $20–200 | $20–40 | $20+ | **$0** |
+| Rate-limit | có | có | có | **không** |
+| Hoạt động khi provider sập | không | không | không | **có — định tuyến sang khác** |
+| Danh tính | tài khoản vendor | tài khoản vendor | tài khoản/email | **ví, không đăng ký** |
+| Bắt đầu free, không KYC | không | không | không | **có** |
+| Source | đóng | đóng | đóng | **Apache 2.0** |
+
+## Bạn làm gì ngày mai
+
+Nếu bạn đang là user Claude Code và từng có session đốt budget ở retry — lựa chọn đa mô hình là hai lệnh:
+
+```bash
+npm install -g @blockrun/franklin
+franklin
+```
+
+Bạn ở tier free chạy NVIDIA Nemotron và Qwen3 Coder, không thẻ, không đăng ký. Muốn ghim Sonnet cho một task — nạp $5 và dùng `--profile premium`. Provider sập — router fail-over sang kế tiếp.
+
+[Source đầy đủ](https://github.com/blockrunai/franklin) trên GitHub. [Docs smart router](/docs/user-guide/smart-router).
+
+Cược của Franklin thẳng thắn: **agent code đơn nhà cung cấp là sản phẩm chuyển tiếp.** Agent định tuyến sẽ thắng. Câu hỏi duy nhất: khi nào.
+
+Nếu giới hạn hàng tuần của bạn lại bị đốt tuần này — "khi nào" đó chính là bây giờ.
+
+---
+
+_Franklin open-source (Apache 2.0). 386 stars, 5M+ requests, 50+ quốc gia, tăng trưởng tự nhiên qua tích hợp OpenClaw và truyền miệng. Chúng tôi không nhận đầu tư từ các nhà cung cấp mô hình mà chúng tôi định tuyến tới._
