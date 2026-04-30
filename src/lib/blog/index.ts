@@ -3,28 +3,15 @@ import path from "node:path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
 
-export const LOCALES = [
-  "en",
-  "zh-CN",
-  "ja",
-  "ko",
-  "ru",
-  "id",
-  "ar",
-  "hi",
-  "ur",
-  "pt-BR",
-  "vi",
-  "tr",
-  "fa",
-] as const;
-export type Locale = (typeof LOCALES)[number];
-
-export const RTL_LOCALES: ReadonlySet<Locale> = new Set(["ar", "ur", "fa"]);
-
-export function isRTL(locale: Locale): boolean {
-  return RTL_LOCALES.has(locale);
-}
+export {
+  LOCALES,
+  LOCALE_META,
+  RTL_LOCALES,
+  isRTL,
+  isValidLocale,
+  type Locale,
+} from "@/lib/locales";
+import { LOCALES, type Locale } from "@/lib/locales";
 
 export const PILLARS = {
   "agent-wallet": {
@@ -45,29 +32,6 @@ export const PILLARS = {
   },
 } as const;
 export type Pillar = keyof typeof PILLARS;
-
-export const LOCALE_META: Record<
-  Locale,
-  { label: string; nativeLabel: string; htmlLang: string }
-> = {
-  en: { label: "English", nativeLabel: "English", htmlLang: "en" },
-  "zh-CN": { label: "Chinese", nativeLabel: "中文", htmlLang: "zh-CN" },
-  ja: { label: "Japanese", nativeLabel: "日本語", htmlLang: "ja" },
-  ko: { label: "Korean", nativeLabel: "한국어", htmlLang: "ko" },
-  ru: { label: "Russian", nativeLabel: "Русский", htmlLang: "ru" },
-  id: { label: "Indonesian", nativeLabel: "Bahasa Indonesia", htmlLang: "id" },
-  ar: { label: "Arabic", nativeLabel: "العربية", htmlLang: "ar" },
-  hi: { label: "Hindi", nativeLabel: "हिन्दी", htmlLang: "hi" },
-  ur: { label: "Urdu", nativeLabel: "اردو", htmlLang: "ur" },
-  "pt-BR": {
-    label: "Portuguese (BR)",
-    nativeLabel: "Português",
-    htmlLang: "pt-BR",
-  },
-  vi: { label: "Vietnamese", nativeLabel: "Tiếng Việt", htmlLang: "vi" },
-  tr: { label: "Turkish", nativeLabel: "Türkçe", htmlLang: "tr" },
-  fa: { label: "Persian", nativeLabel: "فارسی", htmlLang: "fa" },
-};
 
 export interface PostFrontmatter {
   title: string;
@@ -109,10 +73,6 @@ function safeReadDir(dir: string): string[] {
   } catch {
     return [];
   }
-}
-
-export function isValidLocale(value: string): value is Locale {
-  return (LOCALES as readonly string[]).includes(value);
 }
 
 function parseFile(filepath: string, locale: Locale): Post | null {

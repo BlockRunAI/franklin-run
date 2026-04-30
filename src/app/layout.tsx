@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Instrument_Serif, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 import { cdnUrl } from "@/lib/cdn";
+import { LOCALES, LOCALE_META } from "@/lib/blog";
+import { homeUrl } from "@/lib/home";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,12 +30,18 @@ const notoSerifSC = Noto_Serif_SC({
 
 const SITE_URL = "https://franklin.run";
 
+const homeLanguages: Record<string, string> = {};
+for (const l of LOCALES) {
+  homeLanguages[LOCALE_META[l].htmlLang] = `${SITE_URL}${homeUrl(l)}`;
+}
+homeLanguages["x-default"] = `${SITE_URL}/`;
+
 export const metadata: Metadata = {
   title: "Franklin — The AI Agent with a Wallet",
   description:
     "The AI agent with a wallet. It holds your USDC and spends it for you — 55+ models, trading data, image generation, video generation, web search. One wallet, no API keys. Open source.",
   metadataBase: new URL(SITE_URL),
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", languages: homeLanguages },
   keywords: [
     "AI agent",
     "economic agent",

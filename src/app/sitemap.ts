@@ -8,6 +8,7 @@ import {
   getCanonicalSlug,
   getTranslations,
 } from "@/lib/blog";
+import { homeUrl } from "@/lib/home";
 import { getAllPages } from "@/lib/docs-navigation";
 
 const SITE_URL = "https://franklin.run";
@@ -16,13 +17,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const entries: MetadataRoute.Sitemap = [];
 
-  // Home
-  entries.push({
-    url: `${SITE_URL}/`,
-    lastModified: now,
-    changeFrequency: "weekly",
-    priority: 1,
-  });
+  // Home — emit one entry per locale with hreflang to all sibling translations.
+  const homeLanguages: Record<string, string> = {};
+  for (const l of LOCALES) {
+    homeLanguages[LOCALE_META[l].htmlLang] = `${SITE_URL}${homeUrl(l)}`;
+  }
+  homeLanguages["x-default"] = `${SITE_URL}/`;
+  for (const locale of LOCALES) {
+    entries.push({
+      url: `${SITE_URL}${homeUrl(locale)}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: locale === "en" ? 1 : 0.9,
+      alternates: { languages: homeLanguages },
+    });
+  }
 
   // Docs (English only for now)
   for (const page of getAllPages()) {

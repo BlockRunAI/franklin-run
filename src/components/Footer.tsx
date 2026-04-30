@@ -1,7 +1,21 @@
 import Link from "next/link";
 import { GitHubIcon, TelegramIcon, XIcon } from "./icons";
+import { en as defaultDict } from "@/lib/home/en";
+import type { HomeDict } from "@/lib/home/types";
+import { homeUrl, LOCALES, type Locale } from "@/lib/locales";
+import { LocaleSwitcher } from "@/components/blog/LocaleSwitcher";
 
-export function Footer() {
+interface FooterProps {
+  dict?: HomeDict;
+  locale?: Locale;
+}
+
+export function Footer({ dict = defaultDict, locale = "en" }: FooterProps) {
+  const home = homeUrl(locale);
+  const featuresHref = `${home}#features`;
+  const compareHref = `${home}#compare`;
+  const getStartedHref = `${home}#get-started`;
+
   return (
     <footer className="site-footer grain-dark">
       <div className="footer-top">
@@ -14,25 +28,22 @@ export function Footer() {
       <div className="footer-main">
         <div className="footer-grid">
           <div className="footer-brand">
-            <Link href="/" className="logo">
+            <Link href={home} className="logo">
               <span className="footer-brand-diamond">◆</span>
               <span className="footer-name">Franklin</span>
             </Link>
-            <p className="footer-tagline">
-              The AI agent with a wallet. It holds your USDC and spends it toward
-              outcomes. Apache 2.0.
-            </p>
+            <p className="footer-tagline">{dict.footer.tagline}</p>
             <p>
-              A{" "}
+              {dict.footer.aboutPre}{" "}
               <a
                 href="https://blockrun.ai"
                 style={{ color: "#10b981" }}
                 target="_blank"
                 rel="noreferrer"
               >
-                BlockRun.ai
+                {dict.footer.aboutLink}
               </a>{" "}
-              product. Powered by the x402 micropayment protocol.
+              {dict.footer.aboutPost}
             </p>
             <div className="footer-socials">
               <a
@@ -61,23 +72,23 @@ export function Footer() {
               </a>
             </div>
             <div className="footer-cta">
-              <a className="btn-primary" href="#get-started">
-                Get Started
+              <a className="btn-primary" href={getStartedHref}>
+                {dict.footer.ctaGetStarted}
               </a>
             </div>
           </div>
 
           <div className="footer-col">
-            <h4 className="engraved">Product</h4>
+            <h4 className="engraved">{dict.footer.colProduct}</h4>
             <ul>
               <li>
-                <a href="#features">Features</a>
+                <a href={featuresHref}>{dict.footer.linkFeatures}</a>
               </li>
               <li>
-                <a href="#compare">Compare</a>
+                <a href={compareHref}>{dict.footer.linkCompare}</a>
               </li>
               <li>
-                <a href="#get-started">Get Started</a>
+                <a href={getStartedHref}>{dict.footer.linkGetStarted}</a>
               </li>
               <li>
                 <a
@@ -85,36 +96,36 @@ export function Footer() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  npm
+                  {dict.footer.linkNpm}
                 </a>
               </li>
             </ul>
           </div>
 
           <div className="footer-col">
-            <h4 className="engraved">Resources</h4>
+            <h4 className="engraved">{dict.footer.colResources}</h4>
             <ul>
               <li>
-                <a href="/docs">Documentation</a>
+                <a href="/docs">{dict.footer.linkDocs}</a>
               </li>
               <li>
-                <a href="#blog">Blog</a>
+                <a href={`/blog/${locale}`}>{dict.footer.linkBlog}</a>
               </li>
               <li>
                 <a href="https://blockrun.ai" target="_blank" rel="noreferrer">
-                  BlockRun Gateway
+                  {dict.footer.linkGateway}
                 </a>
               </li>
               <li>
                 <a href="https://x402.org" target="_blank" rel="noreferrer">
-                  x402 Protocol
+                  {dict.footer.linkX402}
                 </a>
               </li>
             </ul>
           </div>
 
           <div className="footer-col">
-            <h4 className="engraved">Community</h4>
+            <h4 className="engraved">{dict.footer.colCommunity}</h4>
             <ul>
               <li>
                 <a
@@ -122,37 +133,34 @@ export function Footer() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  GitHub
+                  {dict.footer.linkGitHub}
                 </a>
               </li>
               <li>
                 <a href="https://x.com/BlockRunAI" target="_blank" rel="noreferrer">
-                  X / Twitter
+                  {dict.footer.linkX}
                 </a>
               </li>
               <li>
                 <a href="https://t.me/blockrunAI" target="_blank" rel="noreferrer">
-                  Telegram
+                  {dict.footer.linkTelegram}
                 </a>
               </li>
             </ul>
           </div>
         </div>
 
+        <div className="footer-locale" style={{ marginTop: 56, marginBottom: 24 }}>
+          <LocaleSwitcher
+            current={locale}
+            available={[...LOCALES]}
+            hrefForLocale={(l) => homeUrl(l)}
+          />
+        </div>
+
         <div className="footer-bot">
-          <span>
-            © 2026{" "}
-            <a href="https://blockrun.ai" target="_blank" rel="noreferrer">
-              BlockRun.ai
-            </a>
-            . All rights reserved.
-          </span>
-          <span className="footer-bot-r">
-            The autonomous economic agent by{" "}
-            <a href="https://blockrun.ai" target="_blank" rel="noreferrer">
-              BlockRun.ai
-            </a>
-          </span>
+          <span>{dict.footer.copyright}</span>
+          <span className="footer-bot-r">{dict.footer.bottomRight}</span>
         </div>
       </div>
     </footer>

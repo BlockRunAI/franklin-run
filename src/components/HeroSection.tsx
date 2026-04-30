@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckIcon, CopyIcon, GitHubIcon } from "./icons";
 import { cdnUrl } from "@/lib/cdn";
+import { en as defaultDict } from "@/lib/home/en";
+import type { HomeDict } from "@/lib/home/types";
 
 type DemoLine = { text: string; color: string };
 type Demo = { prompt: string; response: DemoLine[] };
@@ -159,7 +161,7 @@ function useTerminalDemo() {
   return { prompt, responseLines };
 }
 
-function InstallBox() {
+function InstallBox({ ariaLabel }: { ariaLabel: string }) {
   const [copied, setCopied] = useState(false);
   const copy = useCallback(() => {
     if (typeof navigator === "undefined") return;
@@ -172,7 +174,7 @@ function InstallBox() {
     <div className="install-box">
       <span className="sigil">$</span>
       <code>{INSTALL_CMD}</code>
-      <button type="button" aria-label="Copy install command" onClick={copy}>
+      <button type="button" aria-label={ariaLabel} onClick={copy}>
         {copied ? (
           <CheckIcon className="h-[18px] w-[18px]" />
         ) : (
@@ -183,8 +185,13 @@ function InstallBox() {
   );
 }
 
-export function HeroSection() {
+interface HeroSectionProps {
+  dict?: HomeDict;
+}
+
+export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
   const { prompt, responseLines } = useTerminalDemo();
+  const h = dict.hero;
 
   return (
     <section className="hero grain-dark guilloche">
@@ -214,28 +221,27 @@ export function HeroSection() {
         <div className="hero-inner">
           <div className="eyebrow">
             <span className="line" />
-            <span className="engraved label">The Autonomous Economic Agent</span>
+            <span className="engraved label">{h.eyebrow}</span>
           </div>
 
           <h1 className="hero-title">
-            The AI agent
+            {h.titleLine1}
             <br />
-            with a{" "}
+            {h.titleLine2Pre}{" "}
             <em className="shimmer" style={{ fontStyle: "italic" }}>
-              wallet
+              {h.titleLine2Em}
             </em>
-            .
+            {h.titleLine2Post}
           </h1>
 
           <p className="hero-sub">
-            Other agents write code. Franklin writes code{" "}
-            <em style={{ fontStyle: "italic" }}>and spends money</em> to get it done —
-            models, data, images, search. You set the budget. It runs it.
+            {h.subPre}{" "}
+            <em style={{ fontStyle: "italic" }}>{h.subEm}</em> {h.subPost}
           </p>
 
           <div className="hero-ctas">
             <a className="btn-primary lg" href="#get-started">
-              Get Started Free
+              {h.ctaPrimary}
             </a>
             <a
               className="btn-outline lg"
@@ -244,26 +250,26 @@ export function HeroSection() {
               rel="noreferrer"
             >
               <GitHubIcon className="h-4 w-4" />
-              Star on GitHub
+              {h.ctaSecondary}
             </a>
           </div>
 
           <div className="install">
-            <InstallBox />
+            <InstallBox ariaLabel={h.copyInstallAriaLabel} />
           </div>
 
           <div className="pill-row">
             <span>
-              <span className="gold">YOPO</span> — You Only Pay Outcome
+              <span className="gold">YOPO</span> — {h.pillYopoSuffix}
             </span>
             <span className="sep">◆</span>
             <span>
-              USDC on <span className="white">Base</span> &amp;{" "}
+              {h.pillUsdcBefore} <span className="white">Base</span> &amp;{" "}
               <span className="white">Solana</span>
             </span>
             <span className="sep">◆</span>
             <span>
-              Native <span className="white">x402</span>
+              {h.pillX402Before} <span className="white">x402</span>
             </span>
           </div>
 
@@ -299,7 +305,7 @@ export function HeroSection() {
               <span>·</span>
               <span className="cost">$4.80 USDC</span>
               <span>·</span>
-              <span>esc to abort</span>
+              <span>{h.termAbort}</span>
             </div>
           </div>
         </div>

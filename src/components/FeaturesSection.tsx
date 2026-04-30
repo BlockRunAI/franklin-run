@@ -1,3 +1,6 @@
+import { en as defaultDict } from "@/lib/home/en";
+import type { HomeDict } from "@/lib/home/types";
+
 type Feature = {
   num: string;
   label: string;
@@ -272,64 +275,27 @@ function PreferenceStack() {
   );
 }
 
-const FEATURES: Feature[] = [
-  {
-    num: "01",
-    label: "The Wallet",
-    title: "Software that can spend money.",
-    desc: (
-      <>
-        Franklin holds USDC on Base or Solana. When it needs a model, a data feed, or
-        an image — it signs a payment and takes it. Non-custodial. Your keys stay on
-        your machine. You set a cap; it enforces it.
-      </>
-    ),
-    visual: <WalletBill />,
-  },
-  {
-    num: "02",
-    label: "Trading",
-    title: "Buy data. Read the tape. Decide.",
-    desc: (
-      <>
-        Ask &ldquo;how&rsquo;s BTC looking?&rdquo; and Franklin purchases live prices,
-        computes RSI, MACD, Bollinger, and volatility locally, then returns a signal.
-        One prompt. No five browser tabs, no API key spaghetti.
-      </>
-    ),
-    visual: <SignalCard />,
-  },
-  {
-    num: "03",
-    label: "Smart Router",
-    title: "55+ models. It picks. You save.",
-    desc: (
-      <>
-        No single model is best at everything. The router classifies every request and
-        routes in under a millisecond. Trained on 2M+ real requests, continuously
-        scored by Elo, adapts to your overrides. Up to{" "}
-        <em style={{ fontStyle: "italic", color: "var(--gold-dim)" }}>89% savings</em>{" "}
-        vs. always-Opus.
-      </>
-    ),
-    visual: <RoutingLedger />,
-  },
-  {
-    num: "04",
-    label: "Learns You",
-    title: "Gets smarter each session.",
-    desc: (
-      <>
-        Claude Code forgets between runs. Franklin extracts preferences — language,
-        style, model choices, workflow — and injects them into the next session.
-        Confirmed patterns gain confidence. Stale ones decay at 30 days.
-      </>
-    ),
-    visual: <PreferenceStack />,
-  },
+const VISUALS = [
+  <WalletBill key="wallet" />,
+  <SignalCard key="signal" />,
+  <RoutingLedger key="ledger" />,
+  <PreferenceStack key="prefs" />,
 ];
 
-export function FeaturesSection() {
+interface FeaturesSectionProps {
+  dict?: HomeDict;
+}
+
+export function FeaturesSection({ dict = defaultDict }: FeaturesSectionProps) {
+  const f = dict.features;
+  const features: Feature[] = f.cards.map((card, i) => ({
+    num: String(i + 1).padStart(2, "0"),
+    label: card.label,
+    title: card.title,
+    desc: card.desc,
+    visual: VISUALS[i] ?? null,
+  }));
+
   return (
     <section id="features" className="light grain">
       <div className="top-rule" />
@@ -338,34 +304,36 @@ export function FeaturesSection() {
           <div>
             <div className="eyebrow">
               <span className="line" />
-              <span className="engraved">Four Chapters</span>
+              <span className="engraved">{f.eyebrow}</span>
             </div>
             <h2 className="section-h">
-              What a wallet
+              {f.titleTop}
               <br />
-              <em style={{ fontStyle: "italic", color: "var(--gold-dim)" }}>changes</em>.
+              <em style={{ fontStyle: "italic", color: "var(--gold-dim)" }}>
+                {f.titleEm}
+              </em>
+              .
             </h2>
           </div>
           <p className="features-intro">
-            Coding intelligence is table stakes. The difference is{" "}
-            <em style={{ fontStyle: "italic" }}>purchasing power</em> — and the quiet
-            discipline that comes with an agent that must balance its own books.
+            {f.introPre}{" "}
+            <em style={{ fontStyle: "italic" }}>{f.introEm}</em> {f.introPost}
           </p>
         </div>
 
-        {FEATURES.map((f) => (
-          <div key={f.num} className="feat-block">
+        {features.map((feat) => (
+          <div key={feat.num} className="feat-block">
             <div className="feat-left">
               <div className="feat-left-sticky">
-                <div className="feat-numeral">{f.num}</div>
-                <div className="engraved feat-label">{f.label}</div>
+                <div className="feat-numeral">{feat.num}</div>
+                <div className="engraved feat-label">{feat.label}</div>
                 <div className="feat-left-rule" />
               </div>
             </div>
             <div>
-              <h3 className="feat-h">{f.title}</h3>
-              <p className="feat-desc">{f.desc}</p>
-              <div className="feat-visual">{f.visual}</div>
+              <h3 className="feat-h">{feat.title}</h3>
+              <p className="feat-desc">{feat.desc}</p>
+              <div className="feat-visual">{feat.visual}</div>
             </div>
           </div>
         ))}

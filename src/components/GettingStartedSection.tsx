@@ -1,51 +1,37 @@
-const STEPS: Array<{
-  num: string;
-  title: string;
-  body: string;
-  code: string;
-}> = [
-  {
-    num: "01",
-    title: "Install",
-    body: "One npm command. Node 20+. macOS, Linux, WSL.",
-    code: "npm i -g @blockrun/franklin",
-  },
-  {
-    num: "02",
-    title: "Run free",
-    body: "Free NVIDIA Nemotron & Qwen3 Coder out of the box. No wallet required.",
-    code: "franklin",
-  },
-  {
-    num: "03",
-    title: "Fund ($5 is plenty)",
-    body: "Generate a Base or Solana wallet. Send USDC. Unlock every frontier model.",
-    code: "franklin setup base",
-  },
-  {
-    num: "04",
-    title: "State an outcome",
-    body: "Code, trade, research, generate — Franklin picks, pays, reports, stops.",
-    code: "franklin --trust",
-  },
+import { en as defaultDict } from "@/lib/home/en";
+import type { HomeDict } from "@/lib/home/types";
+
+const STEP_CODES = [
+  "npm i -g @blockrun/franklin",
+  "franklin",
+  "franklin setup base",
+  "franklin --trust",
 ];
 
-const SLASH: Array<{ cmd: string; desc: string }> = [
-  { cmd: "/model [name]", desc: "Interactive picker or direct switch" },
-  { cmd: "/plan · /execute", desc: "Read-only planning, then run" },
-  { cmd: "/ultrathink <q>", desc: "Deep reasoning for hard problems" },
-  { cmd: "/compact", desc: "Structured context compression" },
-  { cmd: "/search <q>", desc: "Search the codebase" },
-  { cmd: "/session-search", desc: "Full-text across past sessions" },
-  { cmd: "/history · /resume", desc: "Inspect or restore any session" },
-  { cmd: "/commit · /push · /pr", desc: "Git workflow helpers" },
-  { cmd: "/review · /fix · /test", desc: "One-shot review, bugfix, tests" },
-  { cmd: "/cost · /wallet", desc: "Session spend + address + balance" },
-  { cmd: "/insights [--days N]", desc: "Spend breakdowns and trends" },
-  { cmd: "/learnings", desc: "What Franklin has picked up" },
+const SLASH_CMDS = [
+  "/model [name]",
+  "/plan · /execute",
+  "/ultrathink <q>",
+  "/compact",
+  "/search <q>",
+  "/session-search",
+  "/history · /resume",
+  "/commit · /push · /pr",
+  "/review · /fix · /test",
+  "/cost · /wallet",
+  "/insights [--days N]",
+  "/learnings",
 ];
 
-export function GettingStartedSection() {
+interface GettingStartedSectionProps {
+  dict?: HomeDict;
+}
+
+export function GettingStartedSection({
+  dict = defaultDict,
+}: GettingStartedSectionProps) {
+  const g = dict.getStarted;
+
   return (
     <section id="get-started" className="dark-section grain-dark">
       <div className="glow" />
@@ -53,15 +39,16 @@ export function GettingStartedSection() {
       <div className="inner">
         <div className="eyebrow">
           <span className="line" />
-          <span className="engraved label">Pricing · Install · Fund</span>
+          <span className="engraved label">{g.eyebrow}</span>
         </div>
         <h2 className="dark-h">
-          Pay for the{" "}
+          {g.titlePre}{" "}
           <em style={{ fontStyle: "italic" }} className="shimmer">
-            outcome
+            {g.titleEm}
           </em>
-          ,<br />
-          nothing else.
+          {g.titleAfterEm}
+          <br />
+          {g.titlePost}
         </h2>
 
         <div className="stamp-402">
@@ -72,25 +59,21 @@ export function GettingStartedSection() {
           <div className="stamp-row">
             <span className="stamp-num">402</span>
             <div className="stamp-body">
-              <div className="engraved stamp-label">You Only Pay Outcome · YOPO</div>
-              <div className="stamp-title">Provider cost + 5%, signed per action.</div>
+              <div className="engraved stamp-label">{g.yopoLabel}</div>
+              <div className="stamp-title">{g.yopoTitle}</div>
               <div className="stamp-rule" />
-              <p className="stamp-p">
-                No subscription (you don&rsquo;t pay for access). No pay-per-call (you
-                don&rsquo;t pay for failed tries). The wallet balance is the hard cap.
-                When it hits zero, Franklin stops. That&rsquo;s the whole pricing model.
-              </p>
+              <p className="stamp-p">{g.yopoBody}</p>
             </div>
           </div>
         </div>
 
         <div className="steps">
-          {STEPS.map((s) => (
-            <div key={s.num} className="step">
-              <div className="step-num">{s.num}</div>
+          {g.steps.map((s, i) => (
+            <div key={i} className="step">
+              <div className="step-num">{String(i + 1).padStart(2, "0")}</div>
               <h4>{s.title}</h4>
               <p>{s.body}</p>
-              <code>{s.code}</code>
+              <code>{STEP_CODES[i]}</code>
             </div>
           ))}
         </div>
@@ -102,7 +85,7 @@ export function GettingStartedSection() {
             target="_blank"
             rel="noreferrer"
           >
-            Install from npm
+            {g.ctaInstall}
           </a>
           <a
             className="btn-outline lg"
@@ -110,20 +93,20 @@ export function GettingStartedSection() {
             target="_blank"
             rel="noreferrer"
           >
-            View on GitHub
+            {g.ctaGitHub}
           </a>
         </div>
 
         <div style={{ marginTop: 80 }}>
           <div className="eyebrow">
             <span className="line" />
-            <span className="engraved label">Slash Commands · 18 built-in</span>
+            <span className="engraved label">{g.slashEyebrow}</span>
           </div>
           <div className="slash-wrap">
-            {SLASH.map((s) => (
-              <div key={s.cmd} className="slash">
-                <div className="slash-cmd">{s.cmd}</div>
-                <div className="slash-desc">{s.desc}</div>
+            {SLASH_CMDS.map((cmd, i) => (
+              <div key={cmd} className="slash">
+                <div className="slash-cmd">{cmd}</div>
+                <div className="slash-desc">{g.slashDescs[i]}</div>
               </div>
             ))}
           </div>

@@ -1,70 +1,16 @@
-type Row = {
-  label: string;
-  saas: string;
-  ppc: string;
-  franklin: React.ReactNode;
-  saasNeg?: boolean;
-  ppcNeg?: boolean;
-};
+import { en as defaultDict } from "@/lib/home/en";
+import type { HomeDict } from "@/lib/home/types";
 
-const ROWS: Row[] = [
-  {
-    label: "You pay for",
-    saas: "Access, whether used or not",
-    ppc: "Every attempt, including dead-ends",
-    franklin: <strong>The outcome. Once.</strong>,
-  },
-  {
-    label: "Monthly fee",
-    saas: "$20 — $200",
-    ppc: "$0, plus usage",
-    franklin: <strong>$0. Pay only what you spend.</strong>,
-  },
-  {
-    label: "Rate limits",
-    saas: "Yes. Tightens when you need it most.",
-    ppc: "Per-key quotas, tiers",
-    franklin: <strong>None. Wallet balance is the only cap.</strong>,
-  },
-  {
-    label: "Identity",
-    saas: "Email + credit card",
-    ppc: "Vendor account, API keys per model",
-    franklin: <strong>A wallet. No email, no KYC.</strong>,
-  },
-  {
-    label: "Model choice",
-    saas: "Single vendor",
-    ppc: "You juggle 12 keys",
-    franklin: <strong>55+ models via one wallet · router decides.</strong>,
-    saasNeg: true,
-    ppcNeg: true,
-  },
-  {
-    label: "Provider outage",
-    saas: "You’re stopped.",
-    ppc: "You’re stopped.",
-    franklin: <strong>Routes to the next provider.</strong>,
-    saasNeg: true,
-    ppcNeg: true,
-  },
-  {
-    label: "Overdraft risk",
-    saas: "Silent auto-renew",
-    ppc: "Unbounded bill at month end",
-    franklin: <strong>None. Wallet empty ⇒ Franklin stops.</strong>,
-  },
-  {
-    label: "Source",
-    saas: "Closed",
-    ppc: "Closed SDK",
-    franklin: <strong>Apache 2.0 · local-first.</strong>,
-    saasNeg: true,
-    ppcNeg: true,
-  },
-];
+/** Rows where the saas/ppc cells should render with the .no (struck-through) class. */
+const NEGATIVE_ROW_INDICES = new Set<number>([4, 5, 7]);
 
-export function CompareSection() {
+interface CompareSectionProps {
+  dict?: HomeDict;
+}
+
+export function CompareSection({ dict = defaultDict }: CompareSectionProps) {
+  const c = dict.compare;
+
   return (
     <section id="compare" className="light darker grain">
       <div className="top-rule" />
@@ -76,19 +22,15 @@ export function CompareSection() {
           <div>
             <div className="eyebrow">
               <span className="line" />
-              <span className="engraved">The Ledger</span>
+              <span className="engraved">{c.eyebrow}</span>
             </div>
             <h2 className="section-h">
-              In a table,
+              {c.titleTop}
               <br />
-              to be plain.
+              {c.titleBottom}
             </h2>
           </div>
-          <p className="features-intro">
-            AI products sell access. Subscriptions hand you monthly guilt and rate
-            limits. Pay-per-call bills you for every failed try. Franklin settles for
-            the outcome — once, in USDC.
-          </p>
+          <p className="features-intro">{c.intro}</p>
         </div>
 
         <div className="compare-wrap">
@@ -96,20 +38,25 @@ export function CompareSection() {
             <thead>
               <tr>
                 <th />
-                <th>Subscription SaaS</th>
-                <th>Pay-per-call API</th>
-                <th className="franklin">Franklin — YOPO</th>
+                <th>{c.headers.saas}</th>
+                <th>{c.headers.ppc}</th>
+                <th className="franklin">{c.headers.franklin}</th>
               </tr>
             </thead>
             <tbody>
-              {ROWS.map((row) => (
-                <tr key={row.label}>
-                  <td className="label">{row.label}</td>
-                  <td className={row.saasNeg ? "no" : undefined}>{row.saas}</td>
-                  <td className={row.ppcNeg ? "no" : undefined}>{row.ppc}</td>
-                  <td className="franklin-col">{row.franklin}</td>
-                </tr>
-              ))}
+              {c.rows.map((row, i) => {
+                const negative = NEGATIVE_ROW_INDICES.has(i);
+                return (
+                  <tr key={row.label}>
+                    <td className="label">{row.label}</td>
+                    <td className={negative ? "no" : undefined}>{row.saas}</td>
+                    <td className={negative ? "no" : undefined}>{row.ppc}</td>
+                    <td className="franklin-col">
+                      <strong>{row.franklin}</strong>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

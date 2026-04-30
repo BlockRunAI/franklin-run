@@ -5,25 +5,33 @@ import Link from "next/link";
 import { useState } from "react";
 import { GitHubIcon } from "./icons";
 import { cdnUrl } from "@/lib/cdn";
+import { en as defaultDict } from "@/lib/home/en";
+import type { HomeDict } from "@/lib/home/types";
+import { homeUrl, type Locale } from "@/lib/locales";
 
 interface HeaderProps {
   variant?: "ink" | "paper";
+  dict?: HomeDict;
+  locale?: Locale;
 }
 
-export function Header({ variant = "ink" }: HeaderProps) {
+export function Header({
+  variant = "ink",
+  dict = defaultDict,
+  locale = "en",
+}: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  // On blog/docs pages, anchor links must resolve against the homepage,
-  // not against the current URL.
   const offHome = variant === "paper";
-  const featuresHref = offHome ? "/#features" : "#features";
-  const compareHref = offHome ? "/#compare" : "#compare";
-  const blogHref = offHome ? "/blog" : "#blog";
-  const getStartedHref = offHome ? "/#get-started" : "#get-started";
+  const home = homeUrl(locale);
+  const featuresHref = offHome ? `${home}#features` : "#features";
+  const compareHref = offHome ? `${home}#compare` : "#compare";
+  const blogHref = `/blog/${locale}`;
+  const getStartedHref = offHome ? `${home}#get-started` : "#get-started";
 
   return (
     <header className={`site-header${variant === "paper" ? " site-header-paper" : ""}`}>
       <div className="hdr-inner">
-        <Link href="/" className="logo">
+        <Link href={home} className="logo">
           <div className="logo-ring">
             <Image
               src={cdnUrl("/images/franklin-portrait.jpg")}
@@ -42,16 +50,16 @@ export function Header({ variant = "ink" }: HeaderProps) {
 
         <nav className="nav-btns" aria-label="Primary">
           <a className="nav-link" href={featuresHref}>
-            Features
+            {dict.nav.features}
           </a>
           <a className="nav-link" href={compareHref}>
-            Compare
+            {dict.nav.compare}
           </a>
           <a className="nav-link" href={blogHref}>
-            Blog
+            {dict.nav.blog}
           </a>
           <a className="nav-link" href="/docs">
-            Docs
+            {dict.nav.docs}
           </a>
           <a
             className="btn-outline"
@@ -60,10 +68,10 @@ export function Header({ variant = "ink" }: HeaderProps) {
             rel="noreferrer"
           >
             <GitHubIcon className="h-3.5 w-3.5" />
-            GitHub
+            {dict.nav.github}
           </a>
           <a className="btn-primary" href={getStartedHref}>
-            Get Started
+            {dict.nav.getStarted}
           </a>
         </nav>
 
@@ -90,20 +98,30 @@ export function Header({ variant = "ink" }: HeaderProps) {
 
       {menuOpen && (
         <div className="mobile-menu">
-          <a href={featuresHref} onClick={() => setMenuOpen(false)}>Features</a>
-          <a href={compareHref} onClick={() => setMenuOpen(false)}>Compare</a>
-          <a href={blogHref} onClick={() => setMenuOpen(false)}>Blog</a>
+          <a href={featuresHref} onClick={() => setMenuOpen(false)}>
+            {dict.nav.features}
+          </a>
+          <a href={compareHref} onClick={() => setMenuOpen(false)}>
+            {dict.nav.compare}
+          </a>
+          <a href={blogHref} onClick={() => setMenuOpen(false)}>
+            {dict.nav.blog}
+          </a>
           <a href="/docs" onClick={() => setMenuOpen(false)}>
-            Docs
+            {dict.nav.docs}
           </a>
           <a
             href="https://github.com/blockrunai/franklin"
             onClick={() => setMenuOpen(false)}
           >
-            GitHub
+            {dict.nav.github}
           </a>
-          <a href={getStartedHref} onClick={() => setMenuOpen(false)} className="mobile-menu-cta">
-            Get Started
+          <a
+            href={getStartedHref}
+            onClick={() => setMenuOpen(false)}
+            className="mobile-menu-cta"
+          >
+            {dict.nav.getStarted}
           </a>
         </div>
       )}
