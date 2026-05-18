@@ -5,10 +5,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+---
+
+## Franklin Agent — Marketing site era
+
+This repository was forked from `ai-website-cloner-template` and rebuilt as the
+homepage for **Franklin Agent** ([franklin.run](https://franklin.run)). The
+template-era history is preserved below for reference.
+
 ## [Unreleased]
 
 ### Changed
-- Raised the project Node.js baseline to 24 across local development, CI, Docker, and contributor-facing documentation
+- **Homepage redesign — Echelon-inspired clean/technical aesthetic.** Replaced the dark banknote theme (gold + sepia + guilloche + grain) with a white + vapor section system, deep navy CTAs, Instrument Serif at weight 400 (72px h1), and IBM Plex Sans/Mono for body and eyebrows. Hero became a two-column layout with a grayscale Franklin portrait on the right. Wordmark rebranded to "Franklin Agent" across header, footer, and metadata. Geist → IBM Plex Sans/Mono.
+
+### Added
+- New marketing sections: `TrustBar` (USDC / Base / Solana / x402 / 55+ models), `TerminalSection` (rotating live demo on vapor background), `ClosingCTA` (Echelon-style serif bookend).
+- Restyled every existing section: features (alternating image rows), compare (white card on vapor), getting-started (clean steps + navy 402 callout), blog (white cards), FAQ (single-column accordion), footer (3-column mono eyebrows).
+
+## [Multilingual] - 2026
+
+### Added
+- **Multilingual homepage across 13 locales** — `en`, `zh-CN`, `ja`, `ko`, `ru`, `id`, `ar`, `hi`, `ur`, `pt-BR`, `vi`, `tr`, `fa`. Adds `/[locale]` routes, `hreflang` alternates in `<head>`, RTL support for Arabic / Urdu / Persian, and per-locale dictionaries under `src/lib/home/`.
+- **Multilingual blog engine + GEO/AI-search optimization** — MDX blog with per-locale content under `content/blog/<locale>/`, sitemap and structured-data emission, `llms.txt` route for AI crawler discoverability.
+- **`/docs` section** — 29-page documentation tree with sidebar nav and dark theme covering getting-started, user-guide, developer-guide, and reference.
+- **Google Analytics** — measurement ID `G-CDWTPW4YRM`.
+
+### Changed
+- Documentation links point to the local `/docs` route instead of GitHub markdown.
+- All GitHub links pointed at `blockrunai/franklin`.
+
+## [Landing v2] - 2026
+
+### Added
+- **Franklin Landing v2 — editorial banknote design.** Sepia + gold palette, guilloche overlays, animated CLI demo with 4 rotating scenarios, retina dashboard screenshots, mobile responsive + SEO (OG / Twitter cards, structured data, hamburger menu), Circle USDC Hackathon Winner badge, Cloud Run deploy script.
+- **YOPO positioning** — "You Only Pay Outcome."
+- **Repositioning to "agent with a wallet"** + currency-engraving design system.
+- **Real product content** — replaced all template/Multica content with Franklin wallet, models, self-evolution, and social copy. Real Franklin screenshots and BlockRun.ai branding in header/footer.
+
+### Changed
+- Marketing copy updated to reference kimi-k2.6 (was k2.5) in first-session docs + hero router demo.
+
+### Fixed
+- Removed BuildKit-only cache mounts from `Dockerfile` so the image builds cleanly on Cloud Build.
+- Lint errors in effect setState; BlockRun favicon + apple-touch-icon.
+- `next/link` used for internal navigation; `sizes` prop on `<Image fill>` to suppress the Next.js warning.
+
+### Removed
+- All Multica.ai content and imagery from the active site (legacy reference notes retained under `docs/research/`).
+
+---
+
+## Template-era history
+
+The entries below correspond to the upstream `ai-website-cloner-template`
+before this repository was repurposed for Franklin Agent. They are kept verbatim
+for traceability — none of these versions are tagged or published from this
+repo.
 
 ## [0.3.1] - 2026-03-29
 
@@ -71,10 +123,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Next.js 16 + shadcn/ui + Tailwind CSS v4 base scaffold
 - MIT license
 - README with badges, demo section, quick start, and star history
-
-[Unreleased]: https://github.com/JCodesMore/ai-website-cloner-template/compare/v0.3.1...HEAD
-[0.3.1]: https://github.com/JCodesMore/ai-website-cloner-template/compare/v0.3.0...v0.3.1
-[0.3.0]: https://github.com/JCodesMore/ai-website-cloner-template/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/JCodesMore/ai-website-cloner-template/compare/v0.1.1...v0.2.0
-[0.1.1]: https://github.com/JCodesMore/ai-website-cloner-template/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/JCodesMore/ai-website-cloner-template/releases/tag/v0.1.0

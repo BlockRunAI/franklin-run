@@ -1,4 +1,11 @@
-# Multica.ai Page Topology
+# Multica.ai Page Topology (legacy reference)
+
+> **Historical note:** Captured during the original `/clone-website` pass against
+> [multica.ai](https://multica.ai) — the reference design the first Franklin
+> landing inherited its layout system from. The live site has since been
+> redesigned (Franklin Landing v2 → Echelon-inspired Franklin Agent redesign)
+> and shares only its broad section ordering with the topology below. Kept for
+> traceability and as a worked example of what the inspection phase outputs.
 
 ## Global Info
 - **URL:** https://multica.ai

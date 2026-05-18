@@ -1,25 +1,25 @@
 {
-  "name": "ai-website-clone-template",
-  "version": "0.3.1",
+  "name": "franklin-run",
+  "version": "1.0.0",
   "private": true,
-  "description": "Clone any website into a clean, modern Next.js codebase using AI coding agents",
-  "author": "JCodesMore",
+  "description": "Marketing site for Franklin Agent — the AI agent with a wallet (franklin.run)",
+  "author": "BlockRun.ai",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JCodesMore/ai-website-cloner-template.git"
+    "url": "https://github.com/BlockRunAI/franklin-run.git"
   },
-  "homepage": "https://github.com/JCodesMore/ai-website-cloner-template",
+  "homepage": "https://franklin.run",
   "bugs": {
-    "url": "https://github.com/JCodesMore/ai-website-cloner-template/issues"
+    "url": "https://github.com/BlockRunAI/franklin-run/issues"
   },
   "keywords": [
-    "claude-code",
-    "website-clone",
-    "reverse-engineering",
+    "franklin-agent",
+    "ai-agent",
+    "x402",
+    "usdc",
+    "blockrun",
     "nextjs",
-    "ai",
-    "template",
     "tailwindcss",
     "shadcn-ui"
   ],
