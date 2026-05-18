@@ -65,7 +65,7 @@ function SignalCard() {
       <div className="signal-head">
         <div className="signal-title">
           Signal Report ·{" "}
-          <em style={{ fontStyle: "italic", color: "var(--gold-dim)" }}>Bitcoin</em>
+          <em>Bitcoin</em>
         </div>
         <div className="signal-tag">
           30-day window · <em>bullish</em>
@@ -248,7 +248,7 @@ function PreferenceStack() {
       <div className="prefs-head">
         <span className="t">
           Learnings{" "}
-          <em style={{ fontStyle: "italic", color: "var(--gold-dim)" }}>/learnings</em>
+          <em>/learnings</em>
         </span>
         <span className="c">7 confirmed · 2 decaying</span>
       </div>
@@ -297,27 +297,21 @@ export function FeaturesSection({ dict = defaultDict }: FeaturesSectionProps) {
   }));
 
   return (
-    <section id="features" className="light grain">
-      <div className="top-rule" />
+    <section id="features" className="light">
       <div className="inner">
         <div className="features-head">
           <div>
             <div className="eyebrow">
-              <span className="line" />
               <span className="engraved">{f.eyebrow}</span>
             </div>
             <h2 className="section-h">
               {f.titleTop}
               <br />
-              <em style={{ fontStyle: "italic", color: "var(--gold-dim)" }}>
-                {f.titleEm}
-              </em>
-              .
+              <em>{f.titleEm}.</em>
             </h2>
           </div>
           <p className="features-intro">
-            {f.introPre}{" "}
-            <em style={{ fontStyle: "italic" }}>{f.introEm}</em> {f.introPost}
+            {f.introPre} <em>{f.introEm}</em> {f.introPost}
           </p>
         </div>
 
@@ -325,20 +319,18 @@ export function FeaturesSection({ dict = defaultDict }: FeaturesSectionProps) {
           <div key={feat.num} className="feat-block">
             <div className="feat-left">
               <div className="feat-left-sticky">
-                <div className="feat-numeral">{feat.num}</div>
+                <div className="feat-numeral">— {feat.num}</div>
                 <div className="engraved feat-label">{feat.label}</div>
-                <div className="feat-left-rule" />
+                <h3 className="feat-h">{feat.title}</h3>
+                <p className="feat-desc">{feat.desc}</p>
               </div>
             </div>
             <div>
-              <h3 className="feat-h">{feat.title}</h3>
-              <p className="feat-desc">{feat.desc}</p>
               <div className="feat-visual">{feat.visual}</div>
             </div>
           </div>
         ))}
       </div>
-      <div className="bot-rule" />
     </section>
   );
 }

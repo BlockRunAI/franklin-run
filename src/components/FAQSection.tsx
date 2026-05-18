@@ -14,22 +14,17 @@ export function FAQSection({ dict = defaultDict }: FAQSectionProps) {
   const f = dict.faq;
 
   return (
-    <section className="light darker grain">
-      <div className="top-rule" />
+    <section className="light">
       <div className="inner">
         <div className="faq-grid">
           <div className="faq-left">
             <div className="eyebrow">
-              <span className="line" />
               <span className="engraved">{f.eyebrow}</span>
             </div>
             <h2 className="faq-h">
               {f.titleTop}
               <br />
-              <em style={{ fontStyle: "italic", color: "var(--gold-dim)" }}>
-                {f.titleEm}
-              </em>
-              .
+              <em>{f.titleEm}.</em>
             </h2>
             <p className="faq-p">{f.intro}</p>
           </div>

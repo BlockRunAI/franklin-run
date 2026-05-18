@@ -39,22 +39,17 @@ export function BlogSection({ dict = defaultDict, locale = "en" }: BlogSectionPr
   const b = dict.blog;
 
   return (
-    <section id="blog" className="light grain">
-      <div className="top-rule" />
+    <section id="blog" className="light darker">
       <div className="inner">
         <div className="blog-head">
           <div>
             <div className="eyebrow">
-              <span className="line" />
               <span className="engraved">{b.eyebrow}</span>
             </div>
             <h2 className="section-h">
               {b.titleTop}
               <br />
-              <em style={{ fontStyle: "italic", color: "var(--gold-dim)" }}>
-                {b.titleEm}
-              </em>
-              .
+              <em>{b.titleEm}.</em>
             </h2>
           </div>
           <div className="right">
@@ -106,7 +101,6 @@ export function BlogSection({ dict = defaultDict, locale = "en" }: BlogSectionPr
           })}
         </div>
       </div>
-      <div className="bot-rule" />
     </section>
   );
 }

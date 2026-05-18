@@ -33,19 +33,13 @@ export function GettingStartedSection({
   const g = dict.getStarted;
 
   return (
-    <section id="get-started" className="dark-section grain-dark">
-      <div className="glow" />
-      <div className="top-rule" />
+    <section id="get-started" className="dark-section">
       <div className="inner">
         <div className="eyebrow">
-          <span className="line" />
           <span className="engraved label">{g.eyebrow}</span>
         </div>
         <h2 className="dark-h">
-          {g.titlePre}{" "}
-          <em style={{ fontStyle: "italic" }} className="shimmer">
-            {g.titleEm}
-          </em>
+          {g.titlePre} <em>{g.titleEm}</em>
           {g.titleAfterEm}
           <br />
           {g.titlePost}
@@ -99,7 +93,6 @@ export function GettingStartedSection({
 
         <div style={{ marginTop: 80 }}>
           <div className="eyebrow">
-            <span className="line" />
             <span className="engraved label">{g.slashEyebrow}</span>
           </div>
           <div className="slash-wrap">
@@ -112,7 +105,6 @@ export function GettingStartedSection({
           </div>
         </div>
       </div>
-      <div className="bot-rule" />
     </section>
   );
 }

@@ -12,22 +12,17 @@ export function CompareSection({ dict = defaultDict }: CompareSectionProps) {
   const c = dict.compare;
 
   return (
-    <section id="compare" className="light darker grain">
-      <div className="top-rule" />
+    <section id="compare" className="light darker">
       <div className="inner">
-        <div
-          className="features-head"
-          style={{ gridTemplateColumns: "1fr 2fr", padding: "120px 0 0" }}
-        >
+        <div className="features-head">
           <div>
             <div className="eyebrow">
-              <span className="line" />
               <span className="engraved">{c.eyebrow}</span>
             </div>
             <h2 className="section-h">
               {c.titleTop}
               <br />
-              {c.titleBottom}
+              <em>{c.titleBottom}</em>
             </h2>
           </div>
           <p className="features-intro">{c.intro}</p>
@@ -61,7 +56,6 @@ export function CompareSection({ dict = defaultDict }: CompareSectionProps) {
           </table>
         </div>
       </div>
-      <div className="bot-rule" />
     </section>
   );
 }

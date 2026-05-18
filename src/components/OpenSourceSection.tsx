@@ -9,19 +9,15 @@ export function OpenSourceSection({ dict = defaultDict }: OpenSourceSectionProps
   const o = dict.openSource;
 
   return (
-    <section className="light grain">
+    <section className="light">
       <div className="inner os-head">
         <div className="eyebrow">
-          <span className="line" />
           <span className="engraved">{o.eyebrow}</span>
         </div>
         <h2 className="section-h">
           {o.titleTop}
           <br />
-          <em style={{ fontStyle: "italic", color: "var(--gold-dim)" }}>
-            {o.titleEm}
-          </em>
-          .
+          <em>{o.titleEm}.</em>
         </h2>
       </div>
       <div className="inner">

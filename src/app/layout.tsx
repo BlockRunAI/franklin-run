@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { Instrument_Serif, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 import { cdnUrl } from "@/lib/cdn";
 import { LOCALES, LOCALE_META } from "@/lib/blog";
 import { homeUrl } from "@/lib/home";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 const instrumentSerif = Instrument_Serif({
@@ -37,9 +39,9 @@ for (const l of LOCALES) {
 homeLanguages["x-default"] = `${SITE_URL}/`;
 
 export const metadata: Metadata = {
-  title: "Franklin — The AI Agent with a Wallet",
+  title: "Franklin Agent — The AI agent with a wallet",
   description:
-    "The AI agent with a wallet. It holds your USDC and spends it for you — 55+ models, trading data, image generation, video generation, web search. One wallet, no API keys. Open source.",
+    "Franklin Agent writes code and spends money to get things done. Open-source. Runs anywhere. Pays per call via USDC and x402 — 55+ models, trading data, image gen, web search. One wallet, no API keys.",
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/", languages: homeLanguages },
   keywords: [
@@ -64,10 +66,10 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    title: "Franklin — The AI Agent with a Wallet",
+    title: "Franklin Agent — The AI agent with a wallet",
     description:
-      "Other agents write code. Franklin writes code and spends money to get things done. 55+ models, trading data, image gen, web search — one USDC wallet. Open source.",
-    siteName: "Franklin",
+      "Other agents write code. Franklin Agent writes code and spends money to get things done. 55+ models, trading data, image gen, web search — one USDC wallet. Open source.",
+    siteName: "Franklin Agent",
     images: [
       {
         url: cdnUrl("/images/og-image.png"),
@@ -81,7 +83,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@BlockRunAI",
     creator: "@BlockRunAI",
-    title: "Franklin — The AI Agent with a Wallet",
+    title: "Franklin Agent — The AI agent with a wallet",
     description:
       "The AI agent with a wallet. 55+ models, trading data, image gen — it holds your USDC and spends it for you. Open source.",
     images: [cdnUrl("/images/og-image.png")],
@@ -115,7 +117,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${notoSerifSC.variable} antialiased`}
+      className={`${plexSans.variable} ${plexMono.variable} ${instrumentSerif.variable} ${notoSerifSC.variable} antialiased`}
     >
       <head>
         <Script

@@ -17,27 +17,19 @@ export function Footer({ dict = defaultDict, locale = "en" }: FooterProps) {
   const getStartedHref = `${home}#get-started`;
 
   return (
-    <footer className="site-footer grain-dark">
-      <div className="footer-top">
-        <div className="footer-top-inner">
-          <span>◆ Franklin · Series 2026 ◆</span>
-          <span>USDC · Base · Solana · x402</span>
-        </div>
-      </div>
-
+    <footer className="site-footer">
       <div className="footer-main">
         <div className="footer-grid">
           <div className="footer-brand">
             <Link href={home} className="logo">
-              <span className="footer-brand-diamond">◆</span>
-              <span className="footer-name">Franklin</span>
+              <span className="footer-name">Franklin Agent</span>
             </Link>
             <p className="footer-tagline">{dict.footer.tagline}</p>
             <p>
               {dict.footer.aboutPre}{" "}
               <a
                 href="https://blockrun.ai"
-                style={{ color: "#10b981" }}
+                style={{ color: "var(--accent)" }}
                 target="_blank"
                 rel="noreferrer"
               >

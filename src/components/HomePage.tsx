@@ -1,11 +1,14 @@
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
+import { TrustBar } from "@/components/TrustBar";
+import { TerminalSection } from "@/components/TerminalSection";
 import { FeaturesSection } from "@/components/FeaturesSection";
 import { GettingStartedSection } from "@/components/GettingStartedSection";
 import { CompareSection } from "@/components/CompareSection";
 import { OpenSourceSection } from "@/components/OpenSourceSection";
 import { BlogSection } from "@/components/BlogSection";
 import { FAQSection } from "@/components/FAQSection";
+import { ClosingCTA } from "@/components/ClosingCTA";
 import { Footer } from "@/components/Footer";
 import { HtmlLangSync } from "@/components/blog/HtmlLangSync";
 import { isRTL, LOCALE_META, type Locale } from "@/lib/locales";
@@ -34,12 +37,15 @@ export function HomePage({ dict, locale }: HomePageProps) {
         <Header dict={dict} locale={locale} />
         <HeroSection dict={dict} />
       </div>
+      <TrustBar />
+      <TerminalSection dict={dict} />
       <FeaturesSection dict={dict} />
       <GettingStartedSection dict={dict} />
       <CompareSection dict={dict} />
       <OpenSourceSection dict={dict} />
       <BlogSection dict={dict} locale={locale} />
       <FAQSection dict={dict} />
+      <ClosingCTA />
       <Footer dict={dict} locale={locale} />
     </>
   );

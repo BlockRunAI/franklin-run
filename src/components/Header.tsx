@@ -36,16 +36,13 @@ export function Header({
             <Image
               src={cdnUrl("/images/franklin-portrait.jpg")}
               alt="Franklin"
-              width={36}
-              height={36}
+              width={32}
+              height={32}
               priority
               unoptimized
             />
           </div>
-          <div>
-            <div className="logo-name">Franklin</div>
-            <div className="logo-sub">by BlockRun.ai</div>
-          </div>
+          <div className="logo-name">Franklin Agent</div>
         </Link>
 
         <nav className="nav-btns" aria-label="Primary">
@@ -58,9 +55,9 @@ export function Header({
           <a className="nav-link" href={blogHref}>
             {dict.nav.blog}
           </a>
-          <a className="nav-link" href="/docs">
+          <Link className="nav-link" href="/docs">
             {dict.nav.docs}
-          </a>
+          </Link>
           <a
             className="btn-outline"
             href="https://github.com/blockrunai/franklin"
@@ -107,9 +104,9 @@ export function Header({
           <a href={blogHref} onClick={() => setMenuOpen(false)}>
             {dict.nav.blog}
           </a>
-          <a href="/docs" onClick={() => setMenuOpen(false)}>
+          <Link href="/docs" onClick={() => setMenuOpen(false)}>
             {dict.nav.docs}
-          </a>
+          </Link>
           <a
             href="https://github.com/blockrunai/franklin"
             onClick={() => setMenuOpen(false)}
