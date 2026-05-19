@@ -194,6 +194,16 @@ export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
 
   return (
     <section className="hero">
+      <div className="hero-backdrop" aria-hidden="true">
+        <Image
+          src={cdnUrl("/images/franklin-portrait.jpg")}
+          alt=""
+          fill
+          priority
+          unoptimized
+          sizes="100vw"
+        />
+      </div>
       <div className="hero-wrap">
         <div className="hero-inner">
           <div className="eyebrow">
@@ -227,28 +237,10 @@ export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
             </a>
           </div>
 
-          <div className="install">
-            <InstallBox ariaLabel={h.copyInstallAriaLabel} />
-          </div>
-
-          <div className="pill-row">
-            <span>Runs on macOS · Linux · WSL</span>
-            <span className="sep">·</span>
-            <span>MIT licensed</span>
-            <span className="sep">·</span>
-            <span>USDC on Base &amp; Solana</span>
-          </div>
-        </div>
-
-        <div className="hero-portrait" aria-hidden="true">
-          <Image
-            src={cdnUrl("/images/franklin-portrait.jpg")}
-            alt=""
-            fill
-            priority
-            unoptimized
-            sizes="(min-width: 1024px) 480px, 320px"
-          />
+          <p className="hero-trust">
+            Open source · MIT licensed · Built by the <strong>BlockRun</strong> team.
+            Trusted by developers shipping autonomous agents on <strong>Base</strong> and <strong>Solana</strong>.
+          </p>
         </div>
       </div>
     </section>

@@ -2487,3 +2487,690 @@ h2.dark-h em {
     transition: none !important;
   }
 }
+
+/* =====================================================
+   Visual density layer — banknote DNA, dialed back in
+   (Echelon-clean stays the floor; this is the texture
+   that makes it feel like a document, not a blank page.)
+   ===================================================== */
+
+/* Global paper-grain texture — barely there */
+body {
+  background:
+    radial-gradient(ellipse 1200px 800px at 80% -10%, rgba(201, 162, 39, 0.035), transparent 60%),
+    radial-gradient(ellipse 900px 600px at 0% 30%, rgba(15, 41, 64, 0.025), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.035 0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>");
+}
+
+/* Hero: bring back a quiet guilloché halo behind the portrait */
+.hero {
+  background:
+    radial-gradient(ellipse 1100px 720px at 70% 35%, rgba(201, 162, 39, 0.07), transparent 70%),
+    radial-gradient(ellipse 900px 600px at 25% 90%, rgba(15, 41, 64, 0.05), transparent 70%),
+    linear-gradient(180deg, #fdfcf9 0%, var(--bg) 60%);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 6%;
+  width: 720px;
+  height: 720px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.7;
+  z-index: 0;
+  background:
+    repeating-radial-gradient(
+      circle at center,
+      transparent 0,
+      transparent 9px,
+      rgba(15, 41, 64, 0.045) 9px,
+      rgba(15, 41, 64, 0.045) 10px
+    );
+  -webkit-mask-image: radial-gradient(circle, black 28%, transparent 68%);
+          mask-image: radial-gradient(circle, black 28%, transparent 68%);
+}
+
+@media (max-width: 1023px) {
+  .hero::before { display: none; }
+}
+
+/* Hero portrait — engraved double-line frame, banknote vibe */
+.hero-portrait {
+  padding: 12px;
+  background:
+    linear-gradient(135deg,
+      rgba(201, 162, 39, 0.35) 0%,
+      rgba(201, 162, 39, 0.08) 28%,
+      rgba(15, 41, 64, 0.08) 70%,
+      rgba(201, 162, 39, 0.28) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 2px 4px rgba(15, 41, 64, 0.06),
+    0 28px 70px -32px rgba(15, 41, 64, 0.4);
+}
+
+.hero-portrait::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(15, 41, 64, 0.5);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hero-portrait img {
+  border-radius: 2px;
+}
+
+/* Hero portrait corner ornaments — banknote engraving */
+.hero-portrait .corner-ornament {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.85;
+}
+.hero-portrait .corner-ornament svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hero-portrait .corner-ornament.tl { top: 4px;    left: 4px; }
+.hero-portrait .corner-ornament.tr { top: 4px;    right: 4px;  transform: scaleX(-1); }
+.hero-portrait .corner-ornament.bl { bottom: 4px; left: 4px;   transform: scaleY(-1); }
+.hero-portrait .corner-ornament.br { bottom: 4px; right: 4px;  transform: scale(-1, -1); }
+
+/* Banknote serial / authority mark — fits inline next to eyebrow */
+.serial-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8c6f17;
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  border-radius: 2px;
+  background: rgba(201, 162, 39, 0.06);
+}
+.serial-mark .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.2);
+}
+
+/* Hero "live ticker" — a strip of live numeric activity under the install box */
+.hero-ticker {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff, var(--bg-alt));
+}
+.hero-ticker .cell {
+  padding: 12px 16px;
+  border-right: 1px solid var(--border);
+  text-align: left;
+}
+.hero-ticker .cell:last-child { border-right: none; }
+.hero-ticker .k {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+.hero-ticker .v {
+  margin-top: 4px;
+  font-family: var(--font-serif);
+  font-feature-settings: "lnum", "tnum";
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.015em;
+  color: var(--fg);
+}
+.hero-ticker .v .delta {
+  margin-left: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--success);
+}
+@media (max-width: 640px) {
+  .hero-ticker { grid-template-columns: 1fr; }
+  .hero-ticker .cell { border-right: none; border-bottom: 1px solid var(--border); }
+  .hero-ticker .cell:last-child { border-bottom: none; }
+}
+
+/* Eyebrow gold underline — subtle banknote accent on every section eyebrow */
+.eyebrow .engraved {
+  position: relative;
+  padding-bottom: 5px;
+}
+.eyebrow .engraved::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 30%;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-line) 0%, var(--gold-line) 30%, transparent 100%);
+}
+.eyebrow .engraved.center-rule::after {
+  left: 0; right: 0;
+  background: linear-gradient(90deg, transparent, var(--gold-line) 30%, var(--gold-line) 70%, transparent);
+}
+
+/* Center-aligned eyebrows (term-section, faq) get a centered rule */
+.term-section .eyebrow .engraved::after,
+.faq-left .eyebrow .engraved::after,
+.closing-cta .eyebrow .engraved::after {
+  left: 20%;
+  right: 20%;
+  background: linear-gradient(90deg, transparent, var(--gold-line), transparent);
+}
+
+/* Ornate divider — banknote-style rule with center diamond, between sections */
+.ornate-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px 32px;
+  position: relative;
+  z-index: 5;
+}
+.ornate-rule::before,
+.ornate-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold-line) 30%, var(--gold-line) 70%, transparent 100%);
+}
+.ornate-rule .mark {
+  width: 7px;
+  height: 7px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.08);
+}
+.ornate-rule .glyph {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--gold);
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+
+/* Feature numeral — turn the bland "01" into a real serif numeral with gold */
+.feat-block .feat-numeral {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--fg-subtle);
+}
+.feat-block .feat-numeral::before {
+  content: attr(data-num);
+  font-family: var(--font-serif);
+  font-feature-settings: "lnum";
+  font-size: 64px;
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  color: var(--gold);
+  font-weight: 400;
+  text-transform: none;
+}
+.feat-block .feat-numeral::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-line), transparent);
+  align-self: center;
+  margin-left: 4px;
+  max-width: 80px;
+}
+
+/* Card corner micro-ornaments — gold L-marks on key cards */
+.signal-card,
+.bill,
+.ledger,
+.prefs {
+  position: relative;
+}
+.signal-card::before,
+.bill::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  pointer-events: none;
+  border: 1px solid rgba(201, 162, 39, 0.16);
+  border-radius: 4px;
+  z-index: 0;
+}
+.signal-card > *,
+.bill > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Stronger card shadow — depth without breaking the clean read */
+.signal-card,
+.bill,
+.ledger,
+.prefs {
+  box-shadow:
+    0 1px 2px rgba(15, 41, 64, 0.05),
+    0 12px 32px -16px rgba(15, 41, 64, 0.18),
+    0 32px 64px -40px rgba(15, 41, 64, 0.22);
+}
+
+/* Wallet bill — give it the most banknote energy of any card */
+.bill {
+  background:
+    linear-gradient(135deg, #ffffff 0%, #fbf8f0 100%);
+}
+.bill::after {
+  content: "FRANKLIN AGENT · NON-CUSTODIAL · USDC";
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.5em;
+  color: rgba(201, 162, 39, 0.45);
+  pointer-events: none;
+}
+.bill { padding-bottom: 36px; }
+.bill-bal .n {
+  background: linear-gradient(180deg, #0a0a0a 0%, #1a3f5c 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Comparison table — Franklin column gets a gold ribbon */
+.compare thead th.franklin::before {
+  background: linear-gradient(90deg, var(--gold) 0%, var(--accent) 100%);
+  height: 3px;
+}
+.compare thead th.franklin {
+  background: linear-gradient(180deg, rgba(201, 162, 39, 0.06), var(--bg-alt));
+}
+
+/* Terminal — restore a faint amber glow at the bottom edge */
+.terminal {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 20px 60px -30px rgba(15, 41, 64, 0.3),
+    0 0 0 1px rgba(201, 162, 39, 0.08);
+}
+.terminal::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.35), transparent);
+  pointer-events: none;
+}
+
+/* Step numerals — bring back the engraved big numeral */
+.step .step-num {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--gold);
+  text-transform: none;
+  font-weight: 400;
+}
+.step .step-num::before {
+  content: "№ ";
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--fg-subtle);
+  vertical-align: 14px;
+  margin-right: 4px;
+}
+
+/* FAQ numerals — make them feel like banknote item numbers */
+.faq-num {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: var(--gold);
+  letter-spacing: 0;
+}
+
+/* Section headers — accent the italic with gold */
+h2.section-h em,
+h2.dark-h em,
+.faq-h em,
+.closing-cta h2 em,
+h1.hero-title em {
+  font-style: italic;
+}
+
+/* Z-index lifts so the grain doesn't dim foreground */
+.site-header,
+.hero-wrap,
+.light .inner,
+.dark-section .inner,
+.term-section .inner,
+.closing-cta .inner,
+.footer-main,
+.trust-bar,
+.ornate-rule {
+  position: relative;
+  z-index: 2;
+}
+
+/* Reduced-motion respects */
+@media (prefers-reduced-motion: reduce) {
+  body::after { opacity: 0.3; }
+}
+
+/* =====================================================
+   Echelon override layer — strip the banknote ornament,
+   replace with restrained Echelon professionalism.
+   Loaded LAST so it wins over the visual-density block.
+   ===================================================== */
+
+/* Nuke gold ornaments — keep paper grain only */
+.serial-mark,
+.hero-ticker,
+.hero-portrait .corner-ornament,
+.ornate-rule {
+  display: none !important;
+}
+
+.hero-portrait {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+.hero-portrait::before { content: none !important; }
+.hero-portrait::after { content: none !important; }
+
+.eyebrow .engraved::after { display: none !important; }
+.term-section .eyebrow .engraved::after,
+.faq-left .eyebrow .engraved::after,
+.closing-cta .eyebrow .engraved::after { display: none !important; }
+
+.signal-card::before,
+.bill::before { content: none !important; }
+.bill::after { content: none !important; }
+.bill { padding-bottom: 24px !important; }
+.bill-bal .n {
+  background: none !important;
+  -webkit-text-fill-color: var(--fg) !important;
+}
+
+.compare thead th.franklin {
+  background: var(--bg-alt) !important;
+}
+.compare thead th.franklin::before {
+  background: var(--accent) !important;
+  height: 2px !important;
+}
+
+.terminal::after { content: none !important; }
+
+.feat-block .feat-numeral {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+.feat-block .feat-numeral::before { content: none !important; }
+.feat-block .feat-numeral::after { content: none !important; }
+.feat-block .feat-numeral span { display: none; }
+.feat-block .feat-numeral::first-letter { font-size: inherit; color: inherit; }
+
+/* Restore the visible numeral via data-num */
+.feat-block .feat-numeral[data-num]::after {
+  content: "— " attr(data-num) " · " "Chapter " attr(data-num);
+  display: inline;
+}
+
+/* Hero — Echelon-style full-bleed centered, portrait as backdrop */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #ffffff;
+  color: var(--fg);
+  padding-top: 68px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.hero::before { content: none !important; }
+
+.hero-wrap {
+  position: relative;
+  z-index: 3;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 80px 32px 80px;
+  display: block;
+  text-align: center;
+}
+
+.hero-inner {
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.hero .eyebrow {
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+h1.hero-title {
+  font-family: var(--font-serif);
+  font-size: 104px;
+  line-height: 0.98;
+  letter-spacing: -0.022em;
+  font-weight: 400;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+h1.hero-title em {
+  font-style: italic;
+  color: var(--fg);
+}
+
+@media (max-width: 1023px) {
+  h1.hero-title { font-size: 64px; }
+}
+@media (max-width: 640px) {
+  h1.hero-title { font-size: 44px; }
+}
+
+.hero-sub {
+  margin: 32px auto 0 !important;
+  max-width: 640px;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--fg-muted);
+  text-align: center;
+}
+
+.hero-sub em { color: var(--fg); }
+
+.hero-ctas {
+  margin-top: 44px;
+  justify-content: center;
+}
+
+.install,
+.pill-row { display: none !important; }
+
+.hero-trust {
+  margin: 36px auto 0;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--fg-subtle);
+  text-align: center;
+}
+.hero-trust strong {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+/* Full-bleed portrait backdrop — Echelon's NYC skyline equivalent */
+.hero-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-backdrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+  filter: grayscale(1) contrast(1.15) brightness(1.05);
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+}
+.hero-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 1000px 600px at 50% 40%, transparent 0%, rgba(255,255,255,0.6) 60%, #ffffff 100%),
+    linear-gradient(180deg, #ffffff 0%, transparent 18%, transparent 70%, #ffffff 100%);
+}
+
+/* The old right-side portrait block — hide; new backdrop replaces it */
+.hero-wrap > .hero-portrait { display: none !important; }
+
+/* Closing CTA — deep navy block matching Echelon's enterprise closer */
+.closing-cta {
+  background: var(--accent) !important;
+  color: #ffffff;
+  padding: 180px 32px !important;
+  position: relative;
+  overflow: hidden;
+}
+.closing-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 800px 500px at 20% 100%, rgba(255,255,255,0.06), transparent 60%),
+    radial-gradient(ellipse 600px 400px at 90% 0%, rgba(201, 162, 39, 0.05), transparent 60%);
+  pointer-events: none;
+}
+.closing-cta .inner { position: relative; z-index: 2; }
+.closing-cta .logo-name { color: #ffffff !important; opacity: 0.7; font-size: 16px; }
+.closing-cta h2 {
+  color: #ffffff !important;
+  font-size: 80px !important;
+  line-height: 1.0 !important;
+  letter-spacing: -0.02em;
+  max-width: 980px;
+}
+.closing-cta h2 em {
+  color: rgba(255, 255, 255, 0.55) !important;
+  font-style: italic;
+}
+@media (max-width: 1023px) {
+  .closing-cta { padding: 120px 24px !important; }
+  .closing-cta h2 { font-size: 48px !important; }
+}
+.closing-cta .btn-primary {
+  background: #ffffff !important;
+  color: var(--accent) !important;
+  border-color: #ffffff !important;
+  padding: 18px 32px !important;
+  font-size: 15px !important;
+}
+.closing-cta .btn-primary:hover {
+  background: rgba(255, 255, 255, 0.92) !important;
+}
+.closing-cta .btn-outline {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+.closing-cta .btn-outline:hover {
+  border-color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Trust bar — denser, with a real stat line (Echelon's "trusted by $560B AUM" energy) */
+.trust-bar {
+  padding: 32px 32px;
+  background: var(--bg-alt);
+}
+.trust-bar p {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: var(--fg-muted);
+}
+
+/* Section headings — bump up a touch toward Echelon's scale */
+h2.section-h,
+h2.dark-h,
+.faq-h {
+  font-size: 56px !important;
+  letter-spacing: -0.015em;
+}
+@media (max-width: 1023px) {
+  h2.section-h,
+  h2.dark-h,
+  .faq-h { font-size: 40px !important; }
+}
+
+/* Term-section heading — restrained */
+.term-section h2 { font-size: 56px !important; }
+@media (max-width: 1023px) {
+  .term-section h2 { font-size: 40px !important; }
+}
+
+/* Replace ornate-rule gap with a clean section gap */
+.light + .light,
+.dark-section + .dark-section { border-top: 1px solid var(--border); }

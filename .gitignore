@@ -48,3 +48,9 @@ next-env.d.ts
 # Local temp files
 temp/
 .gstack/
+.playwright-mcp/
+
+# QA / design-review screenshots (not part of the project)
+/franklin-v*.jpeg
+/franklin-v*.png
+/hero-wallet*.jpeg

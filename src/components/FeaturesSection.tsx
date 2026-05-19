@@ -319,7 +319,9 @@ export function FeaturesSection({ dict = defaultDict }: FeaturesSectionProps) {
           <div key={feat.num} className="feat-block">
             <div className="feat-left">
               <div className="feat-left-sticky">
-                <div className="feat-numeral">— {feat.num}</div>
+                <div className="feat-numeral" data-num={feat.num}>
+                  <span>Chapter {feat.num}</span>
+                </div>
                 <div className="engraved feat-label">{feat.label}</div>
                 <h3 className="feat-h">{feat.title}</h3>
                 <p className="feat-desc">{feat.desc}</p>
