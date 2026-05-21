@@ -78,7 +78,7 @@ export const zhCN: HomeDict = {
       },
       {
         title: "免费跑",
-        body: "开箱即用的免费 NVIDIA Nemotron 与 Qwen3 Coder。无需钱包。",
+        body: "开箱即用的免费 NVIDIA Nemotron 与 DeepSeek V4 Flash。无需钱包。",
       },
       {
         title: "充值（5 美元就够)",
@@ -233,7 +233,7 @@ export const zhCN: HomeDict = {
       },
       {
         q: "可以免费用吗？",
-        a: "可以。免费 NVIDIA 模型（Nemotron、Qwen3 Coder）开箱即用，不要钱包、不要 USDC、不要注册。只有想用 Sonnet、Opus、GPT、Gemini、Grok 或付费工具时，才需要给钱包充值。",
+        a: "可以。免费 NVIDIA 模型（Nemotron、DeepSeek V4 Flash）开箱即用，不要钱包、不要 USDC、不要注册。只有想用 Sonnet、Opus、GPT、Gemini、Grok 或付费工具时，才需要给钱包充值。",
       },
       {
         q: "为什么是 Base 和 Solana？",

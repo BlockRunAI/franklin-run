@@ -84,7 +84,7 @@ export const ptBR: HomeDict = {
       },
       {
         title: "Rode grátis",
-        body: "NVIDIA Nemotron e Qwen3 Coder gratuitos de fábrica. Sem carteira.",
+        body: "NVIDIA Nemotron e DeepSeek V4 Flash gratuitos de fábrica. Sem carteira.",
       },
       {
         title: "Carregue ($5 já basta)",
@@ -239,7 +239,7 @@ export const ptBR: HomeDict = {
       },
       {
         q: "Posso usar de graça?",
-        a: "Pode. Os modelos NVIDIA gratuitos (Nemotron, Qwen3 Coder) funcionam sem carteira, sem USDC, sem cadastro. Carregue a carteira só quando quiser Sonnet, Opus, GPT, Gemini, Grok ou ferramentas pagas.",
+        a: "Pode. Os modelos NVIDIA gratuitos (Nemotron, DeepSeek V4 Flash) funcionam sem carteira, sem USDC, sem cadastro. Carregue a carteira só quando quiser Sonnet, Opus, GPT, Gemini, Grok ou ferramentas pagas.",
       },
       {
         q: "Por que Base e Solana?",

@@ -78,7 +78,7 @@ export const hi: HomeDict = {
       },
       {
         title: "मुफ़्त में चलाएँ",
-        body: "बिना कुछ किए free NVIDIA Nemotron और Qwen3 Coder। Wallet की ज़रूरत नहीं।",
+        body: "बिना कुछ किए free NVIDIA Nemotron और DeepSeek V4 Flash। Wallet की ज़रूरत नहीं।",
       },
       {
         title: "Fund करें ($5 काफ़ी है)",
@@ -233,7 +233,7 @@ export const hi: HomeDict = {
       },
       {
         q: "क्या मैं इसे मुफ़्त में इस्तेमाल कर सकता हूँ?",
-        a: "हाँ। Free NVIDIA models (Nemotron, Qwen3 Coder) बिना wallet, बिना USDC, बिना signup के चलते हैं। Wallet सिर्फ़ तब fund कीजिए जब Sonnet, Opus, GPT, Gemini, Grok, या paid tools चाहिए हों।",
+        a: "हाँ। Free NVIDIA models (Nemotron, DeepSeek V4 Flash) बिना wallet, बिना USDC, बिना signup के चलते हैं। Wallet सिर्फ़ तब fund कीजिए जब Sonnet, Opus, GPT, Gemini, Grok, या paid tools चाहिए हों।",
       },
       {
         q: "Base और Solana ही क्यों?",

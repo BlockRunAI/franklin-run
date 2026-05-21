@@ -85,7 +85,7 @@ export const id: HomeDict = {
       },
       {
         title: "Jalan gratis",
-        body: "NVIDIA Nemotron & Qwen3 Coder gratis langsung pakai. Tanpa dompet.",
+        body: "NVIDIA Nemotron & DeepSeek V4 Flash gratis langsung pakai. Tanpa dompet.",
       },
       {
         title: "Isi saldo ($5 sudah cukup)",
@@ -240,7 +240,7 @@ export const id: HomeDict = {
       },
       {
         q: "Bisa pakai gratis?",
-        a: "Bisa. Model NVIDIA gratis (Nemotron, Qwen3 Coder) jalan tanpa dompet, tanpa USDC, tanpa daftar. Isi dompet hanya saat ingin Sonnet, Opus, GPT, Gemini, Grok, atau tool berbayar.",
+        a: "Bisa. Model NVIDIA gratis (Nemotron, DeepSeek V4 Flash) jalan tanpa dompet, tanpa USDC, tanpa daftar. Isi dompet hanya saat ingin Sonnet, Opus, GPT, Gemini, Grok, atau tool berbayar.",
       },
       {
         q: "Kenapa Base dan Solana?",

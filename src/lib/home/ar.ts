@@ -85,7 +85,7 @@ export const ar: HomeDict = {
       },
       {
         title: "اعمل مجانًا",
-        body: "نماذج NVIDIA Nemotron و Qwen3 Coder مجانية جاهزة من البداية. لا حاجة إلى محفظة.",
+        body: "نماذج NVIDIA Nemotron و DeepSeek V4 Flash مجانية جاهزة من البداية. لا حاجة إلى محفظة.",
       },
       {
         title: "موّل ($5 تكفي)",
@@ -240,7 +240,7 @@ export const ar: HomeDict = {
       },
       {
         q: "هل يمكنني استخدامه مجانًا؟",
-        a: "نعم. نماذج NVIDIA المجانية (Nemotron، Qwen3 Coder) تعمل بدون محفظة، بدون USDC، بدون تسجيل. موّل المحفظة فقط حين تريد Sonnet أو Opus أو GPT أو Gemini أو Grok أو الأدوات المدفوعة.",
+        a: "نعم. نماذج NVIDIA المجانية (Nemotron، DeepSeek V4 Flash) تعمل بدون محفظة، بدون USDC، بدون تسجيل. موّل المحفظة فقط حين تريد Sonnet أو Opus أو GPT أو Gemini أو Grok أو الأدوات المدفوعة.",
       },
       {
         q: "لماذا Base و Solana؟",

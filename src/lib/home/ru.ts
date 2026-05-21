@@ -85,7 +85,7 @@ export const ru: HomeDict = {
       },
       {
         title: "Запустить бесплатно",
-        body: "Бесплатные NVIDIA Nemotron и Qwen3 Coder из коробки. Кошелёк не нужен.",
+        body: "Бесплатные NVIDIA Nemotron и DeepSeek V4 Flash из коробки. Кошелёк не нужен.",
       },
       {
         title: "Пополнить ($5 хватит)",
@@ -240,7 +240,7 @@ export const ru: HomeDict = {
       },
       {
         q: "Можно ли пользоваться бесплатно?",
-        a: "Да. Бесплатные модели NVIDIA (Nemotron, Qwen3 Coder) работают без кошелька, без USDC и без регистрации. Пополняйте кошелёк, только когда захотите Sonnet, Opus, GPT, Gemini, Grok или платные инструменты.",
+        a: "Да. Бесплатные модели NVIDIA (Nemotron, DeepSeek V4 Flash) работают без кошелька, без USDC и без регистрации. Пополняйте кошелёк, только когда захотите Sonnet, Opus, GPT, Gemini, Grok или платные инструменты.",
       },
       {
         q: "Почему Base и Solana?",

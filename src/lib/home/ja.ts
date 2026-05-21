@@ -78,7 +78,7 @@ export const ja: HomeDict = {
       },
       {
         title: "無料で動かす",
-        body: "NVIDIA Nemotron と Qwen3 Coder を最初から無料で。ウォレット不要。",
+        body: "NVIDIA Nemotron と DeepSeek V4 Flash を最初から無料で。ウォレット不要。",
       },
       {
         title: "入金（5 ドルで十分）",
@@ -232,7 +232,7 @@ export const ja: HomeDict = {
       },
       {
         q: "無料で使えるのか？",
-        a: "使える。NVIDIA の無料モデル（Nemotron、Qwen3 Coder）はウォレットも USDC もサインアップも不要で動く。ウォレットに入金するのは、Sonnet、Opus、GPT、Gemini、Grok、有料ツールを使いたいときだけ。",
+        a: "使える。NVIDIA の無料モデル（Nemotron、DeepSeek V4 Flash）はウォレットも USDC もサインアップも不要で動く。ウォレットに入金するのは、Sonnet、Opus、GPT、Gemini、Grok、有料ツールを使いたいときだけ。",
       },
       {
         q: "なぜ Base と Solana なのか？",
