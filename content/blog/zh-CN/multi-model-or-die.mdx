@@ -68,7 +68,7 @@ Franklin 的智能路由是用流过 BlockRun 网关的 **200 万次真实请求
 
 ## "免费"不是一档，是默认
 
-绝大多数 AI 工具的"免费档"都是带一张卡的 5 天试用。Franklin 的免费档不是。它用的是 **NVIDIA Nemotron 和 Qwen3 Coder**，这两个模型在源头本来就是免费的。没有补贴、没有试用期、没有倒计时。你装上 Franklin，跑命令，它就工作：
+绝大多数 AI 工具的"免费档"都是带一张卡的 5 天试用。Franklin 的免费档不是。它用的是 **NVIDIA Nemotron 和 DeepSeek V4 Flash**，这两个模型在源头本来就是免费的。没有补贴、没有试用期、没有倒计时。你装上 Franklin，跑命令，它就工作：
 
 ```bash
 npm install -g @blockrun/franklin
@@ -132,7 +132,7 @@ npm install -g @blockrun/franklin
 franklin
 ```
 
-你会落在免费档，跑 NVIDIA Nemotron 和 Qwen3 Coder，不要卡、不要注册。如果某一题你想钉 Sonnet，往钱包里充 5 美元、加 `--profile premium`。某个模型开始漂移指令时，换 profile。某个厂商在你跑到一半时宕了，路由器自动 fail over 到下一个厂商；这次调用照样完成；你接着工作。
+你会落在免费档，跑 NVIDIA Nemotron 和 DeepSeek V4 Flash，不要卡、不要注册。如果某一题你想钉 Sonnet，往钱包里充 5 美元、加 `--profile premium`。某个模型开始漂移指令时，换 profile。某个厂商在你跑到一半时宕了，路由器自动 fail over 到下一个厂商；这次调用照样完成；你接着工作。
 
 你可以读 [完整源码](https://github.com/blockrunai/franklin)，或者翻 [智能路由文档](/docs/user-guide/smart-router) 了解路由决策怎么做出来的。
 
