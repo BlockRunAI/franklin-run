@@ -85,7 +85,7 @@ export const tr: HomeDict = {
       },
       {
         title: "Ücretsiz çalıştır",
-        body: "Kutudan ücretsiz NVIDIA Nemotron ve Qwen3 Coder. Cüzdan gerekmez.",
+        body: "Kutudan ücretsiz NVIDIA Nemotron ve DeepSeek V4 Flash. Cüzdan gerekmez.",
       },
       {
         title: "Yükle (5$ fazlasıyla yeter)",
@@ -240,7 +240,7 @@ export const tr: HomeDict = {
       },
       {
         q: "Ücretsiz kullanabilir miyim?",
-        a: "Evet. Ücretsiz NVIDIA modelleri (Nemotron, Qwen3 Coder) cüzdansız, USDC'siz, kayıt olmadan çalışır. Sonnet, Opus, GPT, Gemini, Grok ya da ücretli araçlar isterseniz cüzdanı yüklersiniz.",
+        a: "Evet. Ücretsiz NVIDIA modelleri (Nemotron, DeepSeek V4 Flash) cüzdansız, USDC'siz, kayıt olmadan çalışır. Sonnet, Opus, GPT, Gemini, Grok ya da ücretli araçlar isterseniz cüzdanı yüklersiniz.",
       },
       {
         q: "Neden Base ve Solana?",

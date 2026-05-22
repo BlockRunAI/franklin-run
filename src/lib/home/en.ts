@@ -85,7 +85,7 @@ export const en: HomeDict = {
       },
       {
         title: "Run free",
-        body: "Free NVIDIA Nemotron & Qwen3 Coder out of the box. No wallet required.",
+        body: "Free NVIDIA Nemotron & DeepSeek V4 Flash out of the box. No wallet required.",
       },
       {
         title: "Fund ($5 is plenty)",
@@ -240,7 +240,7 @@ export const en: HomeDict = {
       },
       {
         q: "Can I use it for free?",
-        a: "Yes. Free NVIDIA models (Nemotron, Qwen3 Coder) work with no wallet, no USDC, no signup. Fund the wallet only when you want Sonnet, Opus, GPT, Gemini, Grok, or paid tools.",
+        a: "Yes. Free NVIDIA models (Nemotron, DeepSeek V4 Flash) work with no wallet, no USDC, no signup. Fund the wallet only when you want Sonnet, Opus, GPT, Gemini, Grok, or paid tools.",
       },
       {
         q: "Why Base and Solana?",

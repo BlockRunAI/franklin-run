@@ -84,7 +84,7 @@ export const ur: HomeDict = {
       },
       {
         title: "مفت چلائیں",
-        body: "بکس کے باہر مفت NVIDIA Nemotron اور Qwen3 Coder۔ والیٹ کی ضرورت نہیں۔",
+        body: "بکس کے باہر مفت NVIDIA Nemotron اور DeepSeek V4 Flash۔ والیٹ کی ضرورت نہیں۔",
       },
       {
         title: "فنڈ کریں ($5 کافی ہیں)",
@@ -239,7 +239,7 @@ export const ur: HomeDict = {
       },
       {
         q: "کیا میں اسے مفت استعمال کر سکتا ہوں؟",
-        a: "ہاں۔ مفت NVIDIA ماڈلز (Nemotron، Qwen3 Coder) بغیر والیٹ، بغیر USDC، بغیر سائن اپ کے کام کرتے ہیں۔ والیٹ صرف تب فنڈ کریں جب Sonnet، Opus، GPT، Gemini، Grok، یا paid tools چاہیں۔",
+        a: "ہاں۔ مفت NVIDIA ماڈلز (Nemotron، DeepSeek V4 Flash) بغیر والیٹ، بغیر USDC، بغیر سائن اپ کے کام کرتے ہیں۔ والیٹ صرف تب فنڈ کریں جب Sonnet، Opus، GPT، Gemini، Grok، یا paid tools چاہیں۔",
       },
       {
         q: "Base اور Solana ہی کیوں؟",

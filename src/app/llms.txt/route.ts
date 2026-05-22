@@ -97,7 +97,7 @@ export async function GET() {
 - **What:** AI coding agent with a USDC wallet. Open-source CLI (npm install -g @blockrun/franklin).
 - **License:** Apache 2.0.
 - **Pricing model:** YOPO (You Only Pay Outcome) — provider cost plus 5%, settled per call in USDC. Zero subscriptions.
-- **Free tier:** NVIDIA Nemotron and Qwen3 Coder, no wallet required.
+- **Free tier:** NVIDIA Nemotron and DeepSeek V4 Flash, no wallet required.
 - **Paid tier:** $5 USDC unlocks 55+ frontier models (Claude Sonnet/Opus, GPT-4o, Gemini, Grok, DeepSeek, Kimi-K2.6) and paid tools.
 - **Identity:** wallet on Base or Solana — no email, no phone, no KYC.
 - **Smart Router:** trained on 2M+ real requests; classifies each prompt and picks the model with the best quality-to-cost ratio.

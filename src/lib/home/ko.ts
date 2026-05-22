@@ -78,7 +78,7 @@ export const ko: HomeDict = {
       },
       {
         title: "무료 실행",
-        body: "NVIDIA Nemotron과 Qwen3 Coder를 별도 설정 없이 무료로. 지갑 불필요.",
+        body: "NVIDIA Nemotron과 DeepSeek V4 Flash를 별도 설정 없이 무료로. 지갑 불필요.",
       },
       {
         title: "충전 ($5면 충분)",
@@ -233,7 +233,7 @@ export const ko: HomeDict = {
       },
       {
         q: "무료로 사용할 수 있나?",
-        a: "그렇다. 무료 NVIDIA 모델 (Nemotron, Qwen3 Coder)은 지갑도, USDC도, 가입도 없이 작동한다. Sonnet, Opus, GPT, Gemini, Grok, 또는 유료 도구를 원할 때만 지갑을 충전하라.",
+        a: "그렇다. 무료 NVIDIA 모델 (Nemotron, DeepSeek V4 Flash)은 지갑도, USDC도, 가입도 없이 작동한다. Sonnet, Opus, GPT, Gemini, Grok, 또는 유료 도구를 원할 때만 지갑을 충전하라.",
       },
       {
         q: "왜 Base와 Solana인가?",

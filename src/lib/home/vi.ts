@@ -78,7 +78,7 @@ export const vi: HomeDict = {
       },
       {
         title: "Chạy miễn phí",
-        body: "NVIDIA Nemotron và Qwen3 Coder miễn phí có sẵn. Không cần ví.",
+        body: "NVIDIA Nemotron và DeepSeek V4 Flash miễn phí có sẵn. Không cần ví.",
       },
       {
         title: "Nạp ($5 là đủ)",
@@ -233,7 +233,7 @@ export const vi: HomeDict = {
       },
       {
         q: "Có dùng miễn phí được không?",
-        a: "Có. NVIDIA models miễn phí (Nemotron, Qwen3 Coder) chạy không cần ví, không USDC, không đăng ký. Chỉ nạp ví khi bạn muốn Sonnet, Opus, GPT, Gemini, Grok, hoặc các tool trả phí.",
+        a: "Có. NVIDIA models miễn phí (Nemotron, DeepSeek V4 Flash) chạy không cần ví, không USDC, không đăng ký. Chỉ nạp ví khi bạn muốn Sonnet, Opus, GPT, Gemini, Grok, hoặc các tool trả phí.",
       },
       {
         q: "Vì sao lại Base và Solana?",
