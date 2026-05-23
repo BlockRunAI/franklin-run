@@ -6,6 +6,7 @@ export const vi: HomeDict = {
     compare: "So sánh",
     blog: "Blog",
     docs: "Tài liệu",
+    tryFranklin: "Dùng thử Franklin",
     github: "GitHub",
     getStarted: "Bắt đầu",
   },

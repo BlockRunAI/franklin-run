@@ -58,6 +58,9 @@ export function Header({
           <Link className="nav-link" href="/docs">
             {dict.nav.docs}
           </Link>
+          <Link className="nav-link nav-link-try" href="/try">
+            {dict.nav.tryFranklin}
+          </Link>
           <a
             className="btn-outline"
             href="https://github.com/blockrunai/franklin"
@@ -106,6 +109,9 @@ export function Header({
           </a>
           <Link href="/docs" onClick={() => setMenuOpen(false)}>
             {dict.nav.docs}
+          </Link>
+          <Link href="/try" onClick={() => setMenuOpen(false)}>
+            {dict.nav.tryFranklin}
           </Link>
           <a
             href="https://github.com/blockrunai/franklin"

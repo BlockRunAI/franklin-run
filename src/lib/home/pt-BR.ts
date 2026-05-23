@@ -12,6 +12,7 @@ export const ptBR: HomeDict = {
     compare: "Comparar",
     blog: "Blog",
     docs: "Docs",
+    tryFranklin: "Testar Franklin",
     github: "GitHub",
     getStarted: "Começar",
   },

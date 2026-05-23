@@ -6,6 +6,7 @@ export const ja: HomeDict = {
     compare: "比較",
     blog: "ブログ",
     docs: "ドキュメント",
+    tryFranklin: "Franklin を試す",
     github: "GitHub",
     getStarted: "はじめる",
   },

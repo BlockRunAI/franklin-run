@@ -14,6 +14,7 @@ export const fa: HomeDict = {
     compare: "مقایسه",
     blog: "وبلاگ",
     docs: "مستندات",
+    tryFranklin: "امتحان Franklin",
     github: "GitHub",
     getStarted: "شروع کنید",
   },

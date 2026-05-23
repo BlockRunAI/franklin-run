@@ -6,6 +6,7 @@ export const zhCN: HomeDict = {
     compare: "对比",
     blog: "博客",
     docs: "文档",
+    tryFranklin: "体验 Franklin",
     github: "GitHub",
     getStarted: "开始使用",
   },

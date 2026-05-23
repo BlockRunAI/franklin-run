@@ -13,6 +13,7 @@ export const ar: HomeDict = {
     compare: "المقارنة",
     blog: "المدوّنة",
     docs: "الوثائق",
+    tryFranklin: "جرّب Franklin",
     github: "GitHub",
     getStarted: "ابدأ الآن",
   },
