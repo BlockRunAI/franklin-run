@@ -363,9 +363,20 @@ export function useFranklinChat(
       }
       if (name === "make_phone_call") {
         modelRef.current = "make_phone_call";
+        const to = String(args.to ?? "");
+        const task = String(args.task ?? "");
+        // Human-in-the-loop gate: make_phone_call places a real call (~$0.54)
+        // to an arbitrary number with LLM-chosen args. Tool arguments can be
+        // steered by untrusted content (web_search results, pasted text), so a
+        // generic wallet popup is not enough — require an explicit confirm that
+        // names the number, task, and cost before the model can spend.
+        const ok =
+          typeof window === "undefined" ||
+          window.confirm(`Franklin wants to place a phone call (~$0.54):\n\nTo: ${to}\nTask: ${task}\n\nAllow this call?`);
+        if (!ok) return "User declined the phone call. Do not retry it.";
         const submit = await paidJson("/api/blockrun/v1/voice/call", {
-          to: String(args.to ?? ""),
-          task: String(args.task ?? ""),
+          to,
+          task,
           max_duration: 5,
         });
         const callId = submit.call_id || submit.callId || submit.id;

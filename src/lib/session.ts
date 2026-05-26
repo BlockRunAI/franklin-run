@@ -4,7 +4,13 @@ import crypto from "node:crypto";
 // token (no DB needed): base64url(payload).base64url(hmac). Carries the
 // verified wallet address + expiry. Mirrors a JWT but dependency-free.
 
-const SECRET = process.env.SESSION_SECRET || "dev-insecure-secret-change-me";
+const DEV_SECRET = "dev-insecure-secret-change-me";
+// Fail closed in production: a missing/empty SESSION_SECRET would otherwise fall
+// back to a publicly-known key, letting anyone forge a session for any wallet.
+if (process.env.NODE_ENV === "production" && !process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET must be set in production (see .env.example).");
+}
+const SECRET = process.env.SESSION_SECRET || DEV_SECRET;
 const TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days
 
 export const SESSION_COOKIE = "franklin_try_session";
