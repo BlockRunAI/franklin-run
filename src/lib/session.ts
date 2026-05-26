@@ -5,13 +5,20 @@ import crypto from "node:crypto";
 // verified wallet address + expiry. Mirrors a JWT but dependency-free.
 
 const DEV_SECRET = "dev-insecure-secret-change-me";
+const TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days
+
 // Fail closed in production: a missing/empty SESSION_SECRET would otherwise fall
 // back to a publicly-known key, letting anyone forge a session for any wallet.
-if (process.env.NODE_ENV === "production" && !process.env.SESSION_SECRET) {
-  throw new Error("SESSION_SECRET must be set in production (see .env.example).");
+// Resolved lazily (not at module load) so `next build` — which evaluates route
+// modules with NODE_ENV=production but no runtime env — doesn't throw; the
+// guard fires on the first real sign/verify at request time instead.
+function getSecret(): string {
+  const s = process.env.SESSION_SECRET;
+  if (process.env.NODE_ENV === "production" && !s) {
+    throw new Error("SESSION_SECRET must be set in production (see .env.example).");
+  }
+  return s || DEV_SECRET;
 }
-const SECRET = process.env.SESSION_SECRET || DEV_SECRET;
-const TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days
 
 export const SESSION_COOKIE = "franklin_try_session";
 export const NONCE_COOKIE = "franklin_try_nonce";
@@ -26,7 +33,7 @@ function b64url(buf: Buffer | string): string {
 }
 
 function sign(data: string): string {
-  return crypto.createHmac("sha256", SECRET).update(data).digest("base64url");
+  return crypto.createHmac("sha256", getSecret()).update(data).digest("base64url");
 }
 
 export function createSessionToken(address: string): string {
