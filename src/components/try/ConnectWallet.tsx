@@ -1,26 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { Wallet, LogOut, Loader2 } from "lucide-react";
 import { useUsdcBalance } from "@/hooks/use-usdc-balance";
-
-function useHasInjectedWallet() {
-  const [hasWallet] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const win = window as unknown as { ethereum?: unknown };
-    return win.ethereum !== undefined;
-  });
-  return hasWallet;
-}
+import { useTryLang } from "@/lib/try-i18n";
 
 // Browser-extension wallet connect button, styled for franklin.run.
 export function ConnectWallet() {
+  const { t } = useTryLang();
   const { address, isConnected } = useAccount();
   const { connect, connectors, isPending } = useConnect();
   const { disconnect } = useDisconnect();
-  const hasInjected = useHasInjectedWallet();
   const { balance } = useUsdcBalance();
+
+  // Wallet presence + connection state only exist on the client. Render a
+  // deterministic placeholder until mounted so SSR and the first client render
+  // match (avoids a hydration mismatch).
+  const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return (
+      <button className="btn-primary" disabled>
+        <Wallet className="h-4 w-4" />
+        {t.connectWallet}
+      </button>
+    );
+  }
+
+  const hasInjected =
+    typeof window !== "undefined" && (window as unknown as { ethereum?: unknown }).ethereum !== undefined;
 
   if (isConnected && address) {
     return (
@@ -53,7 +64,7 @@ export function ConnectWallet() {
         rel="noreferrer"
       >
         <Wallet className="h-4 w-4" />
-        Install a wallet
+        {t.installWallet}
       </a>
     );
   }
@@ -71,7 +82,7 @@ export function ConnectWallet() {
       ) : (
         <Wallet className="h-4 w-4" />
       )}
-      {isPending ? "Connecting…" : "Connect wallet"}
+      {isPending ? t.connecting : t.connectWallet}
     </button>
   );
 }

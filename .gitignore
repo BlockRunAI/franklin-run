@@ -54,3 +54,6 @@ temp/
 /franklin-v*.jpeg
 /franklin-v*.png
 /hero-wallet*.jpeg
+
+# Local dev conversation store
+.franklin-store/

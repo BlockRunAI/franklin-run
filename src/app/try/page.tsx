@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { WalletProvider } from "@/components/try/WalletProvider";
-import { FranklinChat } from "@/components/try/FranklinChat";
+import { TryGate } from "@/components/try/TryGate";
+import { TryLangProvider } from "@/lib/try-i18n";
 
 export const metadata: Metadata = {
   title: "Try Franklin — the AI agent with a wallet, in your browser",
@@ -17,10 +17,11 @@ export default function TryPage() {
       <Header variant="paper" />
       <main className="try-main">
         <WalletProvider>
-          <FranklinChat />
+          <TryLangProvider>
+            <TryGate />
+          </TryLangProvider>
         </WalletProvider>
       </main>
-      <Footer />
     </>
   );
 }
