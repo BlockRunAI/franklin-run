@@ -13,6 +13,7 @@ export const id: HomeDict = {
     compare: "Bandingkan",
     blog: "Blog",
     docs: "Docs",
+    tryFranklin: "Coba Franklin",
     github: "GitHub",
     getStarted: "Mulai",
   },

@@ -6,6 +6,7 @@ export const hi: HomeDict = {
     compare: "तुलना",
     blog: "ब्लॉग",
     docs: "Docs",
+    tryFranklin: "Franklin आज़माएं",
     github: "GitHub",
     getStarted: "शुरू करें",
   },

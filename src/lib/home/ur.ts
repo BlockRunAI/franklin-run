@@ -12,6 +12,7 @@ export const ur: HomeDict = {
     compare: "موازنہ",
     blog: "بلاگ",
     docs: "دستاویزات",
+    tryFranklin: "Franklin آزمائیں",
     github: "GitHub",
     getStarted: "شروع کریں",
   },

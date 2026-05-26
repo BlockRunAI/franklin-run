@@ -20,6 +20,7 @@ export interface HomeDict {
     compare: string;
     blog: string;
     docs: string;
+    tryFranklin: string;
     github: string;
     getStarted: string;
   };

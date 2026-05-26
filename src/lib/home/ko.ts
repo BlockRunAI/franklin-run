@@ -6,6 +6,7 @@ export const ko: HomeDict = {
     compare: "비교",
     blog: "블로그",
     docs: "문서",
+    tryFranklin: "Franklin 체험하기",
     github: "GitHub",
     getStarted: "시작하기",
   },

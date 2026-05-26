@@ -13,6 +13,7 @@ export const ru: HomeDict = {
     compare: "Сравнение",
     blog: "Блог",
     docs: "Документация",
+    tryFranklin: "Попробовать",
     github: "GitHub",
     getStarted: "Начать",
   },

@@ -13,6 +13,7 @@ export const tr: HomeDict = {
     compare: "Karşılaştır",
     blog: "Blog",
     docs: "Dokümanlar",
+    tryFranklin: "Franklin'i Dene",
     github: "GitHub",
     getStarted: "Başla",
   },
