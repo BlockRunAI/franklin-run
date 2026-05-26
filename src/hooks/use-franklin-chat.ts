@@ -297,13 +297,16 @@ export function useFranklinChat(
   }, []);
 
   const send = useCallback(
-    async (text: string, attachment?: string, modeOverride?: ChatMode) => {
+    async (text: string, attachment?: string, modeOverride?: ChatMode, modelOverride?: string) => {
       const prompt = text.trim();
       if ((!prompt && !attachment) || inFlight.current) return;
       inFlight.current = true;
       setError(null);
       abortRef.current = new AbortController();
       const activeMode = modeOverride ?? mode;
+      // If a model is forced (e.g. a tool-capable model for a demo case), keep
+      // the picker in sync for subsequent turns too.
+      if (modelOverride && activeMode === "chat" && modelOverride !== chatModel) setChatModel(modelOverride);
 
       const userMsg: ChatMessage = {
         role: "user",
@@ -320,7 +323,7 @@ export function useFranklinChat(
         } else if (activeMode === "video") {
           await runVideo(prompt);
         } else {
-          await runChat(history);
+          await runChat(history, modelOverride);
         }
       } catch (err) {
         const aborted =
@@ -339,7 +342,7 @@ export function useFranklinChat(
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mode, chatModel, imageModel, videoModel, paidFetch, setMessages],
+    [mode, chatModel, imageModel, videoModel, paidFetch, setMessages, setChatModel],
   );
 
   // Paid request → parsed JSON (handles 402→sign→retry). POST by default; GET
@@ -469,13 +472,14 @@ export function useFranklinChat(
   // Streamed chat — required because slow models can exceed the upstream
   // (Cloudflare) 100s budget on a non-streamed call and 524. Streaming starts
   // emitting tokens immediately, and gives a typewriter effect.
-  async function runChat(history: ChatMessage[]) {
+  async function runChat(history: ChatMessage[], modelOverride?: string) {
     setStatus("thinking");
     // Resolve "Auto" client-side, then vision-route: if the turn carries an
     // image and the chosen model can't see, swap to a vision-capable sibling.
+    const base = modelOverride || chatModel;
     const hasImage = history.some((m) => m.role === "user" && m.image);
     const lastPrompt = [...history].reverse().find((m) => m.role === "user")?.content ?? "";
-    let effectiveModel = chatModel === "blockrun/auto" ? resolveAuto(lastPrompt) : chatModel;
+    let effectiveModel = base === "blockrun/auto" ? resolveAuto(lastPrompt) : base;
     if (hasImage && !isVisionModel(effectiveModel)) effectiveModel = pickVisionSibling(effectiveModel);
     modelRef.current = effectiveModel;
 

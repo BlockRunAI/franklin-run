@@ -70,20 +70,25 @@ export function FranklinChat() {
   // Chat-mode opening cases showcase the three headline capabilities. Clicking
   // switches to the right mode; image/video need a wallet, so if not connected
   // we just switch + prefill instead of sending.
-  const CASES: { mode: "chat" | "image" | "video"; prompt: string }[] = [
-    { mode: "chat", prompt: t.casePrediction },
-    { mode: "chat", prompt: t.casePrediction2 },
-    { mode: "chat", prompt: t.casePrediction3 },
+  // Prediction cases need a tool-capable model (the free default can't call
+  // tools), so they force a cheap one — Gemini 2.5 Flash — and need a wallet.
+  const TOOL_MODEL = "google/gemini-2.5-flash";
+  const CASES: { mode: "chat" | "image" | "video"; prompt: string; model?: string }[] = [
+    { mode: "chat", prompt: t.casePrediction, model: TOOL_MODEL },
+    { mode: "chat", prompt: t.casePrediction2, model: TOOL_MODEL },
+    { mode: "chat", prompt: t.casePrediction3, model: TOOL_MODEL },
     { mode: "image", prompt: t.sugImage[0] },
     { mode: "video", prompt: t.sugVideo[0] },
   ];
-  const runCase = (c: { mode: "chat" | "image" | "video"; prompt: string }) => {
+  const runCase = (c: { mode: "chat" | "image" | "video"; prompt: string; model?: string }) => {
     setMode(c.mode);
-    if (c.mode !== "chat" && !isConnected) {
+    // Tool/image/video cases are paid — if no wallet yet, switch + prefill.
+    if ((c.mode !== "chat" || c.model) && !isConnected) {
+      if (c.model) setModel(c.model);
       setInput(c.prompt);
       return;
     }
-    send(c.prompt, undefined, c.mode);
+    send(c.prompt, undefined, c.mode, c.model);
   };
 
   const submit = () => {
