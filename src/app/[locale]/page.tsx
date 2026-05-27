@@ -32,7 +32,7 @@ export async function generateMetadata({
   for (const l of LOCALES) {
     languages[LOCALE_META[l].htmlLang] = `${SITE_URL}${homeUrl(l)}`;
   }
-  languages["x-default"] = `${SITE_URL}/`;
+  languages["x-default"] = `${SITE_URL}${homeUrl("en")}`;
 
   return {
     title: dict.meta.title,

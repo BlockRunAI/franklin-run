@@ -36,7 +36,7 @@ const homeLanguages: Record<string, string> = {};
 for (const l of LOCALES) {
   homeLanguages[LOCALE_META[l].htmlLang] = `${SITE_URL}${homeUrl(l)}`;
 }
-homeLanguages["x-default"] = `${SITE_URL}/`;
+homeLanguages["x-default"] = `${SITE_URL}${homeUrl("en")}`;
 
 export const metadata: Metadata = {
   title: "Franklin Agent — The AI agent with a wallet",
