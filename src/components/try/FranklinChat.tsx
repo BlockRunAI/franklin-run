@@ -55,6 +55,16 @@ export function FranklinChat() {
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [view, setView] = useState<TryView>("chat");
+  // On mobile the sidebar overlays the chat (position: fixed), so start it
+  // collapsed and close it after navigating — the chat should be visible first.
+  const MOBILE_BP = 880;
+  const closeSidebarOnMobile = () => {
+    if (typeof window !== "undefined" && window.innerWidth <= MOBILE_BP) setSidebarOpen(false);
+  };
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => {
+    if (window.innerWidth <= MOBILE_BP) setSidebarOpen(false);
+  }, []);
   // Focus mode: a composer toggle that forces a specific live-data tool (and a
   // tool-capable model). Like ChatGPT's "Search" / Perplexity Focus.
   const [focus, setFocus] = useState<ToolFocus | null>(null);
@@ -185,17 +195,25 @@ export function FranklinChat() {
         onNew={() => {
           history.newChat();
           setView("chat");
+          closeSidebarOnMobile();
         }}
         onSelect={(id) => {
           history.selectChat(id);
           setView("chat");
+          closeSidebarOnMobile();
         }}
         onDelete={history.deleteChat}
         view={view}
-        onView={setView}
+        onView={(v) => {
+          setView(v);
+          closeSidebarOnMobile();
+        }}
         open={sidebarOpen}
         auth={auth}
       />
+
+      {/* Mobile-only backdrop: tap outside the (overlaying) sidebar to close. */}
+      {sidebarOpen && <div className="try-sidebar-scrim" onClick={() => setSidebarOpen(false)} />}
 
       <div className="try-chat">
         <div className="try-chat-bar">

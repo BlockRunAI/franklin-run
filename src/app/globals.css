@@ -5325,6 +5325,9 @@ h2.dark-h,
   to { opacity: 1; }
 }
 
+/* Mobile-only backdrop behind the overlaying sidebar (hidden on desktop). */
+.try-sidebar-scrim { display: none; }
+
 @media (max-width: 880px) {
   .try-sidebar {
     position: fixed;
@@ -5335,4 +5338,12 @@ h2.dark-h,
   }
   .try-sidebar:not(.is-open) { box-shadow: none; }
   .try-mode-btn span { display: inline; }
+  .try-sidebar-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 24;
+    background: rgba(31, 28, 22, 0.32);
+    animation: try-fade 0.15s ease;
+  }
 }
