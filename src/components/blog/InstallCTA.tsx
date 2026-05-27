@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Locale } from "@/lib/blog";
 
 interface InstallCTAProps {
@@ -209,7 +210,7 @@ export function InstallCTA({ locale }: InstallCTAProps) {
           >
             {t.github}
           </a>
-          <a
+          <Link
             href="/docs/getting-started/installation"
             style={{
               color: "rgba(242,233,212,0.6)",
@@ -219,7 +220,7 @@ export function InstallCTA({ locale }: InstallCTAProps) {
             }}
           >
             /docs/getting-started/installation
-          </a>
+          </Link>
         </div>
       </div>
     </div>

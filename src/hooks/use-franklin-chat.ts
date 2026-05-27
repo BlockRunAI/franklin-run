@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 import { useX402Payment, parseX402FromResponse } from "./use-x402-payment";
-import { FRANKLIN_SYSTEM_PROMPT } from "@/lib/franklin-system-prompt";
+import { FRANKLIN_SYSTEM_PROMPT, FRANKLIN_TOOLS_PROMPT } from "@/lib/franklin-system-prompt";
 
 // Browser-side chat + image generation against BlockRun's x402 API, proxied
 // through /api/blockrun. Free chat models return 200 directly; paid models
@@ -13,7 +13,22 @@ import { FRANKLIN_SYSTEM_PROMPT } from "@/lib/franklin-system-prompt";
 
 const CHAT_ENDPOINT = "/api/blockrun/v1/chat/completions";
 const IMAGE_ENDPOINT = "/api/blockrun/v1/images/generations";
+const IMAGE_EDIT_ENDPOINT = "/api/blockrun/v1/images/image2image";
 const VIDEO_ENDPOINT = "/api/blockrun/v1/videos/generations";
+
+// Only OpenAI's edit endpoint accepts a reference image (mirrors Franklin CLI's
+// EDIT_SUPPORTED_MODELS). When a reference is attached we force gpt-image-2.
+const EDIT_SUPPORTED_IMAGE_MODELS = new Set(["openai/gpt-image-1", "openai/gpt-image-2"]);
+
+// Video models that accept a seed image (image-to-video). Sora 2 does not, so a
+// reference attached to it falls back to the default img2video model.
+const VIDEO_IMAGE_INPUT_MODELS = new Set([
+  "xai/grok-imagine-video",
+  "bytedance/seedance-2.0-fast",
+  "bytedance/seedance-2.0",
+  "bytedance/seedance-1.5-pro",
+]);
+const DEFAULT_I2V_MODEL = "bytedance/seedance-2.0-fast";
 
 export type ChatMode = "chat" | "image" | "video";
 
@@ -68,6 +83,14 @@ export const VIDEO_MODELS: ChatModel[] = [
   { id: "azure/sora-2", label: "Sora 2" },
 ];
 
+// A compact record of the tool run behind an answer — kept on the message so
+// it collapses into a "searched N keywords · M sources" summary after the run.
+export interface ChatActivity {
+  queries: string[]; // search / prediction queries the agent issued
+  sources: { title: string; url: string }[]; // web pages it referenced
+  tools: string[]; // friendly labels of every tool used (for the non-search case)
+}
+
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
@@ -75,6 +98,7 @@ export interface ChatMessage {
   image?: string;
   video?: string;
   reasoning?: string;
+  activity?: ChatActivity;
 }
 
 // Vision-capable chat models (mirrors Franklin's src/router/vision.ts). Used to
@@ -202,10 +226,39 @@ const TOOL_SCHEMAS = [
   },
 ] as const;
 
-// Only models with reliable function-calling get tools (and run non-streamed).
-// Free NVIDIA models stay on the streaming path without tools.
-function supportsTools(model: string): boolean {
-  return /^(openai|anthropic|google|x-ai|xai|deepseek|moonshot)\//.test(model);
+// Meta-capability mirroring the Franklin CLI's ActivateTool: real tools are
+// hidden by default and the model must opt in via activate_tool before it can
+// call them. Keeps the inventory tiny (weaker models stop hallucinating tools)
+// and gives a visible "activating X" step before any tool runs.
+const ACTIVATE_TOOL_NAME = "activate_tool";
+const ACTIVATE_SCHEMA = {
+  type: "function",
+  function: {
+    name: ACTIVATE_TOOL_NAME,
+    description:
+      "Activate the capabilities you need before using them. Tools are hidden by default to keep your inventory small. " +
+      'Call with no arguments to list what is available, or { "names": ["web_search", ...] } to enable specific tools — ' +
+      "they become callable on the next turn. Activate only what the task needs. Available: " +
+      "web_search, search_prediction_markets, get_market_price, generate_music, make_phone_call.",
+    parameters: {
+      type: "object",
+      properties: {
+        names: { type: "array", items: { type: "string" }, description: "Tool names to activate. Omit to list what's available." },
+      },
+    },
+  },
+} as const;
+const ALL_TOOL_NAMES: readonly string[] = TOOL_SCHEMAS.map((s) => s.function.name);
+const TOOL_ACTIVATION_NOTE =
+  "\n\nIMPORTANT: Your tools are hidden by default. To use any capability (web search, prediction markets, prices, music, phone), " +
+  "first call activate_tool with the names you need, then call the tool on the following turn.";
+
+// Every chat model is offered tools (non-streamed agent loop). Whether a paid
+// tool actually runs is gated on the wallet at call time: connected → pay and
+// proceed; not connected → we stop and prompt the user to connect a wallet.
+// (Kept as a function so the routing in runChat stays explicit and tweakable.)
+function supportsTools(): boolean {
+  return true;
 }
 
 // Split inline <think>…</think> chain-of-thought out of a model's text.
@@ -225,18 +278,61 @@ function splitThinking(raw: string): { answer: string; thinking: string } {
 
 export type ChatStatus = "idle" | "signing" | "thinking" | "generating" | "error";
 
+// A single visible line in the agent's activity log (CLI-style): which model is
+// thinking, which tool is running, and any wallet signature in between.
+export interface ToolStep {
+  id: number;
+  label: string;
+  state: "run" | "sign" | "done";
+}
+
+// A detached, per-conversation media (image/video) generation job. Heavy media
+// runs in the background bound to its conversation so switching conversations
+// never locks the others (mirrors how ChatGPT/Gemini/Midjourney treat slow
+// image/video as async jobs tied to the thread, not a global busy lock).
+export interface MediaJob {
+  kind: "image" | "video";
+  phase: "signing" | "generating";
+}
+
+// Human labels for the agent tools, with the provider behind each (mirrors the
+// marketplace), so the activity log reads like the CLI rather than raw names.
+const TOOL_LABELS: Record<string, string> = {
+  web_search: "Searching the web · Exa",
+  search_prediction_markets: "Checking prediction markets · Predexon",
+  get_market_price: "Fetching live price",
+  generate_music: "Composing music",
+  make_phone_call: "Placing phone call",
+};
+function toolLabel(name: string): string {
+  return TOOL_LABELS[name] ?? name;
+}
+function modelLabel(id: string): string {
+  return CHAT_MODELS.find((m) => m.id === id)?.label ?? (id.includes("/") ? id.split("/")[1] : id);
+}
+
 type Setter = ChatMessage[] | ((prev: ChatMessage[]) => ChatMessage[]);
 
 // Controlled messages — the conversation lives in useChatHistory so it can be
 // persisted and switched. This hook drives sending/generating against them.
 export function useFranklinChat(
   messages: ChatMessage[],
-  setMessages: (m: Setter) => void,
+  setMessagesRaw: (m: Setter, targetId?: string) => void,
+  ensureConvId: () => string,
   onSpend?: (model: string, usd: number) => void,
 ) {
   const { isConnected } = useAccount();
   const { makePayment } = useX402Payment();
   const onSpendRef = useRef(onSpend);
+  // A generation is pinned to the conversation it started in: all writes target
+  // this id, so switching conversations mid-generation doesn't leak the result
+  // (or the "generating" UI) into another chat.
+  const pendingConvIdRef = useRef<string | null>(null);
+  const [genConvId, setGenConvId] = useState<string | null>(null);
+  const setMessages = useCallback(
+    (m: Setter) => setMessagesRaw(m, pendingConvIdRef.current ?? undefined),
+    [setMessagesRaw],
+  );
   useEffect(() => {
     onSpendRef.current = onSpend;
   }, [onSpend]);
@@ -248,7 +344,21 @@ export function useFranklinChat(
   const [imageModel, setImageModel] = useState(IMAGE_MODELS[0].id);
   const [videoModel, setVideoModel] = useState(VIDEO_MODELS[0].id);
   const [status, setStatus] = useState<ChatStatus>("idle");
+  const [activeTool, setActiveTool] = useState<string | null>(null);
+  const [steps, setSteps] = useState<ToolStep[]>([]);
+  const stepSeq = useRef(0);
+  // Set when the model wants a paid tool but no wallet is connected — drives a
+  // "connect your wallet to use paid tools" prompt in the UI.
+  const [needsToolWallet, setNeedsToolWallet] = useState(false);
   const [streaming, setStreaming] = useState(false);
+  // Per-conversation media jobs (image/video) running detached in the background.
+  const [mediaJobs, setMediaJobs] = useState<Record<string, MediaJob>>({});
+  const mediaAbortRef = useRef<Record<string, AbortController>>({});
+  // Freshest connection state for async flows (send's closure can be stale).
+  const isConnectedRef = useRef(isConnected);
+  useEffect(() => {
+    isConnectedRef.current = isConnected;
+  }, [isConnected]);
   const [error, setError] = useState<string | null>(null);
   const inFlight = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -266,6 +376,17 @@ export function useFranklinChat(
 
   const signal = () => abortRef.current?.signal;
 
+  // Activity-log helpers — every model/tool/signature step shows as a line so
+  // the web flow is as legible as the CLI (and signing never stands alone).
+  const pushStep = useCallback((label: string, state: ToolStep["state"] = "run") => {
+    const id = ++stepSeq.current;
+    setSteps((s) => [...s, { id, label, state }]);
+    return id;
+  }, []);
+  const updateStep = useCallback((id: number, patch: Partial<ToolStep>) => {
+    setSteps((s) => s.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  }, []);
+
   // Pay-aware fetch: probe → 402 → sign → retry with X-Payment. Supports GET
   // (no body) for the read-only data tools (markets, prices, prediction).
   const paidFetch = useCallback(
@@ -280,33 +401,86 @@ export function useFranklinChat(
         const reqs = parseX402FromResponse(res);
         if (!reqs) throw new Error("Could not read payment requirements from the server.");
         setStatus("signing");
-        const { payload, error: signErr } = await makePayment(reqs);
-        if (!payload) throw new Error(signErr || "Wallet signature failed.");
         const usd = Number(reqs.accepts?.[0]?.amount || 0) / 1_000_000;
-        if (usd) onSpendRef.current?.(modelRef.current, usd);
+        const usdStr = usd ? (usd < 0.01 ? usd.toFixed(4) : usd.toFixed(2)) : null;
+        // Show the signature as its own step alongside the running tool, so the
+        // user sees *what* they're paying for, not just a bare "sign" prompt.
+        const signId = pushStep(usdStr ? `Awaiting wallet signature · $${usdStr}` : "Awaiting wallet signature", "sign");
+        const { payload, error: signErr } = await makePayment(reqs);
+        if (!payload) {
+          updateStep(signId, { state: "done", label: "Signature cancelled" });
+          throw new Error(signErr || "Wallet signature failed.");
+        }
+        // Signature done — leave "signing" so the tool/working status can show
+        // again during the actual request (and the next sign re-sets it).
+        setStatus("thinking");
         res = await fetch(url, init({ "X-Payment": payload }));
+        // Record the spend only on the *settling* response. The async media
+        // submit returns 202 (payment verified, not yet settled) — the poll
+        // settles and records instead, so recording here too would double-count.
+        if (res.status === 202) {
+          updateStep(signId, { state: "done", label: "Submitted" });
+        } else {
+          updateStep(signId, { state: "done", label: usdStr ? `Paid $${usdStr}` : "Paid" });
+          if (usd) onSpendRef.current?.(modelRef.current, usd);
+        }
       }
       return res;
     },
-    [makePayment],
+    [makePayment, pushStep, updateStep],
   );
 
-  // Abort the in-flight generation; partial streamed output is kept.
+  // Abort the in-flight generation and force-clear busy state. Resetting the
+  // flags directly (not just aborting the fetch) recovers even when a wallet
+  // signature is hung — abort can't cancel a pending wallet popup.
   const stop = useCallback(() => {
     abortRef.current?.abort();
+    inFlight.current = false;
+    setStreaming(false);
+    setStatus("idle");
+    setActiveTool(null);
+    setSteps([]);
+    pendingConvIdRef.current = null;
+    setGenConvId(null);
+  }, []);
+
+  // Cancel a conversation's background media job (image/video).
+  const stopMedia = useCallback((convId: string) => {
+    mediaAbortRef.current[convId]?.abort();
+    delete mediaAbortRef.current[convId];
+    setMediaJobs((p) => {
+      const n = { ...p };
+      delete n[convId];
+      return n;
+    });
   }, []);
 
   const send = useCallback(
-    async (text: string, attachment?: string, modeOverride?: ChatMode, modelOverride?: string) => {
+    async (text: string, attachment?: string, modeOverride?: ChatMode, modelOverride?: string, forceTool?: string) => {
       const prompt = text.trim();
-      if ((!prompt && !attachment) || inFlight.current) return;
+      if (!prompt && !attachment) return;
+      const activeMode0 = modeOverride ?? mode;
+      // Heavy media → detached, per-conversation background job. It doesn't take
+      // the global chat lock, so other conversations stay usable while it runs.
+      if (activeMode0 === "image" || activeMode0 === "video") {
+        const mediaConvId = ensureConvId();
+        if (mediaAbortRef.current[mediaConvId]) return; // already generating here
+        void runMedia(mediaConvId, activeMode0, prompt, attachment);
+        return;
+      }
+      if (inFlight.current) return;
       inFlight.current = true;
+      // Pin this run to the active conversation before any write.
+      const convId = ensureConvId();
+      pendingConvIdRef.current = convId;
+      setGenConvId(convId);
       setError(null);
+      setSteps([]);
+      setNeedsToolWallet(false);
       abortRef.current = new AbortController();
-      const activeMode = modeOverride ?? mode;
       // If a model is forced (e.g. a tool-capable model for a demo case), keep
       // the picker in sync for subsequent turns too.
-      if (modelOverride && activeMode === "chat" && modelOverride !== chatModel) setChatModel(modelOverride);
+      if (modelOverride && modelOverride !== chatModel) setChatModel(modelOverride);
 
       const userMsg: ChatMessage = {
         role: "user",
@@ -318,13 +492,7 @@ export function useFranklinChat(
       setMessages(history);
 
       try {
-        if (activeMode === "image") {
-          await runImage(prompt);
-        } else if (activeMode === "video") {
-          await runVideo(prompt);
-        } else {
-          await runChat(history, modelOverride);
-        }
+        await runChat(history, modelOverride, forceTool);
       } catch (err) {
         const aborted =
           abortRef.current?.signal.aborted || (err instanceof Error && err.name === "AbortError");
@@ -339,11 +507,34 @@ export function useFranklinChat(
       } finally {
         inFlight.current = false;
         abortRef.current = null;
+        pendingConvIdRef.current = null;
+        setGenConvId(null);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mode, chatModel, imageModel, videoModel, paidFetch, setMessages, setChatModel],
+    [mode, chatModel, imageModel, videoModel, paidFetch, setMessages, setChatModel, ensureConvId],
   );
+
+  // Regenerate the last answer: drop trailing assistant message(s), then resend
+  // the preceding user turn in the matching mode. Updating msgRef synchronously
+  // avoids a race with send (which reads msgRef.current).
+  const regenerate = useCallback(() => {
+    if (inFlight.current) return;
+    const msgs = msgRef.current;
+    let i = msgs.length - 1;
+    let lastKind: ChatMessage["kind"] = "text";
+    while (i >= 0 && msgs[i].role === "assistant") {
+      lastKind = msgs[i].kind || "text";
+      i--;
+    }
+    if (i < 0 || msgs[i].role !== "user") return;
+    const userMsg = msgs[i];
+    const base = msgs.slice(0, i);
+    msgRef.current = base;
+    setMessages(base);
+    const m: ChatMode = lastKind === "image" ? "image" : lastKind === "video" ? "video" : "chat";
+    void send(userMsg.content, userMsg.image, m);
+  }, [send, setMessages]);
 
   // Paid request → parsed JSON (handles 402→sign→retry). POST by default; GET
   // for read-only data tools.
@@ -355,6 +546,7 @@ export function useFranklinChat(
 
   // Execute one tool call → returns a string result fed back to the model.
   async function executeTool(name: string, args: Record<string, unknown>): Promise<string> {
+    setActiveTool(name);
     try {
       if (name === "web_search") {
         modelRef.current = "web_search";
@@ -425,17 +617,24 @@ export function useFranklinChat(
       return `Unknown tool: ${name}`;
     } catch (e) {
       return `Tool ${name} failed: ${e instanceof Error ? e.message : "error"}`;
+    } finally {
+      setActiveTool(null);
     }
   }
 
   // Tool-calling loop (non-streamed) for tool-capable models. Tool-call and
   // tool-result messages live only in this API-local array — they are never
   // shown in the UI; the user just sees their message and the final answer.
-  async function runChatWithTools(history: ChatMessage[], model: string) {
+  async function runChatWithTools(history: ChatMessage[], model: string, forceTool?: string) {
     setStatus("thinking");
     type ApiMsg = Record<string, unknown>;
+    // Focus mode: nudge the model to use the chosen tool (tool_choice forces it,
+    // this just improves the phrasing of the answer afterwards).
+    const focusNudge = forceTool
+      ? `\n\nThe user selected the ${toolLabel(forceTool)} capability — use the ${forceTool} tool to answer this turn, then summarize the result clearly.`
+      : "";
     const apiMessages: ApiMsg[] = [
-      { role: "system", content: FRANKLIN_SYSTEM_PROMPT },
+      { role: "system", content: `${FRANKLIN_SYSTEM_PROMPT}\n\n${FRANKLIN_TOOLS_PROMPT}${TOOL_ACTIVATION_NOTE}${focusNudge}` },
       ...history
         .filter((m) => m.kind !== "video" && !(m.kind === "image" && m.role === "assistant"))
         .map((m) =>
@@ -451,8 +650,29 @@ export function useFranklinChat(
         ),
     ];
 
-    for (let i = 0; i < 6; i++) {
-      const json = await paidJson(CHAT_ENDPOINT, { model, messages: apiMessages, tools: TOOL_SCHEMAS, stream: false });
+    // Accumulate a compact record of the run so it can collapse into a summary
+    // ("searched N keywords · M sources") attached to the final answer.
+    const activity: ChatActivity = { queries: [], sources: [], tools: [] };
+
+    // Progressive tool disclosure (mirrors the CLI's ActivateTool): real tools
+    // start hidden; the model activates what it needs and they appear next turn.
+    // Focus mode pre-activates (and force-calls) the chosen tool.
+    const activeTools = new Set<string>();
+    if (forceTool) activeTools.add(forceTool);
+
+    for (let i = 0; i < 5; i++) {
+      // Show which model is reasoning this turn (a sign step may appear under it
+      // if the model is paid).
+      const thinkId = pushStep(`${modelLabel(model)} · thinking`);
+      // Each turn offers activate_tool + whatever the model has activated so far.
+      const turnTools = [ACTIVATE_SCHEMA, ...TOOL_SCHEMAS.filter((s) => activeTools.has(s.function.name))];
+      // Focus mode forces the chosen tool on the first turn; afterwards the
+      // model answers freely (auto) using the tool's result.
+      const toolChoice = forceTool && i === 0
+        ? { tool_choice: { type: "function", function: { name: forceTool } } }
+        : {};
+      const json = await paidJson(CHAT_ENDPOINT, { model, messages: apiMessages, tools: turnTools, stream: false, ...toolChoice });
+      updateStep(thinkId, { state: "done" });
       const choices = json.choices as Array<{ message?: ApiMsg }> | undefined;
       const msg = choices?.[0]?.message;
       const toolCalls = (msg?.tool_calls as Array<{ id: string; function: { name: string; arguments: string } }>) || [];
@@ -465,25 +685,83 @@ export function useFranklinChat(
           } catch {
             /* ignore */
           }
+
+          // activate_tool — free meta-step: pull tools into the active set so
+          // they're callable next turn. This is the visible "activating X" step.
+          if (tc.function.name === ACTIVATE_TOOL_NAME) {
+            const raw = (parsed as { names?: unknown }).names;
+            const names = Array.isArray(raw) ? raw.filter((n): n is string => typeof n === "string") : [];
+            let result: string;
+            if (names.length === 0) {
+              const inactive = TOOL_SCHEMAS.filter((s) => !activeTools.has(s.function.name));
+              const stepId = pushStep("Selecting tools");
+              result = inactive.length
+                ? "Available tools:\n" + inactive.map((s) => `- ${s.function.name}: ${s.function.description}`).join("\n")
+                : "All tools are already active.";
+              updateStep(stepId, { state: "done" });
+            } else {
+              const added = names.filter((n) => ALL_TOOL_NAMES.includes(n) && !activeTools.has(n));
+              const stepId = pushStep(added.length ? `Activating · ${added.map(toolLabel).join(", ")}` : "Selecting tools");
+              added.forEach((n) => activeTools.add(n));
+              result = added.length
+                ? `Activated: ${added.join(", ")}. They are now callable.`
+                : "No new tools activated (unknown or already active).";
+              updateStep(stepId, { state: "done" });
+            }
+            apiMessages.push({ role: "tool", tool_call_id: tc.id, content: result });
+            continue;
+          }
+
+          // A real (paid) tool. If there's no wallet, stop and prompt rather
+          // than failing on the signature step.
+          if (!isConnectedRef.current) {
+            setSteps([]);
+            setNeedsToolWallet(true);
+            setStatus("idle");
+            return;
+          }
+          // Each tool call is its own visible step (with any signature nested).
+          const toolStepId = pushStep(toolLabel(tc.function.name));
           const result = await executeTool(tc.function.name, parsed);
+          updateStep(toolStepId, { state: "done" });
+          // Record the run for the collapsed summary.
+          activity.tools.push(toolLabel(tc.function.name));
+          const q = typeof parsed.query === "string" ? parsed.query.trim() : "";
+          if (q && !activity.queries.includes(q)) activity.queries.push(q);
+          if (tc.function.name === "web_search") {
+            for (const s of extractSources(result)) {
+              if (!activity.sources.some((x) => x.url === s.url)) activity.sources.push(s);
+            }
+          }
           apiMessages.push({ role: "tool", tool_call_id: tc.id, content: result });
         }
         continue;
       }
       const content = (msg?.content as string) || "(empty response)";
+      const ue = upstreamErrorMessage(content);
+      if (ue) throw new Error(ue);
       const { answer, thinking } = splitThinking(content);
-      setMessages((m) => [...m, { role: "assistant", content: answer || content, kind: "text", reasoning: thinking || undefined }]);
+      const hadActivity = activity.tools.length > 0;
+      setMessages((m) => [...m, {
+        role: "assistant",
+        content: answer || content,
+        kind: "text",
+        reasoning: thinking || undefined,
+        ...(hadActivity ? { activity } : {}),
+      }]);
+      setSteps([]);
       setStatus("idle");
       return;
     }
     setMessages((m) => [...m, { role: "assistant", content: "Stopped after too many tool steps.", kind: "text" }]);
+    setSteps([]);
     setStatus("idle");
   }
 
   // Streamed chat — required because slow models can exceed the upstream
   // (Cloudflare) 100s budget on a non-streamed call and 524. Streaming starts
   // emitting tokens immediately, and gives a typewriter effect.
-  async function runChat(history: ChatMessage[], modelOverride?: string) {
+  async function runChat(history: ChatMessage[], modelOverride?: string, forceTool?: string) {
     setStatus("thinking");
     // Resolve "Auto" client-side, then vision-route: if the turn carries an
     // image and the chosen model can't see, swap to a vision-capable sibling.
@@ -496,8 +774,8 @@ export function useFranklinChat(
 
     // Tool-capable models run the agent tool-calling loop (non-streamed).
     // Free/other models stay on the streaming path below (no tools).
-    if (supportsTools(effectiveModel)) {
-      await runChatWithTools(history, effectiveModel);
+    if (supportsTools()) {
+      await runChatWithTools(history, effectiveModel, forceTool);
       return;
     }
 
@@ -575,47 +853,143 @@ export function useFranklinChat(
       }
     }
 
+    const ue = upstreamErrorMessage(acc);
+    if (ue) {
+      setMessages((m) => m.slice(0, -1)); // drop the partial error bubble
+      setStreaming(false);
+      throw new Error(ue);
+    }
     if (!acc && !reasoningAcc) writeLast("(empty response)", "");
     setStreaming(false);
   }
 
-  async function runImage(prompt: string) {
-    setStatus("generating");
-    modelRef.current = imageModel;
-    const body = JSON.stringify({ model: imageModel, prompt, n: 1 });
-    const res = await paidFetch(IMAGE_ENDPOINT, body);
-    setStatus("generating");
+  // Detached, per-conversation media job (image/video). Adds the user message,
+  // signs + submits, polls, writes the result — all pinned to `convId` and
+  // tracked in `mediaJobs[convId]`, so it never touches the global chat run and
+  // switching conversations leaves it (and other conversations) unaffected.
+  async function runMedia(convId: string, kind: "image" | "video", prompt: string, reference?: string) {
+    const abort = new AbortController();
+    mediaAbortRef.current[convId] = abort;
+    setMediaJobs((p) => ({ ...p, [convId]: { kind, phase: "generating" } }));
+    const setPhase = (phase: MediaJob["phase"]) => setMediaJobs((p) => ({ ...p, [convId]: { kind, phase } }));
+    setMessagesRaw(
+      (m) => [...m, { role: "user", content: prompt, kind: "text", ...(reference ? { image: reference } : {}) }],
+      convId,
+    );
 
-    let url: string | undefined;
-    if (res.status === 202) {
-      url = await pollMedia(res, 120_000);
+    // Resolve model + endpoint + body (mirrors the img2img / img2video rules).
+    let model: string;
+    let endpoint: string;
+    let body: string;
+    if (kind === "image") {
+      const useEdit = !!reference;
+      model = useEdit && !EDIT_SUPPORTED_IMAGE_MODELS.has(imageModel) ? "openai/gpt-image-2" : imageModel;
+      endpoint = useEdit ? IMAGE_EDIT_ENDPOINT : IMAGE_ENDPOINT;
+      body = useEdit
+        ? JSON.stringify({ model, prompt, image: reference, size: "1024x1024", n: 1 })
+        : JSON.stringify({ model, prompt, n: 1 });
     } else {
-      if (!res.ok) throw new Error(await errMsg(res));
-      url = extractMediaUrl(await res.json());
+      const useSeed = !!reference;
+      model = useSeed && !VIDEO_IMAGE_INPUT_MODELS.has(videoModel) ? DEFAULT_I2V_MODEL : videoModel;
+      endpoint = VIDEO_ENDPOINT;
+      body = JSON.stringify({ model, prompt, ...(useSeed ? { image_url: reference } : {}) });
     }
-    if (!url) throw new Error("No image came back from the model.");
-    setMessages((m) => [...m, { role: "assistant", content: prompt, kind: "image", image: url }]);
-    setStatus("idle");
+
+    try {
+      let res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+        signal: abort.signal,
+      });
+      if (res.status === 402) {
+        const reqs = parseX402FromResponse(res);
+        if (!reqs) throw new Error("Could not read payment requirements from the server.");
+        const usd = Number(reqs.accepts?.[0]?.amount || 0) / 1_000_000;
+        setPhase("signing");
+        const { payload, error: signErr } = await makePayment(reqs);
+        if (!payload) throw new Error(signErr || "Wallet signature failed.");
+        setPhase("generating");
+        res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Payment": payload },
+          body,
+          signal: abort.signal,
+        });
+        // Record only on the settling response (202 submit is verify-only — the
+        // poll settles and records).
+        if (usd && res.status !== 202) onSpendRef.current?.(model, usd);
+      }
+
+      let url: string | undefined;
+      if (res.status === 202) {
+        url = await pollMediaJob(convId, kind, res, abort.signal, model);
+      } else {
+        if (!res.ok) throw new Error(await errMsg(res));
+        url = extractMediaUrl(await res.json());
+      }
+      if (!url) throw new Error(kind === "image" ? "No image came back from the model." : "No video came back from the model.");
+      const extra = kind === "image" ? { image: url } : { video: url };
+      setMessagesRaw((m) => [...m, { role: "assistant", content: prompt, kind, ...extra }], convId);
+    } catch (err) {
+      const aborted = abort.signal.aborted || (err instanceof Error && err.name === "AbortError");
+      if (!aborted) {
+        const msg = err instanceof Error ? err.message : "Generation failed.";
+        setMessagesRaw((m) => [...m, { role: "assistant", content: msg, kind: "text" }], convId);
+      }
+    } finally {
+      setMediaJobs((p) => {
+        const n = { ...p };
+        delete n[convId];
+        return n;
+      });
+      delete mediaAbortRef.current[convId];
+    }
   }
 
-  // Video is always async: submit returns 202 + poll_url, poll until completed
-  // (can take 1–3 min). Cheaper/faster models recommended for the preview.
-  async function runVideo(prompt: string) {
-    setStatus("generating");
-    modelRef.current = videoModel;
-    const body = JSON.stringify({ model: videoModel, prompt });
-    const res = await paidFetch(VIDEO_ENDPOINT, body);
-    setStatus("generating");
+  // Poll loop for a media job — its own signal + per-job phase, separate from
+  // the global pollMedia used by the music tool.
+  async function pollMediaJob(
+    convId: string,
+    kind: "image" | "video",
+    submitRes: Response,
+    signal: AbortSignal,
+    model: string,
+  ): Promise<string | undefined> {
+    const submit = await submitRes.json();
+    const pollPath: string | undefined = submit.poll_url;
+    if (!pollPath) return extractMediaUrl(submit);
+    const proxied = pollPath.startsWith("/api/blockrun")
+      ? pollPath
+      : `/api/blockrun${pollPath.replace(/^.*\/api/, "")}`;
+    const setPhase = (phase: MediaJob["phase"]) => setMediaJobs((p) => ({ ...p, [convId]: { kind, phase } }));
 
-    let url: string | undefined;
-    if (res.status === 202 || res.ok) {
-      url = res.status === 202 ? await pollMedia(res, 300_000) : extractMediaUrl(await res.json());
-    } else {
-      throw new Error(await errMsg(res));
+    let sig: string | null = null;
+    const start = Date.now();
+    const maxMs = kind === "video" ? 300_000 : 180_000;
+    while (Date.now() - start < maxMs) {
+      if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+      const headers: Record<string, string> = {};
+      if (sig) headers["X-Payment"] = sig;
+      const r = await fetch(proxied, { headers, signal });
+      if (r.status === 402 && !sig) {
+        const reqs = parseX402FromResponse(r);
+        if (!reqs) throw new Error("Poll missing payment requirements.");
+        setPhase("signing");
+        const { payload, error: e } = await makePayment(reqs);
+        if (!payload) throw new Error(e || "Wallet signature failed.");
+        const usd = Number(reqs.accepts?.[0]?.amount || 0) / 1_000_000;
+        if (usd) onSpendRef.current?.(model, usd);
+        sig = payload;
+        setPhase("generating");
+        continue;
+      }
+      if (!r.ok) throw new Error(await errMsg(r));
+      const j = await r.json();
+      if (j.status === "completed" || j.status === "settled" || j.data) return extractMediaUrl(j);
+      await new Promise((res) => setTimeout(res, 4000));
     }
-    if (!url) throw new Error("No video came back from the model.");
-    setMessages((m) => [...m, { role: "assistant", content: prompt, kind: "video", video: url }]);
-    setStatus("idle");
+    throw new Error("Generation is taking too long — try again.");
   }
 
   // Slow-path poll for image/video jobs. First poll typically 402 — sign once
@@ -670,11 +1044,51 @@ export function useFranklinChat(
     models,
     selectedModel,
     status,
+    activeTool,
+    steps,
+    needsToolWallet,
+    genConvId,
+    mediaJobs,
     error,
     isBusy,
     send,
     stop,
+    stopMedia,
+    regenerate,
   };
+}
+
+// Pull {title,url} pairs out of a web_search result blob (shape varies by
+// provider), so the collapsed summary can list the pages Franklin referenced.
+function extractSources(resultStr: string): { title: string; url: string }[] {
+  let data: unknown;
+  try {
+    data = JSON.parse(resultStr);
+  } catch {
+    return [];
+  }
+  const out: { title: string; url: string }[] = [];
+  const visit = (node: unknown) => {
+    if (!node || typeof node !== "object") return;
+    if (Array.isArray(node)) {
+      node.forEach(visit);
+      return;
+    }
+    const o = node as Record<string, unknown>;
+    const url = typeof o.url === "string" ? o.url : typeof o.link === "string" ? o.link : "";
+    if (/^https?:\/\//.test(url)) {
+      const title =
+        (typeof o.title === "string" && o.title) ||
+        (typeof o.name === "string" && o.name) ||
+        url.replace(/^https?:\/\/(www\.)?/, "").split("/")[0];
+      out.push({ title: String(title).slice(0, 140), url });
+    }
+    for (const v of Object.values(o)) visit(v);
+  };
+  visit(data);
+  // De-dup by url, cap the list.
+  const seen = new Set<string>();
+  return out.filter((s) => (seen.has(s.url) ? false : (seen.add(s.url), true))).slice(0, 12);
 }
 
 function extractMediaUrl(json: Record<string, unknown>): string | undefined {
@@ -684,6 +1098,18 @@ function extractMediaUrl(json: Record<string, unknown>): string | undefined {
   if (first.url) return first.url;
   if (first.b64_json) return `data:image/png;base64,${first.b64_json}`;
   return undefined;
+}
+
+// Some upstream/provider errors come back as the model's *content* (e.g. a 429
+// rate-limit or a 410 EOL). Detect those so we can show a clean error instead
+// of printing the raw error as Franklin's reply.
+function upstreamErrorMessage(text: string): string | null {
+  if (/429|Too Many Requests|rate.?limit/i.test(text))
+    return "The model is busy right now (rate-limited). Please try again in a moment.";
+  const code = /API error:\s*(\d{3})|"status":\s*(\d{3})/.exec(text);
+  if (/^\s*\[Error:/i.test(text) || code)
+    return `The model returned an error${code ? ` (${code[1] || code[2]})` : ""}. Please try again.`;
+  return null;
 }
 
 async function errMsg(res: Response): Promise<string> {

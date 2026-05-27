@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { CodeBlock } from "@/components/docs/CodeBlock";
 import { Callout } from "@/components/docs/Callout";
@@ -113,7 +114,7 @@ Franklin: [uses Grep with pattern "import.*React" and glob "*.ts"]`}
         <h2>Trading</h2>
         <p>
           Real-time crypto market data and technical analysis (see{" "}
-          <a href="/docs/user-guide/trading">Trading</a> for details):
+          <Link href="/docs/user-guide/trading">Trading</Link> for details):
         </p>
         <ul>
           <li>
@@ -129,7 +130,7 @@ Franklin: [uses Grep with pattern "import.*React" and glob "*.ts"]`}
         <h2>Social</h2>
         <p>
           X/Twitter integration (see{" "}
-          <a href="/docs/user-guide/social">Social</a> for details):
+          <Link href="/docs/user-guide/social">Social</Link> for details):
         </p>
         <ul>
           <li>

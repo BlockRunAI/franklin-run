@@ -28,17 +28,32 @@ function parse(md: string): Segment[] {
   return segs;
 }
 
-// Inline markdown for one line: **bold** and `code`.
+// Inline markdown for one line: **bold**, `code`, [links](url), and bare URLs.
 function renderInline(line: string, key: string) {
   const nodes: React.ReactNode[] = [];
-  const re = /(\*\*([^*]+)\*\*|`([^`]+)`)/g;
+  const re = /(\*\*([^*]+)\*\*|`([^`]+)`|\[([^\]]+)\]\(([^)\s]+)\)|(https?:\/\/[^\s<>()]+))/g;
   let last = 0;
   let m: RegExpExecArray | null;
   let i = 0;
   while ((m = re.exec(line))) {
     if (m.index > last) nodes.push(line.slice(last, m.index));
-    if (m[2] !== undefined) nodes.push(<strong key={`${key}-b${i}`}>{m[2]}</strong>);
-    else if (m[3] !== undefined) nodes.push(<code key={`${key}-c${i}`} className="try-inline-code">{m[3]}</code>);
+    if (m[2] !== undefined) {
+      nodes.push(<strong key={`${key}-b${i}`}>{m[2]}</strong>);
+    } else if (m[3] !== undefined) {
+      nodes.push(<code key={`${key}-c${i}`} className="try-inline-code">{m[3]}</code>);
+    } else if (m[4] !== undefined && m[5] !== undefined) {
+      nodes.push(
+        <a key={`${key}-l${i}`} className="try-md-link" href={m[5]} target="_blank" rel="noreferrer">
+          {m[4]}
+        </a>,
+      );
+    } else if (m[6] !== undefined) {
+      nodes.push(
+        <a key={`${key}-u${i}`} className="try-md-link" href={m[6]} target="_blank" rel="noreferrer">
+          {m[6].replace(/^https?:\/\//, "")}
+        </a>,
+      );
+    }
     last = re.lastIndex;
     i++;
   }

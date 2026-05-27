@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount, useSignMessage, useConnect } from "wagmi";
 
 // Wallet sign-in (SIWE-style): connect wallet, sign a nonce'd message, the
 // backend verifies and sets a session cookie. `address` is the signed-in
@@ -9,6 +9,7 @@ import { useAccount, useSignMessage } from "wagmi";
 export function useAuth() {
   const { address: connected } = useAccount();
   const { signMessageAsync } = useSignMessage();
+  const { connectAsync, connectors } = useConnect();
   const [address, setAddress] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [signingIn, setSigningIn] = useState(false);
@@ -23,20 +24,27 @@ export function useAuth() {
   }, []);
 
   const signIn = useCallback(async () => {
-    if (!connected) return;
     setError(null);
     setSigningIn(true);
     try {
+      // Connect the wallet first if needed (one-click sign-in).
+      let addr = connected;
+      if (!addr) {
+        const injected = connectors.find((c) => c.id === "injected") ?? connectors[0];
+        if (!injected) throw new Error("No wallet found. Install MetaMask.");
+        const res = await connectAsync({ connector: injected });
+        addr = res.accounts[0];
+      }
       const { nonce } = await (await fetch("/api/try/auth/nonce")).json();
       const message =
-        `franklin.run wants you to sign in with your Ethereum account:\n${connected}\n\n` +
+        `franklin.run wants you to sign in with your Ethereum account:\n${addr}\n\n` +
         `Sign in to Franklin to keep your chats, images and videos across devices.\n\n` +
         `Nonce: ${nonce}\nIssued At: ${new Date().toISOString()}`;
-      const signature = await signMessageAsync({ message });
+      const signature = await signMessageAsync({ message, account: addr as `0x${string}` });
       const res = await fetch("/api/try/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ address: connected, message, signature }),
+        body: JSON.stringify({ address: addr, message, signature }),
       });
       if (!res.ok) throw new Error((await res.json()).error || "Sign-in failed");
       setAddress((await res.json()).address);
@@ -45,7 +53,7 @@ export function useAuth() {
     } finally {
       setSigningIn(false);
     }
-  }, [connected, signMessageAsync]);
+  }, [connected, signMessageAsync, connectAsync, connectors]);
 
   const signOut = useCallback(async () => {
     await fetch("/api/try/auth/logout", { method: "POST" });

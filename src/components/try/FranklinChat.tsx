@@ -1,16 +1,27 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, PanelLeft, ImageIcon, Clapperboard, X, Square, Plus } from "lucide-react";
-import { ConnectWallet } from "./ConnectWallet";
+import { ArrowUp, PanelLeft, ImageIcon, Clapperboard, X, Plus, Check, BarChart3, TrendingUp } from "lucide-react";
 import { ModelSelect } from "./ModelSelect";
-import { HistorySidebar } from "./HistorySidebar";
+import { HistorySidebar, type TryView } from "./HistorySidebar";
 import { MessageContent } from "./MessageContent";
+import { ActivitySummary } from "./ActivitySummary";
+import { MessageActions } from "./MessageActions";
 import { PhonePanel } from "./PhonePanel";
+import { ToolsPanel, type TryAction } from "./ToolsPanel";
+import { GalleryPanel } from "./GalleryPanel";
+import { WalletPanel } from "./WalletPanel";
+import { SkillsPanel } from "./SkillsPanel";
 import { useFranklinChat } from "@/hooks/use-franklin-chat";
 import { useChatHistory } from "@/hooks/use-chat-history";
 import { useUsageStats } from "@/hooks/use-usage-stats";
+import { useAuth } from "@/hooks/use-auth";
 import { useTryLang } from "@/lib/try-i18n";
+import { prepareImageForUpload } from "@/lib/image-compress";
+
+// Composer "focus" modes — force a specific live-data tool (server tool_choice).
+type ToolFocus = "search_prediction_markets" | "web_search" | "get_market_price";
+const TOOL_FOCUS_MODEL = "google/gemini-2.5-flash";
 
 // Renders an empty-state title with the word "Franklin" gold-emphasized.
 function EmphTitle({ text }: { text: string }) {
@@ -26,16 +37,58 @@ function EmphTitle({ text }: { text: string }) {
 
 export function FranklinChat() {
   const { t } = useTryLang();
-  const history = useChatHistory();
+  const auth = useAuth();
+  const history = useChatHistory(auth.address);
   const { usage, recordSpend } = useUsageStats();
-  const chat = useFranklinChat(history.messages, history.setMessages, recordSpend);
-  const { mode, setMode, model, setModel, models, selectedModel, status, error, isBusy, isConnected, send, stop } = chat;
+  const chat = useFranklinChat(history.messages, history.setMessages, history.ensureConvId, recordSpend);
+  const { mode, setMode, model, setModel, models, selectedModel, status, activeTool, steps, needsToolWallet, genConvId, mediaJobs, error, isBusy, isConnected, send, stop, stopMedia, regenerate } = chat;
+  // Only show the live (chat) generation UI in the conversation that started it.
+  const genHere = genConvId === null || genConvId === history.activeId;
+  // Heavy media (image/video) runs as a per-conversation background job — show
+  // its placeholder only in its own conversation; other conversations stay free.
+  const activeMediaJob = history.activeId ? mediaJobs[history.activeId] : undefined;
+  const busy = isBusy || !!activeMediaJob;
 
   const [input, setInput] = useState("");
   const [attachment, setAttachment] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [view, setView] = useState<"chat" | "phone">("chat");
+  const [view, setView] = useState<TryView>("chat");
+  // Focus mode: a composer toggle that forces a specific live-data tool (and a
+  // tool-capable model). Like ChatGPT's "Search" / Perplexity Focus.
+  const [focus, setFocus] = useState<ToolFocus | null>(null);
+  const FOCUSES: { key: ToolFocus; icon: React.ReactNode; label: string; ph: string }[] = [
+    { key: "search_prediction_markets", icon: <BarChart3 className="h-4 w-4" />, label: t.focusPrediction, ph: t.phPrediction },
+    { key: "get_market_price", icon: <TrendingUp className="h-4 w-4" />, label: t.focusPrice, ph: t.phPrice },
+  ];
+  const activeFocus = FOCUSES.find((f) => f.key === focus);
+
+  // Skill cards prefill the composer (and optionally pick a tool-capable model).
+  const pickSkill = (template: string, model?: string) => {
+    setView("chat");
+    setMode("chat");
+    if (model) setModel(model);
+    setInput(template);
+  };
+  // Marketplace "Try" — switch mode/view, pick a model, prefill the composer.
+  const tryMarketplace = (a: TryAction) => {
+    if (a.view && a.view !== "chat") {
+      setView(a.view);
+      return;
+    }
+    setView("chat");
+    if (a.mode) setMode(a.mode);
+    if (a.model) setModel(a.model);
+    if (a.template !== undefined) setInput(a.template);
+  };
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleDraft, setTitleDraft] = useState("");
+
+  const activeConvo = history.activeConversation;
+  const commitTitle = () => {
+    if (activeConvo) history.renameChat(activeConvo.id, titleDraft);
+    setEditingTitle(false);
+  };
 
   useEffect(() => {
     if (!lightbox) return;
@@ -47,13 +100,18 @@ export function FranklinChat() {
   const fileRef = useRef<HTMLInputElement>(null);
   const messages = history.messages;
 
-  const onPickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [attachError, setAttachError] = useState<string | null>(null);
+  const onPickFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setAttachment(typeof reader.result === "string" ? reader.result : null);
-    reader.readAsDataURL(file);
+    setAttachError(null);
+    try {
+      // Downscale/re-encode large images before upload (see image-compress.ts).
+      setAttachment(await prepareImageForUpload(file));
+    } catch (err) {
+      setAttachError(err instanceof Error ? err.message : "Could not load that image.");
+    }
   };
 
   useEffect(() => {
@@ -64,7 +122,7 @@ export function FranklinChat() {
   // Image/video need a wallet; paid chat models too; and an attachment forces a
   // (paid) vision model, so it needs one as well.
   const needsWallet = (mode !== "chat" || !selectedModel?.free || !!attachment) && !isConnected;
-  const canSend = (!!input.trim() || !!attachment) && !isBusy && !needsWallet;
+  const canSend = (!!input.trim() || !!attachment) && !busy && !needsWallet;
   const suggestions = mode === "image" ? t.sugImage : mode === "video" ? t.sugVideo : t.sugChat;
 
   // Chat-mode opening cases showcase the three headline capabilities. Clicking
@@ -75,10 +133,14 @@ export function FranklinChat() {
   const TOOL_MODEL = "google/gemini-2.5-flash";
   const CASES: { mode: "chat" | "image" | "video"; prompt: string; model?: string }[] = [
     { mode: "chat", prompt: t.casePrediction, model: TOOL_MODEL },
+    { mode: "chat", prompt: t.casePrice, model: TOOL_MODEL },
+    { mode: "chat", prompt: t.caseSearch, model: TOOL_MODEL },
     { mode: "chat", prompt: t.casePrediction2, model: TOOL_MODEL },
-    { mode: "chat", prompt: t.casePrediction3, model: TOOL_MODEL },
     { mode: "image", prompt: t.sugImage[0] },
     { mode: "video", prompt: t.sugVideo[0] },
+    { mode: "chat", prompt: t.casePrediction3, model: TOOL_MODEL },
+    { mode: "chat", prompt: t.caseMusic, model: TOOL_MODEL },
+    { mode: "chat", prompt: t.sugChat[0] },
   ];
   const runCase = (c: { mode: "chat" | "image" | "video"; prompt: string; model?: string }) => {
     setMode(c.mode);
@@ -93,7 +155,13 @@ export function FranklinChat() {
 
   const submit = () => {
     if (!canSend) return;
-    send(input, attachment ?? undefined);
+    if (focus) {
+      // Force the focused tool; bump unreliable free models to a tool-capable one.
+      const m = model.startsWith("nvidia/") ? TOOL_FOCUS_MODEL : model;
+      send(input, attachment ?? undefined, "chat", m, focus);
+    } else {
+      send(input, attachment ?? undefined);
+    }
     setInput("");
     setAttachment(null);
   };
@@ -104,7 +172,9 @@ export function FranklinChat() {
       ? t.phImage
       : mode === "video"
         ? t.phVideo
-        : t.phMessage;
+        : activeFocus
+          ? activeFocus.ph
+          : t.phMessage;
 
   return (
     <div className="try-shell">
@@ -120,10 +190,10 @@ export function FranklinChat() {
           setView("chat");
         }}
         onDelete={history.deleteChat}
-        usage={usage}
         view={view}
-        onPhone={() => setView("phone")}
+        onView={setView}
         open={sidebarOpen}
+        auth={auth}
       />
 
       <div className="try-chat">
@@ -135,11 +205,51 @@ export function FranklinChat() {
           >
             <PanelLeft className="h-[18px] w-[18px]" />
           </button>
-          <ConnectWallet />
+
+          {view === "chat" && activeConvo && (
+            <div className="try-bar-title">
+              {editingTitle ? (
+                <input
+                  className="try-bar-title-input"
+                  value={titleDraft}
+                  autoFocus
+                  onChange={(e) => setTitleDraft(e.target.value)}
+                  onBlur={commitTitle}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      commitTitle();
+                    } else if (e.key === "Escape") {
+                      setEditingTitle(false);
+                    }
+                  }}
+                />
+              ) : (
+                <button
+                  className="try-bar-title-btn"
+                  onClick={() => {
+                    setTitleDraft(activeConvo.title);
+                    setEditingTitle(true);
+                  }}
+                  title={t.rename}
+                >
+                  {activeConvo.title}
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {view === "phone" ? (
           <PhonePanel />
+        ) : view === "tools" ? (
+          <ToolsPanel onTry={tryMarketplace} />
+        ) : view === "skills" ? (
+          <SkillsPanel onPick={pickSkill} />
+        ) : view === "gallery" ? (
+          <GalleryPanel conversations={history.conversations} onZoom={setLightbox} onDelete={history.deleteMedia} />
+        ) : view === "wallet" ? (
+          <WalletPanel usage={usage} />
         ) : (
         <>
         <div className="try-messages" ref={scrollRef}>
@@ -190,11 +300,12 @@ export function FranklinChat() {
                 ) : (
                   <>
                     {m.image && (
-                      <div className="try-msg-media">
+                      <div className="try-msg-attach">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={m.image} alt="attachment" loading="lazy" />
+                        <img src={m.image} alt="attachment" loading="lazy" className="try-zoomable" onClick={() => setLightbox(m.image!)} />
                       </div>
                     )}
+                    {m.activity && <ActivitySummary activity={m.activity} />}
                     {m.reasoning && (
                       <details className="try-reasoning">
                         <summary>{t.reasoning}</summary>
@@ -211,28 +322,87 @@ export function FranklinChat() {
                       ))}
                   </>
                 )}
+                {m.role === "assistant" && !(busy && i === messages.length - 1) && (
+                  <MessageActions
+                    content={m.content}
+                    onRegenerate={i === messages.length - 1 && !busy ? regenerate : undefined}
+                  />
+                )}
               </div>
             ))
           )}
 
-          {status === "signing" && (
-            <div className="try-status">
-              <span className="try-coin" aria-hidden />
-              <span className="try-status-text">{t.statusSigning}</span>
+          {/* Generation placeholder — a shimmering skeleton so the user can see
+              the image/video is on its way, not stuck. */}
+          {activeMediaJob && (
+            <div className="try-msg try-msg-assistant">
+              <div className="try-msg-role">Franklin</div>
+              <div className={`try-gen-skeleton${activeMediaJob.kind === "video" ? " is-video" : ""}`}>
+                {activeMediaJob.kind === "video" ? (
+                  <Clapperboard className="try-gen-skeleton-icon" />
+                ) : (
+                  <ImageIcon className="try-gen-skeleton-icon" />
+                )}
+                <span className="try-gen-skeleton-shimmer" aria-hidden />
+              </div>
             </div>
           )}
-          {(status === "thinking" || status === "generating") && (
-            <div className="try-status">
-              <span className="try-dots" aria-hidden><i /><i /><i /></span>
-              <span className="try-status-text">
-                {mode === "image" ? t.statusImage : mode === "video" ? t.statusVideo : t.statusWorking}
-              </span>
+
+          {/* CLI-style activity log: every model/tool/signature step on its own
+              line, so signing always shows next to what it's paying for. */}
+          {genHere && (steps.length > 0 ? (
+            <div className="try-steps">
+              {steps.map((s) => (
+                <div key={s.id} className={`try-step is-${s.state}`}>
+                  <span className="try-step-mark" aria-hidden>
+                    {s.state === "done" ? (
+                      <Check className="h-3.5 w-3.5" />
+                    ) : s.state === "sign" ? (
+                      <span className="try-coin" />
+                    ) : (
+                      <span className="try-dots"><i /><i /><i /></span>
+                    )}
+                  </span>
+                  <span className="try-step-text">{s.label}</span>
+                </div>
+              ))}
             </div>
-          )}
+          ) : (
+            <>
+              {status === "signing" && (
+                <div className="try-status">
+                  <span className="try-coin" aria-hidden />
+                  <span className="try-status-text">{t.statusSigning}</span>
+                </div>
+              )}
+              {(status === "thinking" || status === "generating") && (
+                <div className="try-status">
+                  <span className="try-dots" aria-hidden><i /><i /><i /></span>
+                  <span className="try-status-text">
+                    {activeTool
+                      ? t.toolRunning(activeTool)
+                      : mode === "image"
+                        ? t.statusImage
+                        : mode === "video"
+                          ? t.statusVideo
+                          : t.statusWorking}
+                  </span>
+                </div>
+              )}
+            </>
+          ))}
           {error && <div className="try-error">{error}</div>}
         </div>
 
         <div className="try-input-wrap">
+          {needsToolWallet && (
+            <div className="try-input-hint try-input-hint-action">
+              <span>{t.hintToolWallet}</span>
+              <button className="try-hint-connect" onClick={() => auth.signIn()} disabled={auth.signingIn}>
+                {auth.signingIn ? t.connecting : t.signIn}
+              </button>
+            </div>
+          )}
           {needsWallet && (
             <div className="try-input-hint">
               {mode === "image"
@@ -254,6 +424,7 @@ export function FranklinChat() {
                 </button>
               </div>
             )}
+            {attachError && <div className="try-attach-error">{attachError}</div>}
             <textarea
               className="try-input"
               value={input}
@@ -266,7 +437,7 @@ export function FranklinChat() {
               }}
               placeholder={placeholder}
               rows={1}
-              disabled={isBusy}
+              disabled={busy}
             />
             <div className="try-tools">
               <div className="try-tools-left">
@@ -280,21 +451,32 @@ export function FranklinChat() {
                 <button
                   className="try-tool-icon"
                   onClick={() => fileRef.current?.click()}
-                  disabled={isBusy || mode !== "chat"}
+                  disabled={busy}
                   aria-label={t.attachImage}
-                  title={mode === "chat" ? t.attachImage : t.attachChatOnly}
+                  title={mode === "video" ? t.attachSeed : mode === "image" ? t.attachRef : t.attachImage}
                 >
                   <Plus className="h-[18px] w-[18px]" />
                 </button>
-                <ModelSelect models={models} model={model} onChange={setModel} disabled={isBusy} />
+                <ModelSelect models={models} model={model} onChange={setModel} disabled={busy} />
                 {mode === "chat" ? (
                   <>
-                    <button className="try-tool" onClick={() => setMode("image")} disabled={isBusy}>
+                    <button className="try-tool" onClick={() => { setFocus(null); setMode("image"); }} disabled={busy}>
                       <ImageIcon className="h-4 w-4" /> {t.image}
                     </button>
-                    <button className="try-tool" onClick={() => setMode("video")} disabled={isBusy}>
+                    <button className="try-tool" onClick={() => { setFocus(null); setMode("video"); }} disabled={busy}>
                       <Clapperboard className="h-4 w-4" /> {t.video}
                     </button>
+                    {FOCUSES.map((f) => (
+                      <button
+                        key={f.key}
+                        className={`try-tool try-focus${focus === f.key ? " is-active" : ""}`}
+                        onClick={() => setFocus((cur) => (cur === f.key ? null : f.key))}
+                        disabled={busy}
+                        title={f.label}
+                      >
+                        {f.icon} {f.label}
+                      </button>
+                    ))}
                   </>
                 ) : (
                   <span className="try-mode-pill">
@@ -303,7 +485,7 @@ export function FranklinChat() {
                     <button
                       className="try-mode-pill-x"
                       onClick={() => setMode("chat")}
-                      disabled={isBusy}
+                      disabled={busy}
                       aria-label="Back to chat"
                     >
                       <X className="h-3.5 w-3.5" />
@@ -311,9 +493,13 @@ export function FranklinChat() {
                   </span>
                 )}
               </div>
-              {isBusy ? (
-                <button className="try-send try-send-stop" onClick={stop} aria-label="Stop">
-                  <Square className="h-4 w-4" fill="currentColor" />
+              {busy ? (
+                <button
+                  className="try-send try-send-stop"
+                  onClick={() => (activeMediaJob ? stopMedia(history.activeId!) : stop())}
+                  aria-label="Stop"
+                >
+                  <span className="try-stop-sq" />
                 </button>
               ) : (
                 <button className="try-send" onClick={submit} disabled={!canSend} aria-label="Send">

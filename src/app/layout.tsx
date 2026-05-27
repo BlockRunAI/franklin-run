@@ -100,12 +100,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [
-      { url: cdnUrl("/favicon.svg"), type: "image/svg+xml" },
-      { url: cdnUrl("/favicon.png"), type: "image/png", sizes: "32x32" },
-    ],
-    shortcut: cdnUrl("/favicon.png"),
-    apple: cdnUrl("/apple-touch-icon.png"),
+    icon: [{ url: cdnUrl("/franklin-icon.png"), type: "image/png", sizes: "256x256" }],
+    shortcut: cdnUrl("/franklin-icon.png"),
+    apple: cdnUrl("/franklin-icon.png"),
   },
 };
 
@@ -120,6 +117,11 @@ export default function RootLayout({
       className={`${plexSans.variable} ${plexMono.variable} ${instrumentSerif.variable} ${notoSerifSC.variable} antialiased`}
     >
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('franklin-theme');if(t&&t!=='gold')document.documentElement.setAttribute('data-theme',t);}catch(e){}`,
+          }}
+        />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-CDWTPW4YRM"
           strategy="afterInteractive"

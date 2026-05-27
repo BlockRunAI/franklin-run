@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { CodeBlock } from "@/components/docs/CodeBlock";
 import { Callout } from "@/components/docs/Callout";
@@ -112,7 +113,7 @@ export default function ConfigurationPage() {
         <p>
           Global MCP server configuration. Servers defined here are available
           in every project. See the{" "}
-          <a href="/docs/developer-guide/mcp">MCP Integration</a> guide for
+          <Link href="/docs/developer-guide/mcp">MCP Integration</Link> guide for
           the full format.
         </p>
 

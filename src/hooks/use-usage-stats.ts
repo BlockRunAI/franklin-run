@@ -8,13 +8,21 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const STORAGE_KEY = "franklin-try-usage-v1";
 
+export interface Receipt {
+  ts: number;
+  model: string;
+  usd: number;
+}
+
 export interface Usage {
   totalUsd: number;
   requests: number;
   byModel: Record<string, { usd: number; count: number }>;
+  receipts: Receipt[];
 }
 
-const EMPTY: Usage = { totalUsd: 0, requests: 0, byModel: {} };
+const EMPTY: Usage = { totalUsd: 0, requests: 0, byModel: {}, receipts: [] };
+const MAX_RECEIPTS = 100;
 
 function load(): Usage {
   if (typeof window === "undefined") return EMPTY;
@@ -22,7 +30,12 @@ function load(): Usage {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return EMPTY;
     const p = JSON.parse(raw);
-    return { totalUsd: p.totalUsd || 0, requests: p.requests || 0, byModel: p.byModel || {} };
+    return {
+      totalUsd: p.totalUsd || 0,
+      requests: p.requests || 0,
+      byModel: p.byModel || {},
+      receipts: Array.isArray(p.receipts) ? p.receipts : [],
+    };
   } catch {
     return EMPTY;
   }
@@ -55,6 +68,7 @@ export function useUsageStats() {
         totalUsd: u.totalUsd + usd,
         requests: u.requests + 1,
         byModel: { ...u.byModel, [model]: { usd: prev.usd + usd, count: prev.count + 1 } },
+        receipts: [{ ts: Date.now(), model, usd }, ...u.receipts].slice(0, MAX_RECEIPTS),
       };
     });
   }, []);

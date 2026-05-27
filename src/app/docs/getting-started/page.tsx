@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { CodeBlock } from "@/components/docs/CodeBlock";
 import { Callout } from "@/components/docs/Callout";
@@ -67,15 +68,15 @@ export default function GettingStartedPage() {
         <h2>What&apos;s Next</h2>
         <ul>
           <li>
-            <a href="/docs/getting-started/installation">Installation details</a>
+            <Link href="/docs/getting-started/installation">Installation details</Link>
             &nbsp;&mdash; prerequisites, platforms, and troubleshooting
           </li>
           <li>
-            <a href="/docs/getting-started/wallet-setup">Wallet setup</a>
+            <Link href="/docs/getting-started/wallet-setup">Wallet setup</Link>
             &nbsp;&mdash; funding your wallet with USDC on Base or Solana
           </li>
           <li>
-            <a href="/docs/getting-started/first-session">First session</a>
+            <Link href="/docs/getting-started/first-session">First session</Link>
             &nbsp;&mdash; a guided walkthrough of your first conversation with Franklin
           </li>
         </ul>

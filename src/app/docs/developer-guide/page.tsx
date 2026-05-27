@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { DocsBreadcrumb } from "@/components/docs/DocsBreadcrumb";
 import { DocsPagination } from "@/components/docs/DocsPagination";
@@ -32,22 +33,22 @@ export default function DeveloperGuidePage() {
         <h2>What&apos;s Inside</h2>
         <ul>
           <li>
-            <a href="/docs/developer-guide/architecture">Architecture</a>
+            <Link href="/docs/developer-guide/architecture">Architecture</Link>
             &nbsp;&mdash; system overview, key modules, token pipeline, and
             error recovery
           </li>
           <li>
-            <a href="/docs/developer-guide/plugin-sdk">Plugin SDK</a>
+            <Link href="/docs/developer-guide/plugin-sdk">Plugin SDK</Link>
             &nbsp;&mdash; build custom plugins with workflows, channels, and
             capability handlers
           </li>
           <li>
-            <a href="/docs/developer-guide/mcp">MCP Integration</a>
+            <Link href="/docs/developer-guide/mcp">MCP Integration</Link>
             &nbsp;&mdash; connect external tools via Model Context Protocol
             servers
           </li>
           <li>
-            <a href="/docs/developer-guide/contributing">Contributing</a>
+            <Link href="/docs/developer-guide/contributing">Contributing</Link>
             &nbsp;&mdash; clone, build, test, and submit pull requests
           </li>
         </ul>

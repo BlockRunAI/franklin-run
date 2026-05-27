@@ -161,6 +161,7 @@ export function useTerminalDemo() {
   return { prompt, responseLines };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function InstallBox({ ariaLabel }: { ariaLabel: string }) {
   const [copied, setCopied] = useState(false);
   const copy = useCallback(() => {
