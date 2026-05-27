@@ -54,15 +54,16 @@ async function backendList(): Promise<Conversation[]> {
     return [];
   }
 }
-async function backendSave(c: Conversation) {
+async function backendSave(c: Conversation): Promise<boolean> {
   try {
-    await fetch(`/api/try/conversations/${c.id}`, {
+    const r = await fetch(`/api/try/conversations/${c.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(c),
     });
+    return r.ok;
   } catch {
-    /* ignore */
+    return false;
   }
 }
 
@@ -90,8 +91,10 @@ export function useChatHistory(address: string | null) {
       if (address) {
         const local = loadLocal();
         if (local.length) {
-          await Promise.all(local.map(backendSave));
-          saveLocal([]);
+          // Only clear the local copy once every conversation is confirmed
+          // saved to the backend — a failed migration must not lose history.
+          const results = await Promise.all(local.map(backendSave));
+          if (results.every(Boolean)) saveLocal([]);
         }
         convos = await backendList();
       } else {
