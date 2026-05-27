@@ -32,6 +32,8 @@ export interface TryDict {
   themeGold: string;
   themeLight: string;
   themeDark: string;
+  installCli: string;
+  copied: string;
   phone: string;
   tools: string;
   skills: string;
@@ -138,6 +140,8 @@ const en: TryDict = {
   themeGold: "Gold",
   themeLight: "Light",
   themeDark: "Dark",
+  installCli: "Install from npm",
+  copied: "Copied",
   phone: "Phone",
   tools: "Tools",
   skills: "Skills",
@@ -250,6 +254,8 @@ const zh: TryDict = {
   themeGold: "金色",
   themeLight: "浅色",
   themeDark: "深色",
+  installCli: "从 npm 安装",
+  copied: "已复制",
   phone: "电话",
   tools: "工具",
   skills: "技能",
@@ -362,6 +368,8 @@ const es: TryDict = {
   themeGold: "Dorado",
   themeLight: "Claro",
   themeDark: "Oscuro",
+  installCli: "Instalar desde npm",
+  copied: "Copiado",
   phone: "Teléfono",
   tools: "Herramientas",
   skills: "Habilidades",

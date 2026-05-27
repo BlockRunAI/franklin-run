@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Settings, BookOpen, FileText, Globe, ArrowUpRight, Check, ChevronRight, Languages, Palette } from "lucide-react";
+import { Settings, BookOpen, FileText, Globe, ArrowUpRight, Check, ChevronRight, Languages, Palette, Terminal } from "lucide-react";
 import { GitHubIcon } from "@/components/icons";
 import { useTryLang, TRY_LANGS } from "@/lib/try-i18n";
 import { useTheme, type Theme } from "@/hooks/use-theme";
@@ -12,6 +12,13 @@ import { useTheme, type Theme } from "@/hooks/use-theme";
 export function MoreMenu() {
   const { t, lang, setLang } = useTryLang();
   const { theme, setTheme } = useTheme();
+  const [copied, setCopied] = useState(false);
+  const copyInstall = () => {
+    navigator.clipboard?.writeText("npm install -g @blockrun/franklin").then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    });
+  };
   const themeOptions: { id: Theme; label: string }[] = [
     { id: "gold", label: t.themeGold },
     { id: "light", label: t.themeLight },
@@ -112,6 +119,12 @@ export function MoreMenu() {
             <span className="try-select-option-label">GitHub</span>
             <ArrowUpRight className="h-3.5 w-3.5 try-select-ext" />
           </a>
+          <div className="try-select-divider" />
+          <button type="button" className="try-select-option" onClick={copyInstall}>
+            <Terminal className="h-4 w-4" />
+            <span className="try-select-option-label">{copied ? t.copied : t.installCli}</span>
+            {copied && <Check className="try-select-check" />}
+          </button>
         </div>
       )}
     </div>
