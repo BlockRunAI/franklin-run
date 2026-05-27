@@ -63,6 +63,10 @@ function clientIp(req: NextRequest): string {
   return fwd ? fwd.split(",")[0].trim() : "unknown";
 }
 
+// Identify Franklin's web client to the upstream API (the browser's own
+// User-Agent is not forwarded, so set our own).
+const USER_AGENT = "Franklin-Web/1.0 (+https://franklin.run)";
+
 // Headers we forward from the client to BlockRun.
 const FORWARD_REQ_HEADERS = ["content-type", "accept", "x-payment", "authorization"];
 // Headers we relay from BlockRun back to the client (x402 lives in these).
@@ -96,6 +100,7 @@ async function proxy(req: NextRequest, path: string[]) {
     const v = req.headers.get(h);
     if (v) headers.set(h, v);
   }
+  headers.set("user-agent", USER_AGENT);
 
   const init: RequestInit = { method: req.method, headers };
   if (req.method !== "GET" && req.method !== "HEAD") {
