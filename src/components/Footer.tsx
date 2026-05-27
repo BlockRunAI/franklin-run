@@ -98,7 +98,7 @@ export function Footer({ dict = defaultDict, locale = "en" }: FooterProps) {
             <h4 className="engraved">{dict.footer.colResources}</h4>
             <ul>
               <li>
-                <a href="/docs">{dict.footer.linkDocs}</a>
+                <Link href="/docs">{dict.footer.linkDocs}</Link>
               </li>
               <li>
                 <a href={`/blog/${locale}`}>{dict.footer.linkBlog}</a>

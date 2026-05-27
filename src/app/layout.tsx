@@ -36,7 +36,7 @@ const homeLanguages: Record<string, string> = {};
 for (const l of LOCALES) {
   homeLanguages[LOCALE_META[l].htmlLang] = `${SITE_URL}${homeUrl(l)}`;
 }
-homeLanguages["x-default"] = `${SITE_URL}/`;
+homeLanguages["x-default"] = `${SITE_URL}${homeUrl("en")}`;
 
 export const metadata: Metadata = {
   title: "Franklin Agent — The AI agent with a wallet",
@@ -100,12 +100,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [
-      { url: cdnUrl("/favicon.svg"), type: "image/svg+xml" },
-      { url: cdnUrl("/favicon.png"), type: "image/png", sizes: "32x32" },
-    ],
-    shortcut: cdnUrl("/favicon.png"),
-    apple: cdnUrl("/apple-touch-icon.png"),
+    icon: [{ url: cdnUrl("/franklin-icon.png"), type: "image/png", sizes: "256x256" }],
+    shortcut: cdnUrl("/franklin-icon.png"),
+    apple: cdnUrl("/franklin-icon.png"),
   },
 };
 
@@ -117,6 +114,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${plexSans.variable} ${plexMono.variable} ${instrumentSerif.variable} ${notoSerifSC.variable} antialiased`}
     >
       <head>

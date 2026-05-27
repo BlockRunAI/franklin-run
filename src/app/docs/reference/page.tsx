@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { DocsBreadcrumb } from "@/components/docs/DocsBreadcrumb";
 import { DocsPagination } from "@/components/docs/DocsPagination";
@@ -31,21 +32,21 @@ export default function ReferencePage() {
         <h2>What&apos;s Inside</h2>
         <ul>
           <li>
-            <a href="/docs/reference/cli">CLI</a>
+            <Link href="/docs/reference/cli">CLI</Link>
             &nbsp;&mdash; every command and flag
           </li>
           <li>
-            <a href="/docs/reference/configuration">Configuration</a>
+            <Link href="/docs/reference/configuration">Configuration</Link>
             &nbsp;&mdash; the <code>~/.blockrun/</code> directory structure and
             key config files
           </li>
           <li>
-            <a href="/docs/reference/pricing">Pricing</a>
+            <Link href="/docs/reference/pricing">Pricing</Link>
             &nbsp;&mdash; pay-per-action micropayments, free tier, and cost
             tracking
           </li>
           <li>
-            <a href="/docs/reference/faq">FAQ</a>
+            <Link href="/docs/reference/faq">FAQ</Link>
             &nbsp;&mdash; frequently asked questions about models, payments,
             privacy, and more
           </li>

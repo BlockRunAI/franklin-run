@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { DocsBreadcrumb } from "@/components/docs/DocsBreadcrumb";
 import { DocsPagination } from "@/components/docs/DocsPagination";
@@ -34,19 +35,19 @@ export default function UserGuidePage() {
         <h2>Core Features</h2>
         <ul>
           <li>
-            <a href="/docs/user-guide/smart-router">Smart Router</a>
+            <Link href="/docs/user-guide/smart-router">Smart Router</Link>
             &nbsp;&mdash; automatic model selection based on task complexity
           </li>
           <li>
-            <a href="/docs/user-guide/models">Models</a>
+            <Link href="/docs/user-guide/models">Models</Link>
             &nbsp;&mdash; 55+ models from 9 providers, including a free tier
           </li>
           <li>
-            <a href="/docs/user-guide/tools">Tools</a>
+            <Link href="/docs/user-guide/tools">Tools</Link>
             &nbsp;&mdash; 16 built-in tools for files, web, agents, and more
           </li>
           <li>
-            <a href="/docs/user-guide/sessions">Sessions</a>
+            <Link href="/docs/user-guide/sessions">Sessions</Link>
             &nbsp;&mdash; persistent history with full-text search
           </li>
         </ul>
@@ -54,11 +55,11 @@ export default function UserGuidePage() {
         <h2>Intelligence</h2>
         <ul>
           <li>
-            <a href="/docs/user-guide/self-evolution">Self-Evolution</a>
+            <Link href="/docs/user-guide/self-evolution">Self-Evolution</Link>
             &nbsp;&mdash; learns your preferences automatically over time
           </li>
           <li>
-            <a href="/docs/user-guide/long-term-memory">Long Term Memory</a>
+            <Link href="/docs/user-guide/long-term-memory">Long Term Memory</Link>
             &nbsp;&mdash; entity-based knowledge graph that remembers your world
           </li>
         </ul>
@@ -66,11 +67,11 @@ export default function UserGuidePage() {
         <h2>Integrations</h2>
         <ul>
           <li>
-            <a href="/docs/user-guide/trading">Trading</a>
+            <Link href="/docs/user-guide/trading">Trading</Link>
             &nbsp;&mdash; live crypto signals, market data, and technical analysis
           </li>
           <li>
-            <a href="/docs/user-guide/social">Social</a>
+            <Link href="/docs/user-guide/social">Social</Link>
             &nbsp;&mdash; search and post to X/Twitter with browser automation
           </li>
         </ul>
@@ -78,11 +79,11 @@ export default function UserGuidePage() {
         <h2>Power User</h2>
         <ul>
           <li>
-            <a href="/docs/user-guide/slash-commands">Slash Commands</a>
+            <Link href="/docs/user-guide/slash-commands">Slash Commands</Link>
             &nbsp;&mdash; quick shortcuts for every common action
           </li>
           <li>
-            <a href="/docs/user-guide/proxy-mode">Proxy Mode</a>
+            <Link href="/docs/user-guide/proxy-mode">Proxy Mode</Link>
             &nbsp;&mdash; use Franklin as a local API server for other tools
           </li>
         </ul>

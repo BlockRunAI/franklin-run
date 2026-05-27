@@ -134,13 +134,22 @@ export function useX402Payment() {
           nonce,
         };
 
-        const signature = await walletClient.signTypedData({
-          account: address,
-          domain,
-          types: authorizationTypes,
-          primaryType: "TransferWithAuthorization",
-          message,
-        });
+        // Race the wallet signature against a timeout — some wallets leave the
+        // promise pending if the user dismisses a flagged/blocked request
+        // (e.g. the Blockaid warning) instead of explicitly rejecting, which
+        // would otherwise hang the whole flow.
+        const signature = await Promise.race([
+          walletClient.signTypedData({
+            account: address,
+            domain,
+            types: authorizationTypes,
+            primaryType: "TransferWithAuthorization",
+            message,
+          }),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("Wallet signature timed out — please try again.")), 120_000),
+          ),
+        ]);
 
         const payload = {
           x402Version: 2,

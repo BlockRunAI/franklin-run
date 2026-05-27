@@ -1,10 +1,19 @@
 "use client";
 
-import { Plus, MessageSquare, Trash2, Wallet, Phone } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  Plus, MessageSquare, Trash2, Phone, Blocks, Images, Wallet, Sparkles, Search,
+  Grid2x2, ChevronRight,
+} from "lucide-react";
 import type { Conversation } from "@/hooks/use-chat-history";
-import type { Usage } from "@/hooks/use-usage-stats";
+import { cdnUrl } from "@/lib/cdn";
 import { useTryLang } from "@/lib/try-i18n";
-import { SettingsMenu } from "./SettingsMenu";
+import { MoreMenu } from "./MoreMenu";
+import { ConnectWallet } from "./ConnectWallet";
+
+export type TryView = "chat" | "phone" | "tools" | "gallery" | "wallet" | "skills";
 
 interface Props {
   conversations: Conversation[];
@@ -12,74 +21,222 @@ interface Props {
   onNew: () => void;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
-  usage: Usage;
-  view: "chat" | "phone";
-  onPhone: () => void;
+  view: TryView;
+  onView: (v: TryView) => void;
   open: boolean;
+  auth: React.ComponentProps<typeof ConnectWallet>["auth"];
 }
 
-function fmtUsd(n: number): string {
-  if (n === 0) return "$0.00";
-  if (n < 0.01) return `$${n.toFixed(4)}`;
-  return `$${n.toFixed(2)}`;
-}
-
-export function HistorySidebar({ conversations, activeId, onNew, onSelect, onDelete, usage, view, onPhone, open }: Props) {
+export function HistorySidebar({ conversations, activeId, onNew, onSelect, onDelete, view, onView, open, auth }: Props) {
   const { t } = useTryLang();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreBtnRef = useRef<HTMLButtonElement>(null);
+  const [morePos, setMorePos] = useState<{ top: number; left: number } | null>(null);
+
+  const openMore = () => {
+    const r = moreBtnRef.current?.getBoundingClientRect();
+    if (r) setMorePos({ top: r.top, left: r.right + 6 });
+    setMoreOpen(true);
+  };
+
+  const sorted = [...conversations].sort((a, b) => b.updatedAt - a.updatedAt);
+
+  const nav: { key: TryView; icon: React.ReactNode; label: string }[] = [
+    { key: "tools", icon: <Blocks className="h-4 w-4" />, label: t.marketplace },
+    { key: "gallery", icon: <Images className="h-4 w-4" />, label: t.gallery },
+  ];
+  // Secondary, less-used sections tucked into the "More" flyout.
+  const moreNav: { key: TryView; icon: React.ReactNode; label: string }[] = [
+    { key: "skills", icon: <Sparkles className="h-4 w-4" />, label: t.skills },
+    { key: "phone", icon: <Phone className="h-4 w-4" />, label: t.phone },
+    { key: "wallet", icon: <Wallet className="h-4 w-4" />, label: t.wallet },
+  ];
+  const moreActive = moreNav.some((n) => n.key === view);
+
   return (
+    <>
     <aside className={`try-sidebar${open ? " is-open" : ""}`}>
-      {/* Nav: dedicated Phone panel (like the dashboard's Calls tab) */}
-      <button className={`try-nav-item${view === "phone" ? " is-active" : ""}`} onClick={onPhone}>
-        <Phone className="h-4 w-4" />
-        {t.phone}
-      </button>
+      <Link href="/" className="try-brand">
+        <span className="try-brand-ring">
+          <Image src={cdnUrl("/images/franklin-portrait.jpg")} alt="Franklin" width={30} height={30} unoptimized />
+        </span>
+        <span className="try-brand-name">Franklin</span>
+      </Link>
 
-      {/* Usage summary — mirrors the dashboard's "Total Spent" metric */}
-      <div className="try-usage">
-        <div className="try-usage-row">
-          <Wallet className="h-3.5 w-3.5" />
-          <span className="try-usage-label">{t.spent}</span>
-          <span className="try-usage-value">{fmtUsd(usage.totalUsd)}</span>
-        </div>
-        <div className="try-usage-sub">{t.requests(usage.requests)}</div>
-      </div>
-
-      <button className="try-newchat" onClick={onNew}>
+      <button className="try-nav-item" onClick={onNew}>
         <Plus className="h-4 w-4" />
         {t.newChat}
       </button>
 
+      <button className="try-nav-item" onClick={() => setSearchOpen(true)}>
+        <Search className="h-4 w-4" />
+        {t.searchChats}
+      </button>
+
+      <div className="try-scroll">
+      {nav.map((n) => (
+        <button
+          key={n.key}
+          className={`try-nav-item${view === n.key ? " is-active" : ""}`}
+          onClick={() => onView(n.key)}
+        >
+          {n.icon}
+          {n.label}
+        </button>
+      ))}
+
+      <button
+        ref={moreBtnRef}
+        className={`try-nav-item try-more-btn${moreActive ? " is-active" : ""}`}
+        onClick={() => (moreOpen ? setMoreOpen(false) : openMore())}
+      >
+        <Grid2x2 className="h-4 w-4" />
+        <span className="try-more-label">{t.more}</span>
+        <ChevronRight className="try-more-chevron h-4 w-4" />
+      </button>
+
       <div className="try-history">
-        {conversations.length === 0 ? (
+        {sorted.length === 0 ? (
           <p className="try-history-empty">{t.noConversations}</p>
         ) : (
-          conversations.map((c) => (
-            <div
-              key={c.id}
-              className={`try-history-item${c.id === activeId ? " is-active" : ""}`}
-              onClick={() => onSelect(c.id)}
-            >
-              <MessageSquare className="try-history-icon" />
-              <span className="try-history-title">{c.title || "New chat"}</span>
-              <button
-                className="try-history-del"
-                aria-label="Delete conversation"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(c.id);
+          <div className="try-history-group">
+            <div className="try-history-group-label">{t.history}</div>
+            {sorted.map((c) => (
+              <div
+                key={c.id}
+                className={`try-history-item${c.id === activeId && view === "chat" ? " is-active" : ""}`}
+                onClick={() => {
+                  onSelect(c.id);
+                  onView("chat");
                 }}
               >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ))
+                <MessageSquare className="try-history-icon" />
+                <span className="try-history-title">{c.title || "New chat"}</span>
+                <button
+                  className="try-history-del"
+                  aria-label="Delete conversation"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(c.id);
+                  }}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
         )}
       </div>
+      </div>
 
-      {/* Footer — language switcher in the bottom-left circle */}
       <div className="try-sidebar-footer">
-        <SettingsMenu />
+        <div className="try-footer-icons">
+          <MoreMenu />
+          <div className="try-footer-wallet">
+            <ConnectWallet auth={auth} />
+          </div>
+        </div>
       </div>
     </aside>
+
+    {moreOpen && morePos && (
+      <>
+        <div className="try-more-scrim" onClick={() => setMoreOpen(false)} />
+        <div className="try-more-flyout" style={{ top: morePos.top, left: morePos.left }}>
+          {moreNav.map((n) => (
+            <button
+              key={n.key}
+              className={`try-more-item${view === n.key ? " is-active" : ""}`}
+              onClick={() => {
+                onView(n.key);
+                setMoreOpen(false);
+              }}
+            >
+              {n.icon}
+              {n.label}
+            </button>
+          ))}
+        </div>
+      </>
+    )}
+
+    {searchOpen && (
+      <SearchModal
+        conversations={conversations}
+        onClose={() => setSearchOpen(false)}
+        onPick={(id) => {
+          onSelect(id);
+          onView("chat");
+          setSearchOpen(false);
+        }}
+        onNew={() => {
+          onNew();
+          setSearchOpen(false);
+        }}
+      />
+    )}
+    </>
+  );
+}
+
+function SearchModal({
+  conversations,
+  onClose,
+  onPick,
+  onNew,
+}: {
+  conversations: Conversation[];
+  onClose: () => void;
+  onPick: (id: string) => void;
+  onNew: () => void;
+}) {
+  const { t } = useTryLang();
+  const [query, setQuery] = useState("");
+
+  const q = query.trim().toLowerCase();
+  const results = q
+    ? conversations.filter((c) => c.title.toLowerCase().includes(q))
+    : [...conversations].sort((a, b) => b.updatedAt - a.updatedAt);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div className="try-search-overlay" onClick={onClose}>
+      <div className="try-search-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="try-search-bar">
+          <Search className="h-4 w-4" />
+          <input
+            className="try-search-modal-input"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t.searchChats}
+            autoFocus
+          />
+        </div>
+        <div className="try-search-results">
+          <button className="try-search-result is-new" onClick={onNew}>
+            <Plus className="h-4 w-4" />
+            {t.newChat}
+          </button>
+          {results.length === 0 ? (
+            <p className="try-history-empty">{t.noResults}</p>
+          ) : (
+            results.map((c) => (
+              <button key={c.id} className="try-search-result" onClick={() => onPick(c.id)}>
+                <MessageSquare className="try-history-icon" />
+                <span className="try-history-title">{c.title || "New chat"}</span>
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
