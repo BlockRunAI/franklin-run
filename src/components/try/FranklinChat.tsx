@@ -12,6 +12,7 @@ import { ToolsPanel, type TryAction } from "./ToolsPanel";
 import { GalleryPanel } from "./GalleryPanel";
 import { WalletPanel } from "./WalletPanel";
 import { SkillsPanel } from "./SkillsPanel";
+import { CLIPanel } from "./CLIPanel";
 import { useFranklinChat } from "@/hooks/use-franklin-chat";
 import { useChatHistory } from "@/hooks/use-chat-history";
 import { useUsageStats } from "@/hooks/use-usage-stats";
@@ -138,7 +139,7 @@ export function FranklinChat() {
     { mode: "chat", prompt: t.casePrediction2, model: TOOL_MODEL },
     { mode: "image", prompt: t.sugImage[0] },
     { mode: "video", prompt: t.sugVideo[0] },
-    { mode: "chat", prompt: t.casePrediction3, model: TOOL_MODEL },
+    { mode: "chat", prompt: t.casePhone, model: TOOL_MODEL },
     { mode: "chat", prompt: t.caseMusic, model: TOOL_MODEL },
     { mode: "chat", prompt: t.sugChat[0] },
   ];
@@ -244,6 +245,8 @@ export function FranklinChat() {
           <PhonePanel />
         ) : view === "tools" ? (
           <ToolsPanel onTry={tryMarketplace} />
+        ) : view === "cli" ? (
+          <CLIPanel />
         ) : view === "skills" ? (
           <SkillsPanel onPick={pickSkill} />
         ) : view === "gallery" ? (

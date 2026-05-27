@@ -37,6 +37,12 @@ export interface TryDict {
   themeLight: string;
   themeDark: string;
   installCli: string;
+  cli: string;
+  cliTitle: string;
+  cliSub: string;
+  cliStepInstall: string;
+  cliStepRun: string;
+  cliCopy: string;
   copied: string;
   phone: string;
   tools: string;
@@ -78,7 +84,7 @@ export interface TryDict {
   blog: string;
   casePrediction: string;
   casePrediction2: string;
-  casePrediction3: string;
+  casePhone: string;
   casePrice: string;
   caseSearch: string;
   caseMusic: string;
@@ -149,6 +155,12 @@ const en: TryDict = {
   themeLight: "Light",
   themeDark: "Dark",
   installCli: "Install from npm",
+  cli: "Install CLI",
+  cliTitle: "Run Franklin in your terminal",
+  cliSub: "Install the open-source CLI and give your agent a wallet — pay per call in USDC, 55+ models, tools and trading data. No API keys.",
+  cliStepInstall: "1. Install",
+  cliStepRun: "2. Run it",
+  cliCopy: "Copy command",
   copied: "Copied",
   phone: "Phone",
   tools: "Tools",
@@ -190,7 +202,7 @@ const en: TryDict = {
   blog: "Blog",
   casePrediction: "What are the odds the Fed cuts rates in March?",
   casePrediction2: "Who is favored to win the next US election on Polymarket?",
-  casePrediction3: "What do prediction markets say about a recession this year?",
+  casePhone: "Call a restaurant and book a table for two tonight.",
   casePrice: "What is the price of BTC right now?",
   caseSearch: "What is the latest news on AI agents?",
   caseMusic: "Compose a 30-second lo-fi study beat.",
@@ -267,6 +279,12 @@ const zh: TryDict = {
   themeLight: "浅色",
   themeDark: "深色",
   installCli: "从 npm 安装",
+  cli: "安装 CLI",
+  cliTitle: "在终端里运行 Franklin",
+  cliSub: "安装开源 CLI，给你的 agent 一个钱包——按次用 USDC 付费，55+ 模型、工具与行情数据。无需 API key。",
+  cliStepInstall: "1. 安装",
+  cliStepRun: "2. 运行",
+  cliCopy: "复制命令",
   copied: "已复制",
   phone: "电话",
   tools: "工具",
@@ -308,7 +326,7 @@ const zh: TryDict = {
   blog: "博客",
   casePrediction: "美联储 3 月降息的概率是多少？",
   casePrediction2: "Polymarket 上谁更可能赢得下届美国大选？",
-  casePrediction3: "预测市场怎么看今年会不会衰退？",
+  casePhone: "打电话给餐厅，订今晚两人的位子。",
   casePrice: "比特币现在多少钱？",
   caseSearch: "AI agent 最新有什么新闻？",
   caseMusic: "做一段 30 秒的 lo-fi 学习音乐。",
@@ -385,6 +403,12 @@ const es: TryDict = {
   themeLight: "Claro",
   themeDark: "Oscuro",
   installCli: "Instalar desde npm",
+  cli: "Instalar CLI",
+  cliTitle: "Ejecuta Franklin en tu terminal",
+  cliSub: "Instala la CLI de código abierto y dale una billetera a tu agente — pago por uso en USDC, 55+ modelos, herramientas y datos de mercado. Sin API keys.",
+  cliStepInstall: "1. Instala",
+  cliStepRun: "2. Ejecuta",
+  cliCopy: "Copiar comando",
   copied: "Copiado",
   phone: "Teléfono",
   tools: "Herramientas",
@@ -426,7 +450,7 @@ const es: TryDict = {
   blog: "Blog",
   casePrediction: "¿Qué probabilidad hay de que la Fed baje tasas en marzo?",
   casePrediction2: "¿Quién es favorito para ganar las próximas elecciones de EE.UU. en Polymarket?",
-  casePrediction3: "¿Qué dicen los mercados de predicción sobre una recesión este año?",
+  casePhone: "Llama a un restaurante y reserva una mesa para dos esta noche.",
   casePrice: "¿Cuál es el precio de BTC ahora?",
   caseSearch: "¿Cuáles son las últimas noticias sobre agentes de IA?",
   caseMusic: "Compón un beat lo-fi de 30 segundos.",

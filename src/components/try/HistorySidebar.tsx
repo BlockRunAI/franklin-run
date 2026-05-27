@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Plus, MessageSquare, Trash2, Phone, Blocks, Images, Wallet, Sparkles, Search,
-  Grid2x2, ChevronRight,
+  Grid2x2, ChevronRight, Terminal,
 } from "lucide-react";
 import type { Conversation } from "@/hooks/use-chat-history";
 import { cdnUrl } from "@/lib/cdn";
@@ -13,7 +13,7 @@ import { useTryLang } from "@/lib/try-i18n";
 import { MoreMenu } from "./MoreMenu";
 import { ConnectWallet } from "./ConnectWallet";
 
-export type TryView = "chat" | "phone" | "tools" | "gallery" | "wallet" | "skills";
+export type TryView = "chat" | "phone" | "tools" | "gallery" | "wallet" | "skills" | "cli";
 
 interface Props {
   conversations: Conversation[];
@@ -45,6 +45,7 @@ export function HistorySidebar({ conversations, activeId, onNew, onSelect, onDel
   const nav: { key: TryView; icon: React.ReactNode; label: string }[] = [
     { key: "tools", icon: <Blocks className="h-4 w-4" />, label: t.marketplace },
     { key: "gallery", icon: <Images className="h-4 w-4" />, label: t.gallery },
+    { key: "cli", icon: <Terminal className="h-4 w-4" />, label: t.cli },
   ];
   // Secondary, less-used sections tucked into the "More" flyout.
   const moreNav: { key: TryView; icon: React.ReactNode; label: string }[] = [
