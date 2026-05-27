@@ -398,8 +398,8 @@ export function FranklinChat() {
           {needsToolWallet && (
             <div className="try-input-hint try-input-hint-action">
               <span>{t.hintToolWallet}</span>
-              <button className="try-hint-connect" onClick={() => auth.signIn()} disabled={auth.signingIn}>
-                {auth.signingIn ? t.connecting : t.signIn}
+              <button className="try-hint-connect" onClick={() => auth.connect()} disabled={auth.signingIn}>
+                {auth.signingIn ? t.connecting : t.connectWallet}
               </button>
             </div>
           )}

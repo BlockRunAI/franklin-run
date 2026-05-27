@@ -1,24 +1,57 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useDisconnect } from "wagmi";
-import { Wallet, LogOut, Loader2 } from "lucide-react";
+import { useAccount, useChainId, useConnect, useDisconnect, useSwitchChain } from "wagmi";
+import { base } from "wagmi/chains";
+import { Wallet, LogOut, Loader2, Smartphone } from "lucide-react";
 import { useUsdcBalance } from "@/hooks/use-usdc-balance";
 import { useTryLang } from "@/lib/try-i18n";
 
 interface AuthState {
   address: string | null;
   signingIn: boolean;
-  signIn: () => void;
+  error: string | null;
+  connect: () => void;
   signOut: () => void;
 }
 
-// The single wallet control (top-right). "Sign in" = connect wallet + SIWE in
-// one click; once signed in shows USDC balance + address. Disconnect signs out.
+// Plain mobile browser (no extension)? Used to show "open in wallet app".
+function useIsMobile() {
+  const [isMobile] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const ua = navigator.userAgent || navigator.vendor;
+    return /android|iphone|ipad|ipod|mobile/i.test(ua);
+  });
+  return isMobile;
+}
+function useHasInjectedWallet() {
+  const [has] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const w = window as unknown as { ethereum?: unknown; web3?: unknown };
+    return w.ethereum !== undefined || w.web3 !== undefined;
+  });
+  return has;
+}
+
+function fmtBal(n: number): string {
+  return `$${n < 0.01 ? n.toFixed(4) : n.toFixed(2)}`;
+}
+
+// The single wallet control (top-right). "Connect" connects the injected
+// wallet (this alone unlocks paid features); once connected it shows the Base
+// network, USDC balance + address, and a disconnect button. Connecting does
+// not require WalletConnect or a project id — only a browser/in-app wallet.
 export function ConnectWallet({ auth }: { auth: AuthState }) {
   const { t } = useTryLang();
+  const { isConnected, address } = useAccount();
+  const { isPending } = useConnect();
   const { disconnect } = useDisconnect();
+  const chainId = useChainId();
+  const { switchChainAsync } = useSwitchChain();
   const { balance } = useUsdcBalance();
+  const isMobile = useIsMobile();
+  const hasInjected = useHasInjectedWallet();
+  const busy = auth.signingIn || isPending;
 
   // Avoid SSR/hydration mismatch — wallet state is client-only.
   const [mounted, setMounted] = useState(false);
@@ -29,19 +62,29 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
     return (
       <button className="btn-primary" disabled>
         <Wallet className="h-4 w-4" />
-        {t.signIn}
+        {t.connectWallet}
       </button>
     );
   }
 
-  if (auth.address) {
+  // Connected → network + balance + address + disconnect.
+  if (isConnected && address) {
+    const onBase = chainId === base.id;
     return (
       <div className="try-wallet">
-        {balance !== undefined && (
-          <span className="try-wallet-bal">${balance < 0.01 ? balance.toFixed(4) : balance.toFixed(2)}</span>
+        {onBase ? (
+          <span className="try-wallet-net">{t.baseNetwork}</span>
+        ) : (
+          <button
+            className="try-wallet-net try-wallet-net-warn"
+            onClick={() => switchChainAsync({ chainId: base.id }).catch(() => {})}
+          >
+            {t.switchToBase}
+          </button>
         )}
+        {onBase && balance !== undefined && <span className="try-wallet-bal">{fmtBal(balance)}</span>}
         <span className="try-wallet-addr">
-          {auth.address.slice(0, 6)}…{auth.address.slice(-4)}
+          {address.slice(0, 6)}…{address.slice(-4)}
         </span>
         <button
           className="try-wallet-disconnect"
@@ -49,7 +92,7 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
             auth.signOut();
             disconnect();
           }}
-          aria-label="Sign out"
+          aria-label="Disconnect"
         >
           <LogOut className="h-4 w-4" />
         </button>
@@ -57,10 +100,31 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
     );
   }
 
+  // Mobile browser with no injected wallet → can't connect here; guide them.
+  if (isMobile && !hasInjected) {
+    return (
+      <div className="try-wallet-connect">
+        <button className="btn-primary" disabled>
+          <Smartphone className="h-4 w-4" />
+          {t.noWalletFound}
+        </button>
+        <span className="try-wallet-hint">{t.openInWalletApp}</span>
+      </div>
+    );
+  }
+
+  // Default → connect the injected wallet.
   return (
-    <button className="btn-primary" onClick={auth.signIn} disabled={auth.signingIn}>
-      {auth.signingIn ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wallet className="h-4 w-4" />}
-      {auth.signingIn ? t.connecting : t.signIn}
-    </button>
+    <div className="try-wallet-connect">
+      <button className="btn-primary" onClick={auth.connect} disabled={busy}>
+        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wallet className="h-4 w-4" />}
+        {busy ? t.connecting : t.connectWallet}
+      </button>
+      {auth.error === "NO_WALLET" ? (
+        <span className="try-wallet-hint">{isMobile ? t.openInWalletApp : t.installWallet}</span>
+      ) : (
+        auth.error && <span className="try-wallet-err">{auth.error}</span>
+      )}
+    </div>
   );
 }

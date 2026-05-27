@@ -17,6 +17,10 @@ export interface TryDict {
   connectWallet: string;
   connecting: string;
   installWallet: string;
+  baseNetwork: string;
+  switchToBase: string;
+  noWalletFound: string;
+  openInWalletApp: string;
   image: string;
   video: string;
   attachImage: string;
@@ -125,6 +129,10 @@ const en: TryDict = {
   connectWallet: "Connect wallet",
   connecting: "Connecting…",
   installWallet: "Install a wallet",
+  baseNetwork: "Base",
+  switchToBase: "Switch to Base",
+  noWalletFound: "No wallet found",
+  openInWalletApp: "Open in the MetaMask or Coinbase Wallet app browser.",
   image: "Image",
   video: "Video",
   attachImage: "Attach an image",
@@ -239,6 +247,10 @@ const zh: TryDict = {
   connectWallet: "连接钱包",
   connecting: "连接中…",
   installWallet: "安装钱包",
+  baseNetwork: "Base 链",
+  switchToBase: "切换到 Base 链",
+  noWalletFound: "未检测到钱包",
+  openInWalletApp: "请在 MetaMask 或 Coinbase Wallet 应用的内置浏览器中打开。",
   image: "图像",
   video: "视频",
   attachImage: "添加图片",
@@ -353,6 +365,10 @@ const es: TryDict = {
   connectWallet: "Conectar billetera",
   connecting: "Conectando…",
   installWallet: "Instalar billetera",
+  baseNetwork: "Base",
+  switchToBase: "Cambiar a Base",
+  noWalletFound: "No se encontró billetera",
+  openInWalletApp: "Ábrelo en el navegador de la app MetaMask o Coinbase Wallet.",
   image: "Imagen",
   video: "Video",
   attachImage: "Adjuntar una imagen",

@@ -3,9 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAccount, useSignMessage, useConnect } from "wagmi";
 
-// Wallet sign-in (SIWE-style): connect wallet, sign a nonce'd message, the
-// backend verifies and sets a session cookie. `address` is the signed-in
-// wallet (from the server session), distinct from the merely-connected wallet.
+// Wallet connection + optional sign-in.
+//
+// Connecting the injected wallet (wagmi `isConnected`) is all that's needed to
+// use paid features — the chat gate keys on `isConnected`, and x402 payments
+// sign from the connected wallet. SIWE sign-in is a *separate, best-effort*
+// step that establishes a server session so chat history syncs per wallet
+// across devices; it must never block or undo a successful connection.
+//
+// `address` is the SIWE-signed-in wallet (from the server session), distinct
+// from the merely-connected wallet (`connected`).
 export function useAuth() {
   const { address: connected } = useAccount();
   const { signMessageAsync } = useSignMessage();
@@ -23,18 +30,10 @@ export function useAuth() {
       .finally(() => setLoading(false));
   }, []);
 
-  const signIn = useCallback(async () => {
-    setError(null);
-    setSigningIn(true);
-    try {
-      // Connect the wallet first if needed (one-click sign-in).
-      let addr = connected;
-      if (!addr) {
-        const injected = connectors.find((c) => c.id === "injected") ?? connectors[0];
-        if (!injected) throw new Error("No wallet found. Install MetaMask.");
-        const res = await connectAsync({ connector: injected });
-        addr = res.accounts[0];
-      }
+  // SIWE: sign a nonce'd message, the backend verifies and sets a session
+  // cookie. Throws on failure; callers decide whether that's fatal.
+  const siwe = useCallback(
+    async (addr: string) => {
       const { nonce } = await (await fetch("/api/try/auth/nonce")).json();
       const message =
         `franklin.run wants you to sign in with your Ethereum account:\n${addr}\n\n` +
@@ -46,19 +45,74 @@ export function useAuth() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ address: addr, message, signature }),
       });
-      if (!res.ok) throw new Error((await res.json()).error || "Sign-in failed");
-      setAddress((await res.json()).address);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Sign-in failed");
+      setAddress(data.address);
+    },
+    [signMessageAsync],
+  );
+
+  // Match the injected connector by `type` (more reliable than `id` under
+  // EIP-6963 multi-provider discovery, and what BlockRun's app uses).
+  const injectedConnector = useCallback(
+    () => connectors.find((c) => c.type === "injected") ?? connectors[0],
+    [connectors],
+  );
+
+  // Resolve the connector to use, or throw a friendly NO_WALLET when there's no
+  // injected provider at all (desktop without an extension, plain mobile
+  // browser) — so the UI shows guidance instead of a raw "Provider not found".
+  const resolveConnector = useCallback(() => {
+    const c = injectedConnector();
+    const w = typeof window !== "undefined" ? (window as { ethereum?: unknown; web3?: unknown }) : undefined;
+    const hasProvider = !!w && (w.ethereum !== undefined || w.web3 !== undefined);
+    if (!c || !hasProvider) throw new Error("NO_WALLET");
+    return c;
+  }, [injectedConnector]);
+
+  // Primary action: connect the injected wallet. Kicks off SIWE in the
+  // background for history sync, but a SIWE failure never undoes the connect.
+  const connect = useCallback(async () => {
+    setError(null);
+    setSigningIn(true);
+    try {
+      let addr = connected;
+      if (!addr) {
+        const res = await connectAsync({ connector: resolveConnector() });
+        addr = res.accounts[0];
+      }
+      // Best-effort: establish a history session. Swallow failures so a
+      // rejected signature or backend hiccup doesn't break the connection.
+      void siwe(addr).catch(() => {});
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not connect your wallet.");
+    } finally {
+      setSigningIn(false);
+    }
+  }, [connected, connectAsync, resolveConnector, siwe]);
+
+  // Explicit SIWE sign-in (connect if needed, then sign). Surfaces errors.
+  const signIn = useCallback(async () => {
+    setError(null);
+    setSigningIn(true);
+    try {
+      let addr = connected;
+      if (!addr) {
+        const res = await connectAsync({ connector: resolveConnector() });
+        addr = res.accounts[0];
+      }
+      await siwe(addr);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Sign-in failed");
     } finally {
       setSigningIn(false);
     }
-  }, [connected, signMessageAsync, connectAsync, connectors]);
+  }, [connected, connectAsync, resolveConnector, siwe]);
 
   const signOut = useCallback(async () => {
     await fetch("/api/try/auth/logout", { method: "POST" });
     setAddress(null);
   }, []);
 
-  return { address, connected, loading, signingIn, error, signIn, signOut };
+  return { address, connected, loading, signingIn, error, connect, signIn, signOut };
 }
