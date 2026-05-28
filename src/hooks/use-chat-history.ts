@@ -192,6 +192,15 @@ export function useChatHistory(address: string | null) {
         const prevMsgs = cur?.messages ?? [];
         const msgs = typeof next === "function" ? next(prevMsgs) : next;
         const now = Date.now();
+        // Conversation emptied (e.g. a payment-failed turn rolled back its
+        // only user message) → drop it instead of persisting an empty shell
+        // that the sidebar shows as a stray "New chat" and that hydrates into
+        // other windows.
+        if (cur && msgs.length === 0) {
+          if (activeIdRef.current === id) setActiveId(null);
+          if (signedInRef.current) fetch(`/api/try/conversations/${id}`, { method: "DELETE" }).catch(() => {});
+          return prev.filter((c) => c.id !== id);
+        }
         let updated: Conversation;
         let arr: Conversation[];
         if (!cur) {

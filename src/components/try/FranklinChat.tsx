@@ -147,11 +147,11 @@ export function FranklinChat() {
     { mode: "chat", prompt: t.casePrice, model: TOOL_MODEL },
     { mode: "chat", prompt: t.caseSearch, model: TOOL_MODEL },
     { mode: "chat", prompt: t.casePrediction2, model: TOOL_MODEL },
-    { mode: "image", prompt: t.sugImage[0] },
+    { mode: "chat", prompt: t.caseMovers, model: TOOL_MODEL },
     { mode: "video", prompt: t.sugVideo[0] },
-    { mode: "chat", prompt: t.casePhone, model: TOOL_MODEL },
+    { mode: "chat", prompt: t.caseSports, model: TOOL_MODEL },
     { mode: "chat", prompt: t.caseMusic, model: TOOL_MODEL },
-    { mode: "chat", prompt: t.sugChat[0] },
+    { mode: "chat", prompt: t.caseTech, model: TOOL_MODEL },
   ];
   const runCase = (c: { mode: "chat" | "image" | "video"; prompt: string; model?: string }) => {
     setMode(c.mode);

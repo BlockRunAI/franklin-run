@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { Copy, Check, Maximize2, X } from "lucide-react";
+import { Copy, Check, Maximize2, X, Download } from "lucide-react";
 
 // Lightweight Markdown renderer for assistant replies (no external deps):
 // splits fenced ``` code blocks out, renders the rest with minimal inline
@@ -61,6 +61,160 @@ function renderInline(line: string, key: string) {
   return nodes;
 }
 
+// Split a `| a | b | c |` row into trimmed cell strings.
+// Leading/trailing pipes are optional in GFM — strip both.
+function splitTableRow(line: string): string[] {
+  let s = line.trim();
+  if (s.startsWith("|")) s = s.slice(1);
+  if (s.endsWith("|")) s = s.slice(0, -1);
+  return s.split("|").map((c) => c.trim());
+}
+
+// Try to parse a GFM-style table starting at `lines[idx]`. Requires a header
+// row + a `|---|---|` separator row immediately after. Body rows continue
+// until a non-pipe line. Returns null if it's not a table.
+function parseTableAt(
+  lines: string[],
+  idx: number,
+): { headers: string[]; rows: string[][]; aligns: ("left" | "right" | "center" | null)[]; advance: number } | null {
+  const header = (lines[idx] ?? "").trim();
+  const sep = (lines[idx + 1] ?? "").trim();
+  if (!header.includes("|") || !sep.includes("|")) return null;
+  // Separator cells: optional leading/trailing colon for alignment, dashes in
+  // between. Must match every cell.
+  const sepCells = splitTableRow(sep);
+  if (sepCells.length < 1 || !sepCells.every((c) => /^:?-{2,}:?$/.test(c))) return null;
+  const headers = splitTableRow(header);
+  if (headers.length !== sepCells.length) return null;
+  const aligns = sepCells.map((c) => {
+    const l = c.startsWith(":");
+    const r = c.endsWith(":");
+    if (l && r) return "center" as const;
+    if (r) return "right" as const;
+    if (l) return "left" as const;
+    return null;
+  });
+  const rows: string[][] = [];
+  let i = idx + 2;
+  while (i < lines.length) {
+    const t = lines[i].trim();
+    if (!t.includes("|")) break;
+    const cells = splitTableRow(t);
+    // Normalize: pad/truncate to header width so the grid stays consistent.
+    while (cells.length < headers.length) cells.push("");
+    rows.push(cells.slice(0, headers.length));
+    i++;
+  }
+  return { headers, rows, aligns, advance: i - idx };
+}
+
+// Re-serialize a parsed table to GFM markdown — for the Copy button. Round-
+// trips back to what the model emitted so the user can paste it into Notion,
+// Slack, a README, etc.
+function tableToMarkdown(headers: string[], rows: string[][]): string {
+  const head = `| ${headers.join(" | ")} |`;
+  const sep = `| ${headers.map(() => "---").join(" | ")} |`;
+  const body = rows.map((r) => `| ${r.join(" | ")} |`).join("\n");
+  return `${head}\n${sep}${body ? `\n${body}` : ""}`;
+}
+
+// Serialize as CSV for the Download button — properly quoting cells that
+// contain commas, double-quotes, or newlines (RFC 4180).
+function tableToCsv(headers: string[], rows: string[][]): string {
+  const esc = (cell: string) =>
+    /[",\n]/.test(cell) ? `"${cell.replace(/"/g, '""')}"` : cell;
+  return [headers, ...rows].map((r) => r.map(esc).join(",")).join("\n");
+}
+
+function TableBlock({
+  headers,
+  rows,
+  aligns,
+  k,
+}: {
+  headers: string[];
+  rows: string[][];
+  aligns: ("left" | "right" | "center" | null)[];
+  k: string;
+}) {
+  const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const copy = () => {
+    navigator.clipboard?.writeText(tableToMarkdown(headers, rows)).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
+
+  const download = () => {
+    const csv = tableToCsv(headers, rows);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `table-${Date.now()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const block = (
+    <div className={`try-md-table-card${expanded ? " is-expanded" : ""}`}>
+      <div className="try-md-table-head">
+        <span className="try-md-table-label">Table</span>
+        <div className="try-md-table-actions">
+          <button onClick={copy} aria-label="Copy table as markdown" title="Copy as Markdown">
+            {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+          </button>
+          <button onClick={download} aria-label="Download as CSV" title="Download CSV">
+            <Download className="h-3.5 w-3.5" />
+          </button>
+          <button onClick={() => setExpanded((e) => !e)} aria-label={expanded ? "Close" : "Expand table"} title={expanded ? "Close" : "Expand"}>
+            {expanded ? <X className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+          </button>
+        </div>
+      </div>
+      <div className="try-md-table-wrap">
+        <table className="try-md-table">
+          <thead>
+            <tr>
+              {headers.map((h, i) => (
+                <th key={i} style={aligns[i] ? { textAlign: aligns[i] as "left" | "right" | "center" } : undefined}>
+                  {renderInline(h, `${k}-th${i}`)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, ri) => (
+              <tr key={ri}>
+                {r.map((c, ci) => (
+                  <td key={ci} style={aligns[ci] ? { textAlign: aligns[ci] as "left" | "right" | "center" } : undefined}>
+                    {renderInline(c, `${k}-r${ri}c${ci}`)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  if (expanded) {
+    return (
+      <div className="try-code-overlay" onClick={() => setExpanded(false)}>
+        <div onClick={(e) => e.stopPropagation()} style={{ width: "min(1100px, 94vw)" }}>
+          {block}
+        </div>
+      </div>
+    );
+  }
+  return block;
+}
+
 function TextBlock({ text }: { text: string }) {
   const lines = text.split("\n");
   const out: React.ReactNode[] = [];
@@ -71,13 +225,25 @@ function TextBlock({ text }: { text: string }) {
       list = [];
     }
   };
-  lines.forEach((raw, idx) => {
+  let idx = 0;
+  while (idx < lines.length) {
+    const raw = lines[idx];
+    // Table — header + separator + body rows. Detect before list/heading so
+    // a pipe-prefixed line doesn't get mis-rendered as a paragraph.
+    const tbl = parseTableAt(lines, idx);
+    if (tbl) {
+      flushList(`tbl-${idx}`);
+      out.push(<TableBlock key={`tbl-${idx}`} k={`tbl-${idx}`} headers={tbl.headers} rows={tbl.rows} aligns={tbl.aligns} />);
+      idx += tbl.advance;
+      continue;
+    }
     const line = raw.trimEnd();
     const h = /^(#{1,3})\s+(.*)$/.exec(line);
     const li = /^\s*[-*]\s+(.*)$/.exec(line);
     if (li) {
       list.push(<li key={`li-${idx}`}>{renderInline(li[1], `li-${idx}`)}</li>);
-      return;
+      idx++;
+      continue;
     }
     flushList(String(idx));
     if (h) {
@@ -92,7 +258,8 @@ function TextBlock({ text }: { text: string }) {
     } else {
       out.push(<p key={`p-${idx}`} className="try-md-p">{renderInline(line, `p-${idx}`)}</p>);
     }
-  });
+    idx++;
+  }
   flushList("end");
   return <>{out}</>;
 }
