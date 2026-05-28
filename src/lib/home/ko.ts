@@ -51,7 +51,7 @@ export const ko: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "55개 이상의 모델. Franklin이 고르고, 당신이 절약한다.",
+        title: "60개 이상의 모델. Franklin이 고르고, 당신이 절약한다.",
         desc: "단일 모델이 모든 일에 최고일 수는 없다. 라우터는 모든 요청을 분류해 1밀리초 이내에 라우팅한다. 200만 건 이상의 실제 요청으로 학습되고, Elo로 지속적으로 평가되며, 당신의 오버라이드에 적응한다. 항상 Opus 대비 최대 89% 절감.",
       },
       {
@@ -149,7 +149,7 @@ export const ko: HomeDict = {
         label: "모델 선택",
         saas: "단일 벤더",
         ppc: "12개 키를 직접 저글링",
-        franklin: "지갑 하나로 55개 이상의 모델 · 라우터가 결정.",
+        franklin: "지갑 하나로 60개 이상의 모델 · 라우터가 결정.",
       },
       {
         label: "공급자 장애",
@@ -179,7 +179,7 @@ export const ko: HomeDict = {
     labels: [
       { k: "당신의 데이터", v: "~/.blockrun/" },
       { k: "당신의 지갑", v: "프라이빗 키 · 로컬" },
-      { k: "당신의 모델", v: "55+ · 명령 한 줄로 전환" },
+      { k: "당신의 모델", v: "60+ · 명령 한 줄로 전환" },
       { k: "당신의 라이선스", v: "Apache 2.0" },
       { k: "당신의 가동률", v: "포크해서 직접 호스팅." },
     ],
@@ -218,7 +218,7 @@ export const ko: HomeDict = {
       },
       {
         q: "Franklin은 어디에 돈을 쓸 수 있나?",
-        a: "55개 이상의 AI 모델 (Claude, GPT, Gemini, Grok, DeepSeek, Kimi 등), 이미지 생성 (DALL·E, Nano Banana, Grok Imagine), 비디오 생성, Exa 뉴럴 웹 검색, 예측 시장 데이터 (Polymarket, Kalshi), X / Twitter 인텔리전스, 음악 생성. Smart Router가 작업마다 최적 모델을 고른다 — 항상 Opus 대비 최대 89% 절감.",
+        a: "60개 이상의 AI 모델 (Claude, GPT, Gemini, Grok, DeepSeek, Kimi 등), 이미지 생성 (GPT Image, Nano Banana, Grok Imagine), 비디오 생성, Exa 뉴럴 웹 검색, 예측 시장 데이터 (Polymarket, Kalshi), X / Twitter 인텔리전스, 음악 생성. Smart Router가 작업마다 최적 모델을 고른다 — 항상 Opus 대비 최대 89% 절감.",
       },
       {
         q: "비용은 얼마인가?",
@@ -273,12 +273,12 @@ export const ko: HomeDict = {
   meta: {
     title: "Franklin — 지갑을 가진 AI 에이전트",
     description:
-      "지갑을 가진 AI 에이전트, Franklin. 당신의 USDC를 보유하고 직접 사용한다 — 55개 이상의 모델, 트레이딩 데이터, 이미지 생성, 비디오 생성, 웹 검색까지. 지갑 하나, API 키 0. 오픈 소스.",
+      "지갑을 가진 AI 에이전트, Franklin. 당신의 USDC를 보유하고 직접 사용한다 — 60개 이상의 모델, 트레이딩 데이터, 이미지 생성, 비디오 생성, 웹 검색까지. 지갑 하나, API 키 0. 오픈 소스.",
     ogTitle: "Franklin — 지갑을 가진 AI 에이전트",
     ogDescription:
-      "다른 에이전트는 코드만 쓴다. Franklin은 코드를 쓰고 직접 돈을 써서 일을 끝낸다. 55개 이상의 모델, 트레이딩 데이터, 이미지 생성, 웹 검색 — USDC 지갑 하나로. 오픈 소스.",
+      "다른 에이전트는 코드만 쓴다. Franklin은 코드를 쓰고 직접 돈을 써서 일을 끝낸다. 60개 이상의 모델, 트레이딩 데이터, 이미지 생성, 웹 검색 — USDC 지갑 하나로. 오픈 소스.",
     twitterTitle: "Franklin — 지갑을 가진 AI 에이전트",
     twitterDescription:
-      "지갑을 가진 AI 에이전트. 55개 이상의 모델, 트레이딩 데이터, 이미지 생성 — 당신의 USDC를 보유하고 직접 사용한다. 오픈 소스.",
+      "지갑을 가진 AI 에이전트. 60개 이상의 모델, 트레이딩 데이터, 이미지 생성 — 당신의 USDC를 보유하고 직접 사용한다. 오픈 소스.",
   },
 };

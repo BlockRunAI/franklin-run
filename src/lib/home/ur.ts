@@ -57,7 +57,7 @@ export const ur: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "55+ ماڈلز۔ وہ چنتا ہے۔ آپ بچاتے ہیں۔",
+        title: "60+ ماڈلز۔ وہ چنتا ہے۔ آپ بچاتے ہیں۔",
         desc: "کوئی ایک ماڈل ہر کام میں بہترین نہیں۔ Router ہر درخواست کی درجہ بندی کرتا ہے اور ایک ملی سیکنڈ سے کم میں rout کر دیتا ہے۔ 20 لاکھ سے زائد حقیقی درخواستوں پر تربیت یافتہ، Elo سے مسلسل scored، آپ کے overrides سے ڈھلتا ہے۔ ہمیشہ-Opus کے مقابلے میں 89% تک بچت۔",
       },
       {
@@ -155,7 +155,7 @@ export const ur: HomeDict = {
         label: "ماڈل کا انتخاب",
         saas: "ایک ہی vendor",
         ppc: "آپ 12 keys سنبھالتے ہیں",
-        franklin: "ایک والیٹ سے 55+ ماڈلز · فیصلہ router کا۔",
+        franklin: "ایک والیٹ سے 60+ ماڈلز · فیصلہ router کا۔",
       },
       {
         label: "Provider بند",
@@ -185,7 +185,7 @@ export const ur: HomeDict = {
     labels: [
       { k: "آپ کا ڈیٹا", v: "~/.blockrun/" },
       { k: "آپ کا والیٹ", v: "Private keys · مقامی" },
-      { k: "آپ کے ماڈلز", v: "55+ · ایک کمانڈ سے سوئچ" },
+      { k: "آپ کے ماڈلز", v: "60+ · ایک کمانڈ سے سوئچ" },
       { k: "آپ کا لائسنس", v: "Apache 2.0" },
       { k: "آپ کا uptime", v: "Fork کریں۔ خود host کریں۔" },
     ],
@@ -224,7 +224,7 @@ export const ur: HomeDict = {
       },
       {
         q: "Franklin کن چیزوں پر خرچ کر سکتا ہے؟",
-        a: "55+ AI ماڈلز (Claude، GPT، Gemini، Grok، DeepSeek، Kimi، وغیرہ)، تصویر سازی (DALL·E، Nano Banana، Grok Imagine)، ویڈیو سازی، Exa neural ویب سرچ، prediction-market ڈیٹا (Polymarket، Kalshi)، X / Twitter intelligence، موسیقی۔ Smart Router ہر کام کا بہترین ماڈل چنتا ہے — ہمیشہ-Opus کے مقابلے میں 89% تک بچت۔",
+        a: "60+ AI ماڈلز (Claude، GPT، Gemini، Grok، DeepSeek، Kimi، وغیرہ)، تصویر سازی (GPT Image، Nano Banana، Grok Imagine)، ویڈیو سازی، Exa neural ویب سرچ، prediction-market ڈیٹا (Polymarket، Kalshi)، X / Twitter intelligence، موسیقی۔ Smart Router ہر کام کا بہترین ماڈل چنتا ہے — ہمیشہ-Opus کے مقابلے میں 89% تک بچت۔",
       },
       {
         q: "اس کی قیمت کتنی ہے؟",
@@ -279,12 +279,12 @@ export const ur: HomeDict = {
   meta: {
     title: "Franklin — والیٹ والا AI ایجنٹ",
     description:
-      "وہ AI ایجنٹ جس کے پاس والیٹ ہے۔ یہ آپ کا USDC رکھتا ہے اور آپ کے لیے خرچ کرتا ہے — 55+ ماڈلز، trading ڈیٹا، تصویر سازی، ویڈیو سازی، ویب سرچ۔ ایک والیٹ، کوئی API keys نہیں۔ Open source۔",
+      "وہ AI ایجنٹ جس کے پاس والیٹ ہے۔ یہ آپ کا USDC رکھتا ہے اور آپ کے لیے خرچ کرتا ہے — 60+ ماڈلز، trading ڈیٹا، تصویر سازی، ویڈیو سازی، ویب سرچ۔ ایک والیٹ، کوئی API keys نہیں۔ Open source۔",
     ogTitle: "Franklin — والیٹ والا AI ایجنٹ",
     ogDescription:
-      "دوسرے ایجنٹ کوڈ لکھتے ہیں۔ Franklin کوڈ لکھتا ہے اور کام مکمل کرنے کے لیے پیسے خرچ کرتا ہے۔ 55+ ماڈلز، trading ڈیٹا، تصویر سازی، ویب سرچ — ایک USDC والیٹ۔ Open source۔",
+      "دوسرے ایجنٹ کوڈ لکھتے ہیں۔ Franklin کوڈ لکھتا ہے اور کام مکمل کرنے کے لیے پیسے خرچ کرتا ہے۔ 60+ ماڈلز، trading ڈیٹا، تصویر سازی، ویب سرچ — ایک USDC والیٹ۔ Open source۔",
     twitterTitle: "Franklin — والیٹ والا AI ایجنٹ",
     twitterDescription:
-      "وہ AI ایجنٹ جس کے پاس والیٹ ہے۔ 55+ ماڈلز، trading ڈیٹا، تصویر سازی — یہ آپ کا USDC رکھتا ہے اور آپ کے لیے خرچ کرتا ہے۔ Open source۔",
+      "وہ AI ایجنٹ جس کے پاس والیٹ ہے۔ 60+ ماڈلز، trading ڈیٹا، تصویر سازی — یہ آپ کا USDC رکھتا ہے اور آپ کے لیے خرچ کرتا ہے۔ Open source۔",
   },
 };

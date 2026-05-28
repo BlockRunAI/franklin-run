@@ -51,7 +51,7 @@ export const hi: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "55+ models। वो चुनता है। आप बचाते हैं।",
+        title: "60+ models। वो चुनता है। आप बचाते हैं।",
         desc: "कोई एक model हर चीज़ में सबसे अच्छा नहीं होता। Router हर request को classify करता है और एक millisecond से कम में route करता है। 2M+ असली requests पर trained, Elo से लगातार scored, आपके overrides के साथ adapt होता है। हमेशा-Opus के मुक़ाबले 89% तक बचत।",
       },
       {
@@ -149,7 +149,7 @@ export const hi: HomeDict = {
         label: "Model choice",
         saas: "एक ही vendor",
         ppc: "12 keys आप संभालिए",
-        franklin: "एक wallet से 55+ models · router तय करता है।",
+        franklin: "एक wallet से 60+ models · router तय करता है।",
       },
       {
         label: "Provider outage",
@@ -179,7 +179,7 @@ export const hi: HomeDict = {
     labels: [
       { k: "आपका data", v: "~/.blockrun/" },
       { k: "आपका wallet", v: "Private keys · local" },
-      { k: "आपके models", v: "55+ · 1 cmd में switch" },
+      { k: "आपके models", v: "60+ · 1 cmd में switch" },
       { k: "आपका license", v: "Apache 2.0" },
       { k: "आपका uptime", v: "Fork करो। Self-host।" },
     ],
@@ -218,7 +218,7 @@ export const hi: HomeDict = {
       },
       {
         q: "Franklin किन चीज़ों पर खर्च कर सकता है?",
-        a: "55+ AI models (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, वग़ैरह), image gen (DALL·E, Nano Banana, Grok Imagine), video gen, Exa neural web search, prediction-market data (Polymarket, Kalshi), X/Twitter intelligence, music gen। Smart Router हर task के लिए सबसे अच्छा model चुनता है — हमेशा-Opus के मुक़ाबले 89% तक बचत।",
+        a: "60+ AI models (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, वग़ैरह), image gen (GPT Image, Nano Banana, Grok Imagine), video gen, Exa neural web search, prediction-market data (Polymarket, Kalshi), X/Twitter intelligence, music gen। Smart Router हर task के लिए सबसे अच्छा model चुनता है — हमेशा-Opus के मुक़ाबले 89% तक बचत।",
       },
       {
         q: "खर्च कितना आता है?",
@@ -273,12 +273,12 @@ export const hi: HomeDict = {
   meta: {
     title: "Franklin — वो AI एजेंट जिसके पास Wallet है",
     description:
-      "वो AI एजेंट जिसके पास wallet है। आपकी USDC रखता है और आपके लिए खर्च करता है — 55+ models, trading data, image generation, video generation, web search। एक wallet, कोई API keys नहीं। Open source।",
+      "वो AI एजेंट जिसके पास wallet है। आपकी USDC रखता है और आपके लिए खर्च करता है — 60+ models, trading data, image generation, video generation, web search। एक wallet, कोई API keys नहीं। Open source।",
     ogTitle: "Franklin — वो AI एजेंट जिसके पास Wallet है",
     ogDescription:
-      "दूसरे एजेंट code लिखते हैं। Franklin code लिखता है और काम पूरा करने के लिए पैसे खर्च करता है। 55+ models, trading data, image gen, web search — एक USDC wallet। Open source।",
+      "दूसरे एजेंट code लिखते हैं। Franklin code लिखता है और काम पूरा करने के लिए पैसे खर्च करता है। 60+ models, trading data, image gen, web search — एक USDC wallet। Open source।",
     twitterTitle: "Franklin — वो AI एजेंट जिसके पास Wallet है",
     twitterDescription:
-      "वो AI एजेंट जिसके पास wallet है। 55+ models, trading data, image gen — आपकी USDC रखता है और आपके लिए खर्च करता है। Open source।",
+      "वो AI एजेंट जिसके पास wallet है। 60+ models, trading data, image gen — आपकी USDC रखता है और आपके लिए खर्च करता है। Open source।",
   },
 };

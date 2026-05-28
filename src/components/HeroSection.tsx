@@ -36,7 +36,7 @@ const DEMOS: Demo[] = [
   {
     prompt: "generate a logo for my AI startup",
     response: [
-      { text: "Using DALL·E via x402 micropayment…", color: "rgba(255,255,255,.55)" },
+      { text: "Using GPT Image 2 via x402 micropayment…", color: "rgba(255,255,255,.55)" },
       {
         text: '✓ ImageGen  "minimalist AI logo, dark background"',
         color: "#10b981",

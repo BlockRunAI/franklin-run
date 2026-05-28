@@ -51,7 +51,7 @@ export const ja: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "55 以上のモデル。選ぶのはルーター。得をするのはあなた。",
+        title: "60 以上のモデル。選ぶのはルーター。得をするのはあなた。",
         desc: "すべてに最強の単一モデルなど存在しない。ルーターはあらゆるリクエストを 1 ミリ秒未満で分類しルーティングする。200 万件超の実リクエストで訓練、Elo で継続的に採点、あなたの上書きにも適応。常に Opus と比べて最大 89% の節約。",
       },
       {
@@ -149,7 +149,7 @@ export const ja: HomeDict = {
         label: "モデル選択",
         saas: "単一ベンダー",
         ppc: "12 個の鍵を捌く羽目に",
-        franklin: "ウォレット一つで 55+ モデル · ルーターが決定。",
+        franklin: "ウォレット一つで 60+ モデル · ルーターが決定。",
       },
       {
         label: "プロバイダ障害",
@@ -179,7 +179,7 @@ export const ja: HomeDict = {
     labels: [
       { k: "あなたのデータ", v: "~/.blockrun/" },
       { k: "あなたのウォレット", v: "秘密鍵 · ローカル" },
-      { k: "あなたのモデル", v: "55+ · 1 コマンドで切替" },
+      { k: "あなたのモデル", v: "60+ · 1 コマンドで切替" },
       { k: "あなたのライセンス", v: "Apache 2.0" },
       { k: "あなたの稼働率", v: "フォークしてセルフホスト。" },
     ],
@@ -217,7 +217,7 @@ export const ja: HomeDict = {
       },
       {
         q: "Franklin は何に支払えるのか？",
-        a: "55 以上の AI モデル（Claude、GPT、Gemini、Grok、DeepSeek、Kimi など）、画像生成（DALL·E、Nano Banana、Grok Imagine）、動画生成、Exa のニューラルウェブ検索、予測市場データ（Polymarket、Kalshi）、X / Twitter インテリジェンス、音楽生成。Smart Router がタスクごとに最適なモデルを選ぶ — 常に Opus と比べて最大 89% の節約。",
+        a: "60 以上の AI モデル（Claude、GPT、Gemini、Grok、DeepSeek、Kimi など）、画像生成（GPT Image、Nano Banana、Grok Imagine）、動画生成、Exa のニューラルウェブ検索、予測市場データ（Polymarket、Kalshi）、X / Twitter インテリジェンス、音楽生成。Smart Router がタスクごとに最適なモデルを選ぶ — 常に Opus と比べて最大 89% の節約。",
       },
       {
         q: "コストはどれくらいか？",
@@ -272,12 +272,12 @@ export const ja: HomeDict = {
   meta: {
     title: "Franklin — ウォレット付きの AI エージェント",
     description:
-      "ウォレット付きの AI エージェント Franklin。あなたの USDC を保持し、代わりに使う — 55 以上のモデル、トレーディングデータ、画像生成、動画生成、ウェブ検索。ウォレット一つ、API キーなし。オープンソース。",
+      "ウォレット付きの AI エージェント Franklin。あなたの USDC を保持し、代わりに使う — 60 以上のモデル、トレーディングデータ、画像生成、動画生成、ウェブ検索。ウォレット一つ、API キーなし。オープンソース。",
     ogTitle: "Franklin — ウォレット付きの AI エージェント",
     ogDescription:
-      "他のエージェントはコードを書く。Franklin はコードを書き、お金を使ってやり遂げる。55 以上のモデル、トレーディングデータ、画像生成、ウェブ検索 — USDC ウォレット一つで。オープンソース。",
+      "他のエージェントはコードを書く。Franklin はコードを書き、お金を使ってやり遂げる。60 以上のモデル、トレーディングデータ、画像生成、ウェブ検索 — USDC ウォレット一つで。オープンソース。",
     twitterTitle: "Franklin — ウォレット付きの AI エージェント",
     twitterDescription:
-      "ウォレット付きの AI エージェント。55 以上のモデル、トレーディングデータ、画像生成 — あなたの USDC を保持し、代わりに使う。オープンソース。",
+      "ウォレット付きの AI エージェント。60 以上のモデル、トレーディングデータ、画像生成 — あなたの USDC を保持し、代わりに使う。オープンソース。",
   },
 };

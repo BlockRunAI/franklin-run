@@ -71,7 +71,7 @@ export const CHAT_MODELS: ChatModel[] = [
 export const IMAGE_MODELS: ChatModel[] = [
   { id: "google/nano-banana-pro", label: "Nano Banana Pro" },
   { id: "openai/gpt-image-2", label: "GPT Image 2" },
-  { id: "openai/dall-e-3", label: "DALL·E 3" },
+  { id: "google/nano-banana", label: "Nano Banana" },
   { id: "xai/grok-imagine-image", label: "Grok Imagine" },
 ];
 

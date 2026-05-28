@@ -29,7 +29,7 @@ export default function ProxyModePage() {
         <p>
           Proxy mode starts a local API server that is compatible with the
           Anthropic API format. Any tool that can talk to Claude&apos;s API can
-          be pointed at Franklin instead, giving it access to all 55+ models
+          be pointed at Franklin instead, giving it access to all 60+ models
           through a single endpoint.
         </p>
 
@@ -61,7 +61,7 @@ claude`}
 
         <Callout type="tip" title="All models, one endpoint">
           With proxy mode, Claude Code can access not just Anthropic models but
-          any of Franklin&apos;s 55+ models. Use model aliases in your requests
+          any of Franklin&apos;s 60+ models. Use model aliases in your requests
           and Franklin resolves them automatically.
         </Callout>
 

@@ -47,12 +47,12 @@ export default function GettingStartedPage() {
         <Callout type="tip" title="No funding required">
           Franklin works without any funding. Free NVIDIA models (Llama, Mistral,
           Qwen, DeepSeek) are always available. Fund your wallet only when you
-          want to unlock premium models like Claude, GPT-4, and Gemini.
+          want to unlock premium models like Claude, GPT-5, and Gemini.
         </Callout>
 
         <h2>Fund (optional)</h2>
         <p>
-          To unlock 55+ premium models (Claude, GPT-4, Gemini, and more), set up
+          To unlock 60+ premium models (Claude, GPT-5, Gemini, and more), set up
           a wallet and send USDC. Franklin uses micropayments &mdash; you pay
           fractions of a cent per action, with no subscriptions or rate limits.
         </p>

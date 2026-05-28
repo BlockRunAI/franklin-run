@@ -46,8 +46,8 @@ const GROUPS: Group[] = [
       },
       {
         icon: <ImageIcon />, name: "Image", price: "~$0.04 / image",
-        desc: "Generate images — Nano Banana, GPT Image, DALL·E, Grok.",
-        poweredBy: "Nano Banana · GPT Image · DALL·E",
+        desc: "Generate images — Nano Banana, GPT Image, Grok Imagine, CogView.",
+        poweredBy: "Nano Banana · GPT Image · Grok Imagine",
         detail: "Text-to-image across the best diffusion and multimodal models. Pay per image, no subscription.",
         examples: ["A cozy reading nook, warm light, film grain", "Minimal logo for a coffee robot"],
         action: { mode: "image" },

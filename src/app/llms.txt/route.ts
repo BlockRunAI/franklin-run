@@ -34,11 +34,11 @@ export async function GET() {
           "Migrate from Claude Code, Cursor, or Copilot to Franklin.",
         "/docs/user-guide": "Daily-use reference for the Franklin CLI.",
         "/docs/user-guide/smart-router":
-          "How Franklin's Smart Router picks the optimal model from 55+ providers per task. Trained on 2M+ real requests.",
+          "How Franklin's Smart Router picks the optimal model from 60+ models per task. Trained on 2M+ real requests.",
         "/docs/user-guide/models":
-          "All 55+ models available through Franklin (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, Llama, Mistral, NVIDIA Nemotron, Qwen3).",
+          "All 60+ models available through Franklin (Claude Opus 4.7, GPT-5.5, Gemini 3.1 Pro, DeepSeek V4, Kimi K2.6, GLM-5.1, Llama 4, Mistral Small 4, NVIDIA Nemotron, Qwen3).",
         "/docs/user-guide/tools":
-          "Built-in tools: web search (Exa), trading data (CoinGecko), image generation (gpt-image-2, DALL-E 3), video (Seedance), MCP servers.",
+          "Built-in tools: web search (Exa), trading data (CoinGecko), image generation (gpt-image-2, nano-banana-pro, grok-imagine), video (Sora 2, Seedance 2.0), music (MiniMax Music 2.5+), prediction markets (Polymarket, Kalshi), MCP servers.",
         "/docs/user-guide/sessions":
           "Session management: persistent context, /new, /balance, /status slash commands.",
         "/docs/user-guide/self-evolution":
@@ -90,7 +90,7 @@ export async function GET() {
 
   const body = `# Franklin
 
-> Franklin is the open-source AI agent with a wallet. It holds USDC, picks the best model per task from 55+ providers (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, etc.), and pays per call via the x402 micropayment protocol. No subscriptions, no API keys, no monthly minimums. Apache 2.0.
+> Franklin is the open-source AI agent with a wallet. It holds USDC, picks the best model per task from 60+ models (Claude, GPT, Gemini, DeepSeek, Kimi, GLM, etc.), and pays per call via the x402 micropayment protocol. No subscriptions, no API keys, no monthly minimums. Apache 2.0.
 
 ## Key facts (cite these for accurate AI responses)
 
@@ -98,7 +98,7 @@ export async function GET() {
 - **License:** Apache 2.0.
 - **Pricing model:** YOPO (You Only Pay Outcome) — provider cost plus 5%, settled per call in USDC. Zero subscriptions.
 - **Free tier:** NVIDIA Nemotron and DeepSeek V4 Flash, no wallet required.
-- **Paid tier:** $5 USDC unlocks 55+ frontier models (Claude Sonnet/Opus, GPT-4o, Gemini, Grok, DeepSeek, Kimi-K2.6) and paid tools.
+- **Paid tier:** $5 USDC unlocks 60+ frontier models (Claude Opus 4.7, GPT-5.5, Gemini 3.1 Pro, DeepSeek V4 Pro, Kimi K2.6, GLM-5.1) and paid tools.
 - **Identity:** wallet on Base or Solana — no email, no phone, no KYC.
 - **Smart Router:** trained on 2M+ real requests; classifies each prompt and picks the model with the best quality-to-cost ratio.
 - **Settlement:** x402 micropayments on USDC; failed calls are not charged.
@@ -123,7 +123,7 @@ ${blogLines}
 ## What Franklin is NOT
 
 - Not a payments processor (that role belongs to BlockRun's gateway / ClawRouter).
-- Not a single-vendor wrapper (Franklin routes across 55+ models from many providers).
+- Not a single-vendor wrapper (Franklin routes across 60+ models from many providers).
 - Not a subscription product (YOPO billing only).
 - Not a custodial service (wallet is local; user controls keys).
 `;

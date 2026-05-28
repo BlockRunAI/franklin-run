@@ -27,11 +27,12 @@ export default function FaqPage() {
       >
         <h2>What models does Franklin support?</h2>
         <p>
-          Franklin supports <strong>55+ models</strong> from 12+ providers,
-          including OpenAI (GPT-5.4, GPT-5.3, o3), Anthropic (Claude Opus 4.6,
-          Sonnet 4.6), Google (Gemini 3.1 Pro, 2.5 Flash), xAI (Grok-3),
-          DeepSeek (V3.2, Reasoner), Moonshot (Kimi K2.5), MiniMax (M2.7),
-          Z.AI (GLM-5), and free NVIDIA-hosted models. Run{" "}
+          Franklin supports <strong>60+ models</strong> from 12+ providers,
+          including OpenAI (GPT-5.5, GPT-5.4, GPT-5.3 Codex, o3), Anthropic
+          (Claude Opus 4.7, Sonnet 4.6), Google (Gemini 3.1 Pro, Gemini 3.5
+          Flash), DeepSeek (V4 Pro, V4 Flash), Moonshot (Kimi K2.6), MiniMax
+          (M2.7), Z.AI (GLM-5.1), xAI (Grok Imagine), and free NVIDIA-hosted
+          models. Run{" "}
           <code>franklin models</code> to see the full list with pricing.
         </p>
 
@@ -68,13 +69,13 @@ franklin balance`}
         <h2>Can I use it for free?</h2>
         <p>
           Yes. Franklin includes free access to <strong>NVIDIA-hosted
-          models</strong> (GPT-OSS 120B/20B, Llama, Qwen, DeepSeek R1) with
-          unlimited usage and zero setup. No wallet, no USDC, no API keys
-          required. Just install and run <code>franklin</code>.
+          models</strong> (DeepSeek V4 Flash, Nemotron, Llama 4, Qwen3,
+          Mistral Small 4) with unlimited usage and zero setup. No wallet, no
+          USDC, no API keys required. Just install and run <code>franklin</code>.
         </p>
         <p>
           Fund your wallet only when you want to unlock premium models like
-          Claude Opus 4.6, GPT-5.4, Gemini 3.1 Pro, and Grok-3.
+          Claude Opus 4.7, GPT-5.5, Gemini 3.1 Pro, and DeepSeek V4 Pro.
         </p>
 
         <h2>How is this different from Claude Code?</h2>
@@ -85,7 +86,7 @@ franklin balance`}
         </p>
         <ul>
           <li>
-            Routes across <strong>55+ models</strong> from 12+ providers &mdash;
+            Routes across <strong>60+ models</strong> from 12+ providers &mdash;
             picks the best model for each task, saving up to 89% vs always
             using Opus
           </li>

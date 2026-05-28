@@ -42,10 +42,11 @@ export default function PricingPage() {
           unlimited usage:
         </p>
         <ul>
-          <li>NVIDIA GPT-OSS 120B / 20B</li>
-          <li>Llama 3.3 70B</li>
-          <li>Qwen 2.5</li>
-          <li>DeepSeek R1</li>
+          <li>DeepSeek V4 Flash (NVIDIA, 1M context)</li>
+          <li>Nemotron 3 Nano Omni (NVIDIA, vision)</li>
+          <li>Qwen3 Coder 480B &amp; Qwen3-Next 80B (NVIDIA)</li>
+          <li>Llama 4 Maverick (NVIDIA)</li>
+          <li>Mistral Small 4 119B (NVIDIA)</li>
         </ul>
 
         <Callout type="tip" title="Zero setup required">
@@ -110,22 +111,22 @@ franklin models`}
         </p>
         <ul>
           <li>
-            <strong>GPT-4o</strong> &mdash; ~400K input tokens
+            <strong>GPT-5.4</strong> &mdash; ~400K input tokens
           </li>
           <li>
-            <strong>DeepSeek V3</strong> &mdash; ~7M input tokens
+            <strong>DeepSeek V4 Flash</strong> &mdash; ~5M input tokens
           </li>
           <li>
-            <strong>Gemini Flash</strong> &mdash; ~13M input tokens
+            <strong>Gemini 2.5 Flash Lite</strong> &mdash; ~10M input tokens
           </li>
           <li>
-            <strong>DALL-E 3</strong> &mdash; ~20 images
+            <strong>GPT Image 1</strong> &mdash; ~50 images
           </li>
           <li>
             <strong>Exa neural search</strong> &mdash; ~40 queries
           </li>
           <li>
-            <strong>NVIDIA GPT-OSS</strong> &mdash; Unlimited (FREE)
+            <strong>NVIDIA free models</strong> &mdash; Unlimited (FREE)
           </li>
         </ul>
 

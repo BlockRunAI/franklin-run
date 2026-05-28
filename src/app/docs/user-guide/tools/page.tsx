@@ -107,7 +107,8 @@ Franklin: [uses Grep with pattern "import.*React" and glob "*.ts"]`}
         <ul>
           <li>
             <strong>ImageGen</strong> &mdash; generate images from text
-            descriptions using DALL-E or other providers
+            descriptions using GPT Image 2, Nano Banana Pro, Grok Imagine, or
+            other providers
           </li>
         </ul>
 

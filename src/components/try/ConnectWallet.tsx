@@ -67,25 +67,31 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
     );
   }
 
-  // Connected → network + balance + address + disconnect.
+  // Connected → network + balance on row 1, address on row 2, disconnect at
+  // the right. The 272px sidebar can't fit all four on a single line without
+  // the address ellipsis breaking, so we lay it out as two intentional rows.
   if (isConnected && address) {
     const onBase = chainId === base.id;
     return (
       <div className="try-wallet">
-        {onBase ? (
-          <span className="try-wallet-net">{t.baseNetwork}</span>
-        ) : (
-          <button
-            className="try-wallet-net try-wallet-net-warn"
-            onClick={() => switchChainAsync({ chainId: base.id }).catch(() => {})}
-          >
-            {t.switchToBase}
-          </button>
-        )}
-        {onBase && balance !== undefined && <span className="try-wallet-bal">{fmtBal(balance)}</span>}
-        <span className="try-wallet-addr">
-          {address.slice(0, 6)}…{address.slice(-4)}
-        </span>
+        <div className="try-wallet-info">
+          <div className="try-wallet-row1">
+            {onBase ? (
+              <span className="try-wallet-net">{t.baseNetwork}</span>
+            ) : (
+              <button
+                className="try-wallet-net try-wallet-net-warn"
+                onClick={() => switchChainAsync({ chainId: base.id }).catch(() => {})}
+              >
+                {t.switchToBase}
+              </button>
+            )}
+            {onBase && balance !== undefined && <span className="try-wallet-bal">{fmtBal(balance)}</span>}
+          </div>
+          <span className="try-wallet-addr">
+            {address.slice(0, 6)}…{address.slice(-4)}
+          </span>
+        </div>
         <button
           className="try-wallet-disconnect"
           onClick={() => {

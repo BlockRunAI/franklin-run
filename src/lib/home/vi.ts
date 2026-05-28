@@ -51,7 +51,7 @@ export const vi: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "55+ models. Nó chọn. Bạn tiết kiệm.",
+        title: "60+ models. Nó chọn. Bạn tiết kiệm.",
         desc: "Không model nào giỏi mọi thứ. Router phân loại từng request và định tuyến trong dưới một mili-giây. Huấn luyện trên 2M+ request thật, xếp hạng liên tục bằng Elo, thích ứng với override của bạn. Tiết kiệm tới 89% so với luôn-Opus.",
       },
       {
@@ -149,7 +149,7 @@ export const vi: HomeDict = {
         label: "Lựa chọn model",
         saas: "Một nhà cung cấp duy nhất",
         ppc: "Bạn xoay 12 chiếc key",
-        franklin: "55+ models qua một ví · router quyết định.",
+        franklin: "60+ models qua một ví · router quyết định.",
       },
       {
         label: "Nhà cung cấp ngừng hoạt động",
@@ -179,7 +179,7 @@ export const vi: HomeDict = {
     labels: [
       { k: "Dữ liệu của bạn", v: "~/.blockrun/" },
       { k: "Ví của bạn", v: "Khóa riêng · local" },
-      { k: "Models của bạn", v: "55+ · đổi bằng 1 lệnh" },
+      { k: "Models của bạn", v: "60+ · đổi bằng 1 lệnh" },
       { k: "Giấy phép của bạn", v: "Apache 2.0" },
       { k: "Uptime của bạn", v: "Fork. Self-host." },
     ],
@@ -218,7 +218,7 @@ export const vi: HomeDict = {
       },
       {
         q: "Franklin có thể tiêu vào những gì?",
-        a: "55+ AI models (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, v.v.), tạo ảnh (DALL·E, Nano Banana, Grok Imagine), tạo video, Exa neural web search, dữ liệu prediction market (Polymarket, Kalshi), intelligence X/Twitter, tạo nhạc. Smart Router chọn model phù hợp nhất cho từng task — tiết kiệm tới 89% so với luôn-Opus.",
+        a: "60+ AI models (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, v.v.), tạo ảnh (GPT Image, Nano Banana, Grok Imagine), tạo video, Exa neural web search, dữ liệu prediction market (Polymarket, Kalshi), intelligence X/Twitter, tạo nhạc. Smart Router chọn model phù hợp nhất cho từng task — tiết kiệm tới 89% so với luôn-Opus.",
       },
       {
         q: "Giá bao nhiêu?",
@@ -273,12 +273,12 @@ export const vi: HomeDict = {
   meta: {
     title: "Franklin — AI Agent có ví",
     description:
-      "AI agent có ví. Nó giữ USDC của bạn và tiêu giúp bạn — 55+ models, dữ liệu trading, tạo ảnh, tạo video, web search. Một ví, không API key. Mã nguồn mở.",
+      "AI agent có ví. Nó giữ USDC của bạn và tiêu giúp bạn — 60+ models, dữ liệu trading, tạo ảnh, tạo video, web search. Một ví, không API key. Mã nguồn mở.",
     ogTitle: "Franklin — AI Agent có ví",
     ogDescription:
-      "Các agent khác viết code. Franklin viết code và tiêu tiền để hoàn thành. 55+ models, dữ liệu trading, tạo ảnh, web search — một ví USDC. Mã nguồn mở.",
+      "Các agent khác viết code. Franklin viết code và tiêu tiền để hoàn thành. 60+ models, dữ liệu trading, tạo ảnh, web search — một ví USDC. Mã nguồn mở.",
     twitterTitle: "Franklin — AI Agent có ví",
     twitterDescription:
-      "AI agent có ví. 55+ models, dữ liệu trading, tạo ảnh — nó giữ USDC của bạn và tiêu giúp bạn. Mã nguồn mở.",
+      "AI agent có ví. 60+ models, dữ liệu trading, tạo ảnh — nó giữ USDC của bạn và tiêu giúp bạn. Mã nguồn mở.",
   },
 };

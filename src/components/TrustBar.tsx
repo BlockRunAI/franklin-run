@@ -4,8 +4,8 @@ export function TrustBar() {
       <p>
         Built on <strong>USDC</strong> · <strong>Base</strong> ·{" "}
         <strong>Solana</strong> · <strong>x402</strong> · routes across{" "}
-        <strong>55+ frontier models</strong> from Anthropic, OpenAI, Google,
-        xAI, DeepSeek and Moonshot.
+        <strong>60+ frontier models</strong> from Anthropic, OpenAI, Google,
+        DeepSeek, Moonshot and Z.AI.
       </p>
     </div>
   );

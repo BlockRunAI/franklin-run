@@ -58,7 +58,7 @@ export const en: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "55+ models. It picks. You save.",
+        title: "60+ models. It picks. You save.",
         desc: "No single model is best at everything. The router classifies every request and routes in under a millisecond. Trained on 2M+ real requests, continuously scored by Elo, adapts to your overrides. Up to 89% savings vs. always-Opus.",
       },
       {
@@ -156,7 +156,7 @@ export const en: HomeDict = {
         label: "Model choice",
         saas: "Single vendor",
         ppc: "You juggle 12 keys",
-        franklin: "55+ models via one wallet · router decides.",
+        franklin: "60+ models via one wallet · router decides.",
       },
       {
         label: "Provider outage",
@@ -186,7 +186,7 @@ export const en: HomeDict = {
     labels: [
       { k: "Your data", v: "~/.blockrun/" },
       { k: "Your wallet", v: "Private keys · local" },
-      { k: "Your models", v: "55+ · switch in 1 cmd" },
+      { k: "Your models", v: "60+ · switch in 1 cmd" },
       { k: "Your license", v: "Apache 2.0" },
       { k: "Your uptime", v: "Fork it. Self-host." },
     ],
@@ -225,7 +225,7 @@ export const en: HomeDict = {
       },
       {
         q: "What can Franklin spend on?",
-        a: "55+ AI models (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, etc.), image gen (DALL·E, Nano Banana, Grok Imagine), video gen, Exa neural web search, prediction-market data (Polymarket, Kalshi), X/Twitter intelligence, music gen. The Smart Router picks the best model per task — up to 89% savings vs always-Opus.",
+        a: "60+ AI models (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, etc.), image gen (GPT Image, Nano Banana, Grok Imagine), video gen, Exa neural web search, prediction-market data (Polymarket, Kalshi), X/Twitter intelligence, music gen. The Smart Router picks the best model per task — up to 89% savings vs always-Opus.",
       },
       {
         q: "How much does it cost?",
@@ -280,12 +280,12 @@ export const en: HomeDict = {
   meta: {
     title: "Franklin — The AI Agent with a Wallet",
     description:
-      "The AI agent with a wallet. It holds your USDC and spends it for you — 55+ models, trading data, image generation, video generation, web search. One wallet, no API keys. Open source.",
+      "The AI agent with a wallet. It holds your USDC and spends it for you — 60+ models, trading data, image generation, video generation, web search. One wallet, no API keys. Open source.",
     ogTitle: "Franklin — The AI Agent with a Wallet",
     ogDescription:
-      "Other agents write code. Franklin writes code and spends money to get things done. 55+ models, trading data, image gen, web search — one USDC wallet. Open source.",
+      "Other agents write code. Franklin writes code and spends money to get things done. 60+ models, trading data, image gen, web search — one USDC wallet. Open source.",
     twitterTitle: "Franklin — The AI Agent with a Wallet",
     twitterDescription:
-      "The AI agent with a wallet. 55+ models, trading data, image gen — it holds your USDC and spends it for you. Open source.",
+      "The AI agent with a wallet. 60+ models, trading data, image gen — it holds your USDC and spends it for you. Open source.",
   },
 };

@@ -58,7 +58,7 @@ export const id: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "55+ model. Dia pilih. Kamu hemat.",
+        title: "60+ model. Dia pilih. Kamu hemat.",
         desc: "Tidak ada satu model yang terbaik untuk semua hal. Router mengklasifikasi setiap request dan rute dalam kurang dari satu milidetik. Dilatih dari 2 juta+ request asli, di-skor terus dengan Elo, beradaptasi dengan override-mu. Hemat hingga 89% vs selalu pakai Opus.",
       },
       {
@@ -156,7 +156,7 @@ export const id: HomeDict = {
         label: "Pilihan model",
         saas: "Satu vendor",
         ppc: "Kamu juggling 12 key",
-        franklin: "55+ model lewat satu dompet · router yang putuskan.",
+        franklin: "60+ model lewat satu dompet · router yang putuskan.",
       },
       {
         label: "Provider down",
@@ -186,7 +186,7 @@ export const id: HomeDict = {
     labels: [
       { k: "Datamu", v: "~/.blockrun/" },
       { k: "Dompetmu", v: "Private key · lokal" },
-      { k: "Modelmu", v: "55+ · ganti dengan 1 cmd" },
+      { k: "Modelmu", v: "60+ · ganti dengan 1 cmd" },
       { k: "Lisensimu", v: "Apache 2.0" },
       { k: "Uptime-mu", v: "Fork. Self-host." },
     ],
@@ -225,7 +225,7 @@ export const id: HomeDict = {
       },
       {
         q: "Franklin bisa belanja apa saja?",
-        a: "55+ model AI (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, dll.), generasi gambar (DALL·E, Nano Banana, Grok Imagine), generasi video, Exa neural web search, data prediction-market (Polymarket, Kalshi), intelijen X/Twitter, generasi musik. Smart Router pilih model terbaik per tugas — hemat hingga 89% vs selalu pakai Opus.",
+        a: "60+ model AI (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, dll.), generasi gambar (GPT Image, Nano Banana, Grok Imagine), generasi video, Exa neural web search, data prediction-market (Polymarket, Kalshi), intelijen X/Twitter, generasi musik. Smart Router pilih model terbaik per tugas — hemat hingga 89% vs selalu pakai Opus.",
       },
       {
         q: "Berapa biayanya?",
@@ -280,12 +280,12 @@ export const id: HomeDict = {
   meta: {
     title: "Franklin — AI Agent dengan Dompet",
     description:
-      "AI agent dengan dompet. Memegang USDC-mu dan membelanjakannya untukmu — 55+ model, data trading, generasi gambar, generasi video, web search. Satu dompet, tanpa API key. Open source.",
+      "AI agent dengan dompet. Memegang USDC-mu dan membelanjakannya untukmu — 60+ model, data trading, generasi gambar, generasi video, web search. Satu dompet, tanpa API key. Open source.",
     ogTitle: "Franklin — AI Agent dengan Dompet",
     ogDescription:
-      "Agent lain menulis kode. Franklin menulis kode dan membelanjakan uang untuk menyelesaikannya. 55+ model, data trading, generasi gambar, web search — satu dompet USDC. Open source.",
+      "Agent lain menulis kode. Franklin menulis kode dan membelanjakan uang untuk menyelesaikannya. 60+ model, data trading, generasi gambar, web search — satu dompet USDC. Open source.",
     twitterTitle: "Franklin — AI Agent dengan Dompet",
     twitterDescription:
-      "AI agent dengan dompet. 55+ model, data trading, generasi gambar — memegang USDC-mu dan membelanjakannya untukmu. Open source.",
+      "AI agent dengan dompet. 60+ model, data trading, generasi gambar — memegang USDC-mu dan membelanjakannya untukmu. Open source.",
   },
 };

@@ -5043,16 +5043,44 @@ h2.dark-h,
 .try-account-addr { flex: 1; text-align: left; font-family: var(--font-mono); font-size: 13px; color: var(--fg-muted); }
 .try-account-bal { font-family: var(--font-mono); font-size: 13px; color: var(--gold-dim); }
 .try-footer-icons { display: flex; align-items: center; gap: 6px; }
-/* Wallet/connect now lives in the footer next to the gear */
+/* Wallet/connect now lives in the footer next to the gear. The sidebar is
+   272px and the connected pill has to show network + balance + address +
+   disconnect — too much for one line, so we stack network+balance on row 1
+   and the address on row 2 inside an intentional two-line layout. */
 .try-footer-wallet { flex: 1; min-width: 0; }
 .try-footer-wallet .try-wallet {
   gap: 8px;
-  padding: 7px 10px;
+  padding: 6px 6px 6px 10px;
   border: 1px solid var(--border-strong);
   border-radius: 12px;
   background: var(--bg);
+  align-items: center;
 }
-.try-footer-wallet .try-wallet-addr { flex: 1; }
+.try-footer-wallet .try-wallet-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+.try-footer-wallet .try-wallet-row1 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.try-footer-wallet .try-wallet-net,
+.try-footer-wallet .try-wallet-bal,
+.try-footer-wallet .try-wallet-addr {
+  white-space: nowrap;
+}
+.try-footer-wallet .try-wallet-addr {
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+.try-footer-wallet .try-wallet-disconnect { flex-shrink: 0; }
 .try-footer-wallet .btn-primary { width: 100%; justify-content: center; }
 .try-select-ext { margin-left: auto; color: var(--fg-subtle); }
 .try-lang-btn {

@@ -58,7 +58,7 @@ export const tr: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "55+ model. O seçer. Siz kazanırsınız.",
+        title: "60+ model. O seçer. Siz kazanırsınız.",
         desc: "Tek bir model her şeyde en iyi değildir. Router, her isteği milisaniyenin altında sınıflandırır ve yönlendirir. 2M+ gerçek istekte eğitildi, sürekli Elo ile puanlanır, sizin override'larınıza uyum sağlar. Hep-Opus'a karşı %89'a varan tasarruf.",
       },
       {
@@ -156,7 +156,7 @@ export const tr: HomeDict = {
         label: "Model seçimi",
         saas: "Tek sağlayıcı",
         ppc: "12 anahtarı siz yönetirsiniz",
-        franklin: "Tek cüzdanla 55+ model · router karar verir.",
+        franklin: "Tek cüzdanla 60+ model · router karar verir.",
       },
       {
         label: "Sağlayıcı kesintisi",
@@ -186,7 +186,7 @@ export const tr: HomeDict = {
     labels: [
       { k: "Veriniz", v: "~/.blockrun/" },
       { k: "Cüzdanınız", v: "Özel anahtarlar · yerel" },
-      { k: "Modelleriniz", v: "55+ · 1 komutla geçiş" },
+      { k: "Modelleriniz", v: "60+ · 1 komutla geçiş" },
       { k: "Lisansınız", v: "Apache 2.0" },
       { k: "Uptime'ınız", v: "Fork'la. Self-host et." },
     ],
@@ -225,7 +225,7 @@ export const tr: HomeDict = {
       },
       {
         q: "Franklin neye harcayabilir?",
-        a: "55+ AI modeli (Claude, GPT, Gemini, Grok, DeepSeek, Kimi vb.), görsel üretimi (DALL·E, Nano Banana, Grok Imagine), video üretimi, Exa nöral web araması, prediction-market verisi (Polymarket, Kalshi), X / Twitter zekâsı, müzik üretimi. Smart Router her görev için en iyi modeli seçer — hep-Opus'a karşı %89'a varan tasarruf.",
+        a: "60+ AI modeli (Claude, GPT, Gemini, Grok, DeepSeek, Kimi vb.), görsel üretimi (GPT Image, Nano Banana, Grok Imagine), video üretimi, Exa nöral web araması, prediction-market verisi (Polymarket, Kalshi), X / Twitter zekâsı, müzik üretimi. Smart Router her görev için en iyi modeli seçer — hep-Opus'a karşı %89'a varan tasarruf.",
       },
       {
         q: "Fiyatı ne?",
@@ -280,12 +280,12 @@ export const tr: HomeDict = {
   meta: {
     title: "Franklin — Cüzdanı Olan AI Ajanı",
     description:
-      "Cüzdanı olan AI ajanı. USDC'nizi tutar ve sizin için harcar — 55+ model, trading verisi, görsel üretimi, video üretimi, web araması. Tek cüzdan, API anahtarı yok. Açık kaynak.",
+      "Cüzdanı olan AI ajanı. USDC'nizi tutar ve sizin için harcar — 60+ model, trading verisi, görsel üretimi, video üretimi, web araması. Tek cüzdan, API anahtarı yok. Açık kaynak.",
     ogTitle: "Franklin — Cüzdanı Olan AI Ajanı",
     ogDescription:
-      "Diğer ajanlar kod yazar. Franklin kod yazar ve işi bitirmek için para harcar. 55+ model, trading verisi, görsel üretimi, web araması — tek USDC cüzdanı. Açık kaynak.",
+      "Diğer ajanlar kod yazar. Franklin kod yazar ve işi bitirmek için para harcar. 60+ model, trading verisi, görsel üretimi, web araması — tek USDC cüzdanı. Açık kaynak.",
     twitterTitle: "Franklin — Cüzdanı Olan AI Ajanı",
     twitterDescription:
-      "Cüzdanı olan AI ajanı. 55+ model, trading verisi, görsel üretimi — USDC'nizi tutar ve sizin için harcar. Açık kaynak.",
+      "Cüzdanı olan AI ajanı. 60+ model, trading verisi, görsel üretimi — USDC'nizi tutar ve sizin için harcar. Açık kaynak.",
   },
 };
