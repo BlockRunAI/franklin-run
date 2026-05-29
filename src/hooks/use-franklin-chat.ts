@@ -11,7 +11,14 @@ import { FRANKLIN_SYSTEM_PROMPT, FRANKLIN_TOOLS_PROMPT } from "@/lib/franklin-sy
 // then retry with X-Payment. Image generation has a fast path (200 inline)
 // and a slow path (202 + poll_url) which we poll, reusing one signature.
 
-const CHAT_ENDPOINT = "/api/blockrun/v1/chat/completions";
+// Chat goes through Anthropic-native `/v1/messages`, matching Franklin CLI
+// (src/agent/llm.ts). The OpenAI-compat `/v1/chat/completions` path on the
+// gateway loses fidelity when translating tool schemas for NVIDIA-hosted
+// free models (deepseek-v4-flash, qwen3-coder, llama-4-maverick) — they
+// receive an unparseable schema and roleplay tool calls as `<tool_call>...`
+// text. The Anthropic path preserves the schema end-to-end.
+const CHAT_ENDPOINT = "/api/blockrun/v1/messages";
+const ANTHROPIC_VERSION = "2023-06-01";
 const IMAGE_ENDPOINT = "/api/blockrun/v1/images/generations";
 const IMAGE_EDIT_ENDPOINT = "/api/blockrun/v1/images/image2image";
 const VIDEO_ENDPOINT = "/api/blockrun/v1/videos/generations";
@@ -55,7 +62,7 @@ export const CHAT_MODELS: ChatModel[] = [
   { id: "google/gemini-3.1-pro", label: "Gemini 3.1 Pro", group: "Premium frontier" },
   { id: "xai/grok-4-0709", label: "Grok 4", group: "Premium frontier" },
   // Reasoning
-  { id: "openai/o3", label: "O3", group: "Reasoning" },
+  { id: "openai/o3", label: "OpenAI O3", group: "Reasoning" },
   { id: "openai/gpt-5.3-codex", label: "GPT-5.3 Codex", group: "Reasoning" },
   { id: "deepseek/deepseek-v4-pro", label: "DeepSeek V4 Pro", group: "Reasoning" },
   { id: "xai/grok-4-1-fast-reasoning", label: "Grok 4.1 Fast", group: "Reasoning" },
@@ -148,80 +155,67 @@ function pickVisionSibling(id: string): string {
 // ─── Agent tools (function calling) ────────────────────────────────────────
 // Franklin decides when to use these from the conversation; they are NOT
 // surfaced as UI buttons. Each maps to a paid BlockRun endpoint (x402).
+// Anthropic `/v1/messages` tool shape: `{ name, description, input_schema }`
+// (NOT the OpenAI `{ type: "function", function: { parameters } }` wrapper).
 const TOOL_SCHEMAS = [
   {
-    type: "function",
-    function: {
-      name: "web_search",
-      description:
-        "Search the live web for current information — recent events, news, prices, facts you may not know. Returns cited results.",
-      parameters: {
-        type: "object",
-        properties: { query: { type: "string", description: "The search query" } },
-        required: ["query"],
-      },
+    name: "web_search",
+    description:
+      "Search the live web for current information — recent events, news, prices, facts you may not know. Returns cited results.",
+    input_schema: {
+      type: "object",
+      properties: { query: { type: "string", description: "The search query" } },
+      required: ["query"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "make_phone_call",
-      description:
-        "Place an AI voice phone call to a real number and hold a conversation to accomplish a task (e.g. book a table, ask a question). Use only when the user explicitly wants a phone call made. Costs ~$0.54.",
-      parameters: {
-        type: "object",
-        properties: {
-          to: { type: "string", description: "Recipient phone number in E.164 format, e.g. +14155552671" },
-          task: { type: "string", description: "What the AI should say / accomplish on the call (min 10 chars)" },
-        },
-        required: ["to", "task"],
+    name: "make_phone_call",
+    description:
+      "Place an AI voice phone call to a real number and hold a conversation to accomplish a task (e.g. book a table, ask a question). Use only when the user explicitly wants a phone call made. Costs ~$0.54.",
+    input_schema: {
+      type: "object",
+      properties: {
+        to: { type: "string", description: "Recipient phone number in E.164 format, e.g. +14155552671" },
+        task: { type: "string", description: "What the AI should say / accomplish on the call (min 10 chars)" },
       },
+      required: ["to", "task"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "generate_music",
-      description:
-        "Generate a piece of music or a song from a text description (and optional lyrics). Returns a playable audio URL. Use when the user asks to create music or a song.",
-      parameters: {
-        type: "object",
-        properties: {
-          prompt: { type: "string", description: "Description of the music (genre, mood, instruments)" },
-          lyrics: { type: "string", description: "Optional lyrics to sing" },
-          duration_seconds: { type: "number", description: "Length in seconds (5–240), default 30" },
-        },
-        required: ["prompt"],
+    name: "generate_music",
+    description:
+      "Generate a piece of music or a song from a text description (and optional lyrics). Returns a playable audio URL. Use when the user asks to create music or a song.",
+    input_schema: {
+      type: "object",
+      properties: {
+        prompt: { type: "string", description: "Description of the music (genre, mood, instruments)" },
+        lyrics: { type: "string", description: "Optional lyrics to sing" },
+        duration_seconds: { type: "number", description: "Length in seconds (5–240), default 30" },
       },
+      required: ["prompt"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "get_market_price",
-      description:
-        "Get the current price of a crypto coin, US stock, or FX pair. Use for any 'what's the price of X' question. Cheap ($0.001).",
-      parameters: {
-        type: "object",
-        properties: {
-          symbol: { type: "string", description: "Ticker/symbol, e.g. BTC, AAPL, EUR/USD" },
-          market: { type: "string", enum: ["crypto", "usstock", "fx"], description: "Which market the symbol belongs to" },
-        },
-        required: ["symbol", "market"],
+    name: "get_market_price",
+    description:
+      "Get the current price of a crypto coin, US stock, or FX pair. Use for any 'what's the price of X' question. Cheap ($0.001).",
+    input_schema: {
+      type: "object",
+      properties: {
+        symbol: { type: "string", description: "Ticker/symbol, e.g. BTC, AAPL, EUR/USD" },
+        market: { type: "string", enum: ["crypto", "usstock", "fx"], description: "Which market the symbol belongs to" },
       },
+      required: ["symbol", "market"],
     },
   },
   {
-    type: "function",
-    function: {
-      name: "search_prediction_markets",
-      description:
-        "Search prediction markets (Polymarket, Kalshi, Limitless, etc.) for live odds on an event or topic. Use for questions about prediction-market odds or what the market thinks.",
-      parameters: {
-        type: "object",
-        properties: { query: { type: "string", description: "Event or topic to search for" } },
-        required: ["query"],
-      },
+    name: "search_prediction_markets",
+    description:
+      "Search prediction markets (Polymarket, Kalshi, Limitless, etc.) for live odds on an event or topic. Use for questions about prediction-market odds or what the market thinks.",
+    input_schema: {
+      type: "object",
+      properties: { query: { type: "string", description: "Event or topic to search for" } },
+      required: ["query"],
     },
   },
 ] as const;
@@ -232,34 +226,23 @@ const TOOL_SCHEMAS = [
 // and gives a visible "activating X" step before any tool runs.
 const ACTIVATE_TOOL_NAME = "activate_tool";
 const ACTIVATE_SCHEMA = {
-  type: "function",
-  function: {
-    name: ACTIVATE_TOOL_NAME,
-    description:
-      "Activate the capabilities you need before using them. Tools are hidden by default to keep your inventory small. " +
-      'Call with no arguments to list what is available, or { "names": ["web_search", ...] } to enable specific tools — ' +
-      "they become callable on the next turn. Activate only what the task needs. Available: " +
-      "web_search, search_prediction_markets, get_market_price, generate_music, make_phone_call.",
-    parameters: {
-      type: "object",
-      properties: {
-        names: { type: "array", items: { type: "string" }, description: "Tool names to activate. Omit to list what's available." },
-      },
+  name: ACTIVATE_TOOL_NAME,
+  description:
+    "Activate the capabilities you need before using them. Tools are hidden by default to keep your inventory small. " +
+    'Call with no arguments to list what is available, or { "names": ["web_search", ...] } to enable specific tools — ' +
+    "they become callable on the next turn. Activate only what the task needs. Available: " +
+    "web_search, search_prediction_markets, get_market_price, generate_music, make_phone_call.",
+  input_schema: {
+    type: "object",
+    properties: {
+      names: { type: "array", items: { type: "string" }, description: "Tool names to activate. Omit to list what's available." },
     },
   },
 } as const;
-const ALL_TOOL_NAMES: readonly string[] = TOOL_SCHEMAS.map((s) => s.function.name);
+const ALL_TOOL_NAMES: readonly string[] = TOOL_SCHEMAS.map((s) => s.name);
 const TOOL_ACTIVATION_NOTE =
   "\n\nIMPORTANT: Your tools are hidden by default. To use any capability (web search, prediction markets, prices, music, phone), " +
   "first call activate_tool with the names you need, then call the tool on the following turn.";
-
-// Every chat model is offered tools (non-streamed agent loop). Whether a paid
-// tool actually runs is gated on the wallet at call time: connected → pay and
-// proceed; not connected → we stop and prompt the user to connect a wallet.
-// (Kept as a function so the routing in runChat stays explicit and tweakable.)
-function supportsTools(): boolean {
-  return true;
-}
 
 // Split inline <think>…</think> chain-of-thought out of a model's text.
 function splitThinking(raw: string): { answer: string; thinking: string } {
@@ -350,7 +333,6 @@ export function useFranklinChat(
   // Set when the model wants a paid tool but no wallet is connected — drives a
   // "connect your wallet to use paid tools" prompt in the UI.
   const [needsToolWallet, setNeedsToolWallet] = useState(false);
-  const [streaming, setStreaming] = useState(false);
   // Per-conversation media jobs (image/video) running detached in the background.
   const [mediaJobs, setMediaJobs] = useState<Record<string, MediaJob>>({});
   const mediaAbortRef = useRef<Record<string, AbortController>>({});
@@ -389,13 +371,20 @@ export function useFranklinChat(
 
   // Pay-aware fetch: probe → 402 → sign → retry with X-Payment. Supports GET
   // (no body) for the read-only data tools (markets, prices, prediction).
+  // `extraHeaders` lets callers attach endpoint-specific headers — chat hits
+  // `/v1/messages` and needs `anthropic-version`, for example.
   const paidFetch = useCallback(
-    async (url: string, body?: string, method: "POST" | "GET" = "POST"): Promise<Response> => {
+    async (
+      url: string,
+      body?: string,
+      method: "POST" | "GET" = "POST",
+      extraHeaders?: Record<string, string>,
+    ): Promise<Response> => {
       const sig = () => abortRef.current?.signal;
       const init = (extra?: Record<string, string>): RequestInit =>
         method === "GET"
-          ? { method, headers: { ...extra }, signal: sig() }
-          : { method, headers: { "Content-Type": "application/json", ...extra }, body, signal: sig() };
+          ? { method, headers: { ...extraHeaders, ...extra }, signal: sig() }
+          : { method, headers: { "Content-Type": "application/json", ...extraHeaders, ...extra }, body, signal: sig() };
       let res = await fetch(url, init());
       if (res.status === 402) {
         const reqs = parseX402FromResponse(res);
@@ -436,7 +425,6 @@ export function useFranklinChat(
   const stop = useCallback(() => {
     abortRef.current?.abort();
     inFlight.current = false;
-    setStreaming(false);
     setStatus("idle");
     setActiveTool(null);
     setSteps([]);
@@ -500,10 +488,21 @@ export function useFranklinChat(
           // User stopped it — keep any partial output, no error shown.
           setStatus("idle");
         } else {
+          // Roll back the orphan user message if the turn never produced an
+          // assistant reply (e.g. wallet signature rejected). Otherwise it
+          // persists into the conversation list, titles the new chat with the
+          // user's prompt, and leaks into other windows on next hydrate.
+          setMessages((m) => {
+            const last = m[m.length - 1];
+            return last && last.role === "user" ? m.slice(0, -1) : m;
+          });
           setError(err instanceof Error ? err.message : "Something went wrong.");
           setStatus("error");
         }
-        setStreaming(false);
+        // Clear residual activity log — without this, "<model> · thinking"
+        // keeps spinning after the error toast is shown.
+        setSteps([]);
+        setActiveTool(null);
       } finally {
         inFlight.current = false;
         abortRef.current = null;
@@ -537,9 +536,15 @@ export function useFranklinChat(
   }, [send, setMessages]);
 
   // Paid request → parsed JSON (handles 402→sign→retry). POST by default; GET
-  // for read-only data tools.
-  async function paidJson(url: string, payload?: unknown, method: "POST" | "GET" = "POST"): Promise<Record<string, unknown>> {
-    const res = await paidFetch(url, method === "GET" ? undefined : JSON.stringify(payload), method);
+  // for read-only data tools. `extraHeaders` forwards endpoint-specific
+  // metadata (e.g. `anthropic-version` for `/v1/messages`).
+  async function paidJson(
+    url: string,
+    payload?: unknown,
+    method: "POST" | "GET" = "POST",
+    extraHeaders?: Record<string, string>,
+  ): Promise<Record<string, unknown>> {
+    const res = await paidFetch(url, method === "GET" ? undefined : JSON.stringify(payload), method, extraHeaders);
     if (!res.ok) throw new Error(await errMsg(res));
     return res.json();
   }
@@ -622,9 +627,10 @@ export function useFranklinChat(
     }
   }
 
-  // Tool-calling loop (non-streamed) for tool-capable models. Tool-call and
-  // tool-result messages live only in this API-local array — they are never
-  // shown in the UI; the user just sees their message and the final answer.
+  // Tool-calling loop (non-streamed) — uses Anthropic-native `/v1/messages`
+  // (mirrors Franklin CLI's src/agent/llm.ts). Tool-use / tool-result blocks
+  // live only in this API-local array; the user only sees their message and
+  // the final answer text.
   async function runChatWithTools(history: ChatMessage[], model: string, forceTool?: string) {
     setStatus("thinking");
     type ApiMsg = Record<string, unknown>;
@@ -633,22 +639,30 @@ export function useFranklinChat(
     const focusNudge = forceTool
       ? `\n\nThe user selected the ${toolLabel(forceTool)} capability — use the ${forceTool} tool to answer this turn, then summarize the result clearly.`
       : "";
-    const apiMessages: ApiMsg[] = [
-      { role: "system", content: `${FRANKLIN_SYSTEM_PROMPT}\n\n${FRANKLIN_TOOLS_PROMPT}${TOOL_ACTIVATION_NOTE}${focusNudge}` },
-      ...history
-        .filter((m) => m.kind !== "video" && !(m.kind === "image" && m.role === "assistant"))
-        .map((m) =>
-          m.role === "user" && m.image
-            ? {
-                role: "user",
-                content: [
-                  ...(m.content ? [{ type: "text", text: m.content }] : []),
-                  { type: "image_url", image_url: { url: m.image } },
-                ],
-              }
-            : { role: m.role, content: m.content },
-        ),
-    ];
+    const systemPrompt = `${FRANKLIN_SYSTEM_PROMPT}\n\n${FRANKLIN_TOOLS_PROMPT}${TOOL_ACTIVATION_NOTE}${focusNudge}`;
+    // Convert a user-attached image to an Anthropic image content block.
+    // Browser attachments come in as `data:image/...;base64,...`; remote URLs
+    // (e.g. a previously generated image) go through the `url` source kind.
+    const toImageBlock = (image: string): ApiMsg => {
+      const dataMatch = image.match(/^data:([^;]+);base64,(.+)$/);
+      if (dataMatch) {
+        return { type: "image", source: { type: "base64", media_type: dataMatch[1], data: dataMatch[2] } };
+      }
+      return { type: "image", source: { type: "url", url: image } };
+    };
+    const apiMessages: ApiMsg[] = history
+      .filter((m) => m.kind !== "video" && !(m.kind === "image" && m.role === "assistant"))
+      .map((m) =>
+        m.role === "user" && m.image
+          ? {
+              role: "user",
+              content: [
+                ...(m.content ? [{ type: "text", text: m.content }] : []),
+                toImageBlock(m.image),
+              ],
+            }
+          : { role: m.role, content: m.content },
+      );
 
     // Accumulate a compact record of the run so it can collapse into a summary
     // ("searched N keywords · M sources") attached to the final answer.
@@ -665,38 +679,57 @@ export function useFranklinChat(
       // if the model is paid).
       const thinkId = pushStep(`${modelLabel(model)} · thinking`);
       // Each turn offers activate_tool + whatever the model has activated so far.
-      const turnTools = [ACTIVATE_SCHEMA, ...TOOL_SCHEMAS.filter((s) => activeTools.has(s.function.name))];
+      const turnTools = [ACTIVATE_SCHEMA, ...TOOL_SCHEMAS.filter((s) => activeTools.has(s.name))];
       // Focus mode forces the chosen tool on the first turn; afterwards the
-      // model answers freely (auto) using the tool's result.
+      // model answers freely using the tool's result. Anthropic shape:
+      // `{ type: "tool", name }`, not OpenAI's `{ type: "function", function }`.
       const toolChoice = forceTool && i === 0
-        ? { tool_choice: { type: "function", function: { name: forceTool } } }
+        ? { tool_choice: { type: "tool", name: forceTool } }
         : {};
-      const json = await paidJson(CHAT_ENDPOINT, { model, messages: apiMessages, tools: turnTools, stream: false, ...toolChoice });
+      const json = await paidJson(
+        CHAT_ENDPOINT,
+        {
+          model,
+          system: systemPrompt,
+          messages: apiMessages,
+          tools: turnTools,
+          max_tokens: 4096,
+          ...toolChoice,
+        },
+        "POST",
+        { "anthropic-version": ANTHROPIC_VERSION },
+      );
       updateStep(thinkId, { state: "done" });
-      const choices = json.choices as Array<{ message?: ApiMsg }> | undefined;
-      const msg = choices?.[0]?.message;
-      const toolCalls = (msg?.tool_calls as Array<{ id: string; function: { name: string; arguments: string } }>) || [];
-      if (toolCalls.length) {
-        apiMessages.push(msg as ApiMsg);
-        for (const tc of toolCalls) {
-          let parsed: Record<string, unknown> = {};
-          try {
-            parsed = JSON.parse(tc.function.arguments || "{}");
-          } catch {
-            /* ignore */
-          }
+      // Anthropic response: `{ content: ContentBlock[], stop_reason, ... }`.
+      // Tool calls are `tool_use` blocks; the answer text lives in `text` blocks.
+      const contentBlocks = (json.content as Array<Record<string, unknown>>) || [];
+      const toolUses = contentBlocks.filter((b) => b.type === "tool_use") as Array<{
+        id: string;
+        name: string;
+        input: Record<string, unknown>;
+      }>;
+      if (toolUses.length) {
+        // Replay the assistant's full content (text + tool_use blocks) so the
+        // model sees its own message verbatim on the next turn.
+        apiMessages.push({ role: "assistant", content: contentBlocks });
+        // Anthropic requires tool_result blocks to be batched into a single
+        // user message (one per tool_use). Build them as we execute.
+        const toolResultBlocks: ApiMsg[] = [];
+        for (const tu of toolUses) {
+          const parsed: Record<string, unknown> =
+            tu.input && typeof tu.input === "object" ? tu.input : {};
 
           // activate_tool — free meta-step: pull tools into the active set so
           // they're callable next turn. This is the visible "activating X" step.
-          if (tc.function.name === ACTIVATE_TOOL_NAME) {
+          if (tu.name === ACTIVATE_TOOL_NAME) {
             const raw = (parsed as { names?: unknown }).names;
             const names = Array.isArray(raw) ? raw.filter((n): n is string => typeof n === "string") : [];
             let result: string;
             if (names.length === 0) {
-              const inactive = TOOL_SCHEMAS.filter((s) => !activeTools.has(s.function.name));
+              const inactive = TOOL_SCHEMAS.filter((s) => !activeTools.has(s.name));
               const stepId = pushStep("Selecting tools");
               result = inactive.length
-                ? "Available tools:\n" + inactive.map((s) => `- ${s.function.name}: ${s.function.description}`).join("\n")
+                ? "Available tools:\n" + inactive.map((s) => `- ${s.name}: ${s.description}`).join("\n")
                 : "All tools are already active.";
               updateStep(stepId, { state: "done" });
             } else {
@@ -708,7 +741,7 @@ export function useFranklinChat(
                 : "No new tools activated (unknown or already active).";
               updateStep(stepId, { state: "done" });
             }
-            apiMessages.push({ role: "tool", tool_call_id: tc.id, content: result });
+            toolResultBlocks.push({ type: "tool_result", tool_use_id: tu.id, content: result });
             continue;
           }
 
@@ -721,23 +754,29 @@ export function useFranklinChat(
             return;
           }
           // Each tool call is its own visible step (with any signature nested).
-          const toolStepId = pushStep(toolLabel(tc.function.name));
-          const result = await executeTool(tc.function.name, parsed);
+          const toolStepId = pushStep(toolLabel(tu.name));
+          const result = await executeTool(tu.name, parsed);
           updateStep(toolStepId, { state: "done" });
           // Record the run for the collapsed summary.
-          activity.tools.push(toolLabel(tc.function.name));
+          activity.tools.push(toolLabel(tu.name));
           const q = typeof parsed.query === "string" ? parsed.query.trim() : "";
           if (q && !activity.queries.includes(q)) activity.queries.push(q);
-          if (tc.function.name === "web_search") {
+          if (tu.name === "web_search") {
             for (const s of extractSources(result)) {
               if (!activity.sources.some((x) => x.url === s.url)) activity.sources.push(s);
             }
           }
-          apiMessages.push({ role: "tool", tool_call_id: tc.id, content: result });
+          toolResultBlocks.push({ type: "tool_result", tool_use_id: tu.id, content: result });
         }
+        apiMessages.push({ role: "user", content: toolResultBlocks });
         continue;
       }
-      const content = (msg?.content as string) || "(empty response)";
+      // No tool calls — collect text answer from `text` blocks.
+      const answerText = contentBlocks
+        .filter((b) => b.type === "text")
+        .map((b) => (typeof b.text === "string" ? b.text : ""))
+        .join("");
+      const content = answerText || "(empty response)";
       const ue = upstreamErrorMessage(content);
       if (ue) throw new Error(ue);
       const { answer, thinking } = splitThinking(content);
@@ -758,9 +797,10 @@ export function useFranklinChat(
     setStatus("idle");
   }
 
-  // Streamed chat — required because slow models can exceed the upstream
-  // (Cloudflare) 100s budget on a non-streamed call and 524. Streaming starts
-  // emitting tokens immediately, and gives a typewriter effect.
+  // Chat entry. Resolves the model (Auto → concrete, vision-swap if needed)
+  // and hands off to the Anthropic-native agent tool-calling loop. Every chat
+  // model — free or paid — goes through the same `/v1/messages` path; weak
+  // models are absorbed at the gateway, not here.
   async function runChat(history: ChatMessage[], modelOverride?: string, forceTool?: string) {
     setStatus("thinking");
     // Resolve "Auto" client-side, then vision-route: if the turn carries an
@@ -771,96 +811,7 @@ export function useFranklinChat(
     let effectiveModel = base === "blockrun/auto" ? resolveAuto(lastPrompt) : base;
     if (hasImage && !isVisionModel(effectiveModel)) effectiveModel = pickVisionSibling(effectiveModel);
     modelRef.current = effectiveModel;
-
-    // Tool-capable models run the agent tool-calling loop (non-streamed).
-    // Free/other models stay on the streaming path below (no tools).
-    if (supportsTools()) {
-      await runChatWithTools(history, effectiveModel, forceTool);
-      return;
-    }
-
-    const body = JSON.stringify({
-      model: effectiveModel,
-      messages: [
-        { role: "system", content: FRANKLIN_SYSTEM_PROMPT },
-        ...history
-          .filter((m) => m.kind !== "video" && !(m.kind === "image" && m.role === "assistant"))
-          .map((m) => {
-            // A user message with an attached image → OpenAI vision content array.
-            if (m.role === "user" && m.image) {
-              return {
-                role: "user",
-                content: [
-                  ...(m.content ? [{ type: "text", text: m.content }] : []),
-                  { type: "image_url", image_url: { url: m.image } },
-                ],
-              };
-            }
-            return { role: m.role, content: m.content };
-          }),
-      ],
-      stream: true,
-    });
-
-    const res = await paidFetch(CHAT_ENDPOINT, body);
-    if (!res.ok || !res.body) throw new Error(await errMsg(res));
-
-    // Append the assistant bubble we'll stream into.
-    setMessages((m) => [...m, { role: "assistant", content: "", kind: "text" }]);
-    setStatus("idle");
-    setStreaming(true);
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buf = "";
-    let acc = "";          // raw content (may contain <think> tags)
-    let reasoningAcc = ""; // from the separate reasoning_content field
-
-    const writeLast = (content: string, reasoning: string) =>
-      setMessages((m) => {
-        const copy = [...m];
-        const last = copy[copy.length - 1];
-        if (last && last.role === "assistant")
-          copy[copy.length - 1] = { ...last, content, reasoning: reasoning || undefined };
-        return copy;
-      });
-
-    const flush = () => {
-      const { answer, thinking } = splitThinking(acc);
-      const reasoning = [reasoningAcc.trim(), thinking].filter(Boolean).join("\n").trim();
-      writeLast(answer, reasoning);
-    };
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const lines = buf.split("\n");
-      buf = lines.pop() || "";
-      for (const line of lines) {
-        const t = line.trim();
-        if (!t.startsWith("data:")) continue;
-        const data = t.slice(5).trim();
-        if (!data || data === "[DONE]") continue;
-        try {
-          const delta = JSON.parse(data).choices?.[0]?.delta || {};
-          if (delta.reasoning_content) reasoningAcc += delta.reasoning_content;
-          if (delta.content) acc += delta.content;
-          if (delta.content || delta.reasoning_content) flush();
-        } catch {
-          /* ignore keep-alive / partial lines */
-        }
-      }
-    }
-
-    const ue = upstreamErrorMessage(acc);
-    if (ue) {
-      setMessages((m) => m.slice(0, -1)); // drop the partial error bubble
-      setStreaming(false);
-      throw new Error(ue);
-    }
-    if (!acc && !reasoningAcc) writeLast("(empty response)", "");
-    setStreaming(false);
+    await runChatWithTools(history, effectiveModel, forceTool);
   }
 
   // Detached, per-conversation media job (image/video). Adds the user message,
@@ -1033,7 +984,7 @@ export function useFranklinChat(
   }
 
   const isBusy =
-    status === "signing" || status === "thinking" || status === "generating" || streaming;
+    status === "signing" || status === "thinking" || status === "generating";
 
   return {
     isConnected,

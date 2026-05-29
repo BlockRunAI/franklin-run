@@ -18,7 +18,7 @@ const UPSTREAM = process.env.BLOCKRUN_API_BASE || "https://blockrun.ai/api";
 // (encoded "..") to other paths on the upstream host and shrinks the attack
 // surface to the known x402 endpoints.
 const ALLOWED_ROOTS = new Set([
-  "chat", "images", "videos", "search", "voice", "audio",
+  "chat", "messages", "images", "videos", "search", "voice", "audio",
   "crypto", "usstock", "fx", "pm", "phone",
 ]);
 
@@ -67,8 +67,10 @@ function clientIp(req: NextRequest): string {
 // User-Agent is not forwarded, so set our own).
 const USER_AGENT = "Franklin-Web/1.0 (+https://franklin.run)";
 
-// Headers we forward from the client to BlockRun.
-const FORWARD_REQ_HEADERS = ["content-type", "accept", "x-payment", "authorization"];
+// Headers we forward from the client to BlockRun. `anthropic-version` is
+// required by the `/v1/messages` endpoint; without it the gateway rejects the
+// request with `missing anthropic-version header`.
+const FORWARD_REQ_HEADERS = ["content-type", "accept", "x-payment", "authorization", "anthropic-version"];
 // Headers we relay from BlockRun back to the client (x402 lives in these).
 const FORWARD_RES_HEADERS = [
   "content-type",

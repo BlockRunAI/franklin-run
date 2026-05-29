@@ -3647,6 +3647,101 @@ h2.dark-h,
   text-decoration-color: var(--gold);
 }
 
+/* Tables — wide assistant replies (e.g. "smart-money read" comparison grids)
+   used to fall through to raw `| col | col |` text. GFM tables are parsed
+   into <table> via parseTableAt in MessageContent.tsx and wrapped in a card
+   (.try-md-table-card) with a Notion-style header bar carrying Copy /
+   Download CSV / Expand controls. */
+.try-md-table-card {
+  margin: 12px 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  overflow: hidden;
+}
+.try-md-table-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 6px 6px 14px;
+  background: color-mix(in oklch, var(--bg-alt) 55%, var(--bg));
+  border-bottom: 1px solid var(--border);
+}
+.try-md-table-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  font-weight: 500;
+}
+.try-md-table-actions { display: flex; align-items: center; gap: 2px; }
+.try-md-table-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--fg-subtle);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.try-md-table-actions button:hover {
+  background: var(--bg-alt);
+  color: var(--fg);
+}
+.try-md-table-wrap {
+  overflow-x: auto;
+}
+.try-md-table-card.is-expanded {
+  margin: 0;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+}
+.try-md-table-card.is-expanded .try-md-table-wrap {
+  max-height: 100%;
+  overflow-y: auto;
+}
+.try-md-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.try-md-table th,
+.try-md-table td {
+  padding: 9px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+.try-md-table th {
+  font-weight: 600;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  background: color-mix(in oklch, var(--bg-alt) 55%, var(--bg));
+  white-space: nowrap;
+}
+.try-md-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.try-md-table tbody tr:hover {
+  background: color-mix(in oklch, var(--bg-alt) 35%, var(--bg));
+}
+.try-md-table td strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+.try-md-table td .try-inline-code {
+  font-size: 0.85em;
+}
+
 /* Code block */
 .try-code {
   margin: 10px 0;
@@ -5048,39 +5143,93 @@ h2.dark-h,
    disconnect — too much for one line, so we stack network+balance on row 1
    and the address on row 2 inside an intentional two-line layout. */
 .try-footer-wallet { flex: 1; min-width: 0; }
+/* Pill fills the footer slot. Network + balance + address sit inline on a
+   single row instead of the original two-row stack — content fills the
+   width naturally, the disconnect icon hugs the right edge via flex:1 on
+   info, and there is no dead zone between content and the icon because the
+   addr stretches to consume the slack rather than the info column. */
 .try-footer-wallet .try-wallet {
   gap: 8px;
-  padding: 6px 6px 6px 10px;
-  border: 1px solid var(--border-strong);
-  border-radius: 12px;
+  padding: 7px 5px 7px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   background: var(--bg);
   align-items: center;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+.try-footer-wallet .try-wallet:hover {
+  border-color: var(--border-strong);
+  background: color-mix(in oklch, var(--bg-alt) 35%, var(--bg));
 }
 .try-footer-wallet .try-wallet-info {
   display: flex;
-  flex-direction: column;
-  gap: 1px;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
   min-width: 0;
   flex: 1;
 }
 .try-footer-wallet .try-wallet-row1 {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  align-items: baseline;
+  gap: 7px;
   min-width: 0;
+  flex-shrink: 0;
 }
 .try-footer-wallet .try-wallet-net,
 .try-footer-wallet .try-wallet-bal,
 .try-footer-wallet .try-wallet-addr {
   white-space: nowrap;
 }
+/* Quieter network chip — typographic, no heavy border. The user already knows
+   they're on Base 95% of the time; the chip is reference, not action. */
+.try-footer-wallet .try-wallet-net {
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  background: var(--bg-alt);
+  color: var(--fg-subtle);
+}
+.try-footer-wallet .try-wallet-net-warn {
+  background: color-mix(in oklch, var(--gold-dim) 10%, var(--bg));
+  color: var(--gold-dim);
+}
+.try-footer-wallet .try-wallet-net-warn:hover {
+  background: color-mix(in oklch, var(--gold-dim) 18%, var(--bg));
+}
+/* Balance — primary info, but mono at large sizes feels chunky. Keep the base
+   13px size, lean on color (gold-dim) + the chip's smaller scale for hierarchy. */
+.try-footer-wallet .try-wallet-bal {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+/* Address — clear secondary, mono for readability. */
 .try-footer-wallet .try-wallet-addr {
-  font-size: 11px;
+  font-size: 10.5px;
+  color: var(--fg-subtle);
+  letter-spacing: 0.03em;
   overflow: hidden;
   text-overflow: ellipsis;
-  letter-spacing: 0.02em;
+  line-height: 1.2;
 }
-.try-footer-wallet .try-wallet-disconnect { flex-shrink: 0; }
+/* Disconnect — ghost icon, brightens on hover. */
+.try-footer-wallet .try-wallet-disconnect {
+  flex-shrink: 0;
+  padding: 7px;
+  opacity: 0.55;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.try-footer-wallet .try-wallet-disconnect:hover {
+  opacity: 1;
+  color: var(--fg);
+  background: var(--bg-alt);
+}
 .try-footer-wallet .btn-primary { width: 100%; justify-content: center; }
 .try-select-ext { margin-left: auto; color: var(--fg-subtle); }
 .try-lang-btn {

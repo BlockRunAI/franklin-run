@@ -84,7 +84,13 @@ export interface TryDict {
   blog: string;
   casePrediction: string;
   casePrediction2: string;
-  casePhone: string;
+  // Additional prediction-market starter prompts — broad, evergreen,
+  // live-data queries that always return something regardless of the calendar
+  // (no specific event named, so they don't go stale after a market resolves).
+  // Three distinct angles: 24h momentum, sports vertical, AI/tech vertical.
+  caseMovers: string;
+  caseSports: string;
+  caseTech: string;
   casePrice: string;
   caseSearch: string;
   caseMusic: string;
@@ -202,7 +208,9 @@ const en: TryDict = {
   blog: "Blog",
   casePrediction: "Show me Fed rate-cut odds on Polymarket vs Kalshi.",
   casePrediction2: "Show me where smart money is positioning on Polymarket.",
-  casePhone: "Cold-call 10 leads with an AI voice and send me the transcripts.",
+  caseMovers: "Show me Polymarket's biggest 24-hour odds movers right now.",
+  caseSports: "What are Polymarket's hottest sports markets right now?",
+  caseTech: "Show me Polymarket's most-active AI and tech markets right now.",
   casePrice: "Pull a live BTC research brief with cited on-chain sources.",
   caseSearch: "Tell me who owns this wallet — VC, whale, or market maker?",
   caseMusic: "Score my short video with an original 3-minute track.",
@@ -321,7 +329,9 @@ const zh: TryDict = {
   blog: "博客",
   casePrediction: "Polymarket 和 Kalshi 上美联储降息的赔率分别是多少？",
   casePrediction2: "Polymarket 上聪明钱正在往哪儿押注？",
-  casePhone: "用 AI 语音给 10 个潜在客户打 cold call，把通话记录发给我。",
+  caseMovers: "看看 Polymarket 上 24 小时内赔率变动最大的市场。",
+  caseSports: "Polymarket 上当下最火的体育市场有哪些？",
+  caseTech: "看看 Polymarket 上现在最活跃的 AI 和科技类市场。",
   casePrice: "拉一份实时 BTC 研究简报，附上链上数据来源。",
   caseSearch: "告诉我这个钱包属于谁 —— VC、巨鲸，还是做市商？",
   caseMusic: "给我这段短视频配一首 3 分钟原创配乐。",
@@ -440,7 +450,9 @@ const es: TryDict = {
   blog: "Blog",
   casePrediction: "Muéstrame las probabilidades de recorte de tipos de la Fed en Polymarket vs Kalshi.",
   casePrediction2: "Muéstrame dónde se está posicionando el smart money en Polymarket.",
-  casePhone: "Llama en frío a 10 leads con una voz IA y mándame las transcripciones.",
+  caseMovers: "Muéstrame los mayores movers de Polymarket de las últimas 24 horas.",
+  caseSports: "¿Cuáles son los mercados deportivos más calientes ahora mismo en Polymarket?",
+  caseTech: "Muéstrame los mercados de IA y tecnología más activos ahora en Polymarket.",
   casePrice: "Tráeme un brief de investigación en vivo sobre BTC con fuentes on-chain citadas.",
   caseSearch: "Dime quién es el dueño de esta wallet — VC, whale o market maker.",
   caseMusic: "Pónle a mi video corto una pista original de 3 minutos.",
