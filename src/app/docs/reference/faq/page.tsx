@@ -29,7 +29,7 @@ export default function FaqPage() {
         <p>
           Franklin supports <strong>60+ models</strong> from 12+ providers,
           including OpenAI (GPT-5.5, GPT-5.4, GPT-5.3 Codex, o3), Anthropic
-          (Claude Opus 4.7, Sonnet 4.6), Google (Gemini 3.1 Pro, Gemini 3.5
+          (Claude Opus 4.8, Sonnet 4.6), Google (Gemini 3.1 Pro, Gemini 3.5
           Flash), DeepSeek (V4 Pro, V4 Flash), Moonshot (Kimi K2.6), MiniMax
           (M2.7), Z.AI (GLM-5.1), xAI (Grok Imagine), and free NVIDIA-hosted
           models. Run{" "}
@@ -75,7 +75,7 @@ franklin balance`}
         </p>
         <p>
           Fund your wallet only when you want to unlock premium models like
-          Claude Opus 4.7, GPT-5.5, Gemini 3.1 Pro, and DeepSeek V4 Pro.
+          Claude Opus 4.8, GPT-5.5, Gemini 3.1 Pro, and DeepSeek V4 Pro.
         </p>
 
         <h2>How is this different from Claude Code?</h2>

@@ -36,7 +36,7 @@ export async function GET() {
         "/docs/user-guide/smart-router":
           "How Franklin's Smart Router picks the optimal model from 60+ models per task. Trained on 2M+ real requests.",
         "/docs/user-guide/models":
-          "All 60+ models available through Franklin (Claude Opus 4.7, GPT-5.5, Gemini 3.1 Pro, DeepSeek V4, Kimi K2.6, GLM-5.1, Llama 4, Mistral Small 4, NVIDIA Nemotron, Qwen3).",
+          "All 60+ models available through Franklin (Claude Opus 4.8, GPT-5.5, Gemini 3.1 Pro, DeepSeek V4, Kimi K2.6, GLM-5.1, Llama 4, Mistral Small 4, NVIDIA Nemotron, Qwen3).",
         "/docs/user-guide/tools":
           "Built-in tools: web search (Exa), trading data (CoinGecko), image generation (gpt-image-2, nano-banana-pro, grok-imagine), video (Sora 2, Seedance 2.0), music (MiniMax Music 2.5+), prediction markets (Polymarket, Kalshi), MCP servers.",
         "/docs/user-guide/sessions":
@@ -98,7 +98,7 @@ export async function GET() {
 - **License:** Apache 2.0.
 - **Pricing model:** YOPO (You Only Pay Outcome) — provider cost plus 5%, settled per call in USDC. Zero subscriptions.
 - **Free tier:** NVIDIA Nemotron and DeepSeek V4 Flash, no wallet required.
-- **Paid tier:** $5 USDC unlocks 60+ frontier models (Claude Opus 4.7, GPT-5.5, Gemini 3.1 Pro, DeepSeek V4 Pro, Kimi K2.6, GLM-5.1) and paid tools.
+- **Paid tier:** $5 USDC unlocks 60+ frontier models (Claude Opus 4.8, GPT-5.5, Gemini 3.1 Pro, DeepSeek V4 Pro, Kimi K2.6, GLM-5.1) and paid tools.
 - **Identity:** wallet on Base or Solana — no email, no phone, no KYC.
 - **Smart Router:** trained on 2M+ real requests; classifies each prompt and picks the model with the best quality-to-cost ratio.
 - **Settlement:** x402 micropayments on USDC; failed calls are not charged.

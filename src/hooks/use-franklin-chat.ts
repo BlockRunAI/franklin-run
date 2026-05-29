@@ -56,6 +56,7 @@ export const CHAT_MODELS: ChatModel[] = [
   { id: "nvidia/qwen3-coder-480b", label: "Qwen3 Coder 480B", free: true, group: "Free" },
   { id: "nvidia/llama-4-maverick", label: "Llama 4 Maverick", free: true, group: "Free" },
   // Premium frontier
+  { id: "anthropic/claude-opus-4.8", label: "Claude Opus 4.8", group: "Premium frontier" },
   { id: "anthropic/claude-opus-4.7", label: "Claude Opus 4.7", group: "Premium frontier" },
   { id: "anthropic/claude-sonnet-4.6", label: "Claude Sonnet 4.6", group: "Premium frontier" },
   { id: "openai/gpt-5.5", label: "GPT-5.5", group: "Premium frontier" },
@@ -111,6 +112,7 @@ export interface ChatMessage {
 // Vision-capable chat models (mirrors Franklin's src/router/vision.ts). Used to
 // auto-swap to a vision model when the user attaches an image to a text-only one.
 const VISION_MODELS = new Set<string>([
+  "anthropic/claude-opus-4.8",
   "anthropic/claude-opus-4.7",
   "anthropic/claude-sonnet-4.6",
   "anthropic/claude-haiku-4.5-20251001",
@@ -132,7 +134,7 @@ function isVisionModel(id: string): boolean {
 // accept the blockrun/auto alias — Franklin routes client-side too). Sends
 // simple prompts to a fast model and complex ones to a frontier model.
 const AUTO_SIMPLE = "google/gemini-2.5-flash";
-const AUTO_COMPLEX = "anthropic/claude-opus-4.7";
+const AUTO_COMPLEX = "anthropic/claude-opus-4.8";
 function resolveAuto(prompt: string): string {
   const complex =
     prompt.length > 400 ||

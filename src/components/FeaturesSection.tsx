@@ -116,7 +116,7 @@ function SignalCard() {
         </p>
       </div>
       <div className="signal-foot">
-        <span>Authored · Franklin / Opus 4.7</span>
+        <span>Authored · Franklin / Opus 4.8</span>
         <span>Cost · $0.031 USDC</span>
       </div>
     </div>

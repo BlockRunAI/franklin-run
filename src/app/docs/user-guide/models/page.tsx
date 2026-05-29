@@ -33,7 +33,7 @@ export default function ModelsPage() {
           instantly in USDC via x402.
         </p>
         <ul>
-          <li><strong>Anthropic</strong> &mdash; Claude Opus 4.7 (1M context), Claude Opus 4.5, Claude Sonnet 4.6, Claude Haiku 4.5</li>
+          <li><strong>Anthropic</strong> &mdash; Claude Opus 4.8 (1M context), Claude Opus 4.7 (1M context), Claude Opus 4.5, Claude Sonnet 4.6, Claude Haiku 4.5</li>
           <li><strong>OpenAI</strong> &mdash; GPT-5.5, GPT-5.4, GPT-5.4 Pro, GPT-5.3 Codex, GPT-5.3, GPT-5.2, GPT-5.4 Mini, o1, o3</li>
           <li><strong>Google</strong> &mdash; Gemini 3.1 Pro, Gemini 3 Pro Preview, Gemini 3.5 Flash, Gemini 3 Flash Preview, Gemini 2.5 Pro, Gemini 2.5 Flash</li>
           <li><strong>DeepSeek</strong> &mdash; DeepSeek V4 Pro (1M context), DeepSeek V4 Flash (chat + reasoner)</li>
