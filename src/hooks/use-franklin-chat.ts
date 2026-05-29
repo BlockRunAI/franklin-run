@@ -554,7 +554,7 @@ export function useFranklinChat(
       if (activeMode0 === "image" || activeMode0 === "video" || activeMode0 === "music") {
         const mediaConvId = ensureConvId();
         if (mediaAbortRef.current[mediaConvId]) return; // already generating here
-        void runMedia(mediaConvId, activeMode0, prompt, attachment);
+        void runMedia(mediaConvId, activeMode0, prompt, attachment, modelOverride);
         return;
       }
       if (inFlight.current) return;
@@ -708,7 +708,10 @@ export function useFranklinChat(
           }),
         );
         if (!res.ok) throw new Error(await errMsg(res));
-        const url = res.status === 202 ? await pollMedia(res, 180_000) : extractMediaUrl(await res.json());
+        const url =
+          res.status === 202
+            ? await pollMedia(res, 300_000, "music")
+            : extractMediaUrl(await res.json(), "music");
         return url ? `Music generated: ${url}` : "Music generation returned no audio.";
       }
       if (name === "get_market_price") {
@@ -923,7 +926,13 @@ export function useFranklinChat(
   // signs + submits, polls, writes the result — all pinned to `convId` and
   // tracked in `mediaJobs[convId]`, so it never touches the global chat run and
   // switching conversations leaves it (and other conversations) unaffected.
-  async function runMedia(convId: string, kind: "image" | "video" | "music", prompt: string, reference?: string) {
+  async function runMedia(
+    convId: string,
+    kind: "image" | "video" | "music",
+    prompt: string,
+    reference?: string,
+    modelOverride?: string,
+  ) {
     const abort = new AbortController();
     mediaAbortRef.current[convId] = abort;
     setMediaJobs((p) => ({ ...p, [convId]: { kind, phase: "generating" } }));
@@ -939,7 +948,8 @@ export function useFranklinChat(
     let body: string;
     if (kind === "image") {
       const useEdit = !!reference;
-      model = useEdit && !EDIT_SUPPORTED_IMAGE_MODELS.has(imageModel) ? "openai/gpt-image-2" : imageModel;
+      const baseModel = modelOverride ?? imageModel;
+      model = useEdit && !EDIT_SUPPORTED_IMAGE_MODELS.has(baseModel) ? "openai/gpt-image-2" : baseModel;
       endpoint = useEdit ? IMAGE_EDIT_ENDPOINT : IMAGE_ENDPOINT;
       // Edit endpoint is locked to 1024² (the only size every edit-capable
       // model accepts); text-to-image uses the user's selected aspect ratio,
@@ -952,7 +962,8 @@ export function useFranklinChat(
         : JSON.stringify({ model, prompt, size: validSize, n: 1 });
     } else if (kind === "video") {
       const useSeed = !!reference;
-      model = useSeed && !VIDEO_IMAGE_INPUT_MODELS.has(videoModel) ? DEFAULT_I2V_MODEL : videoModel;
+      const baseModel = modelOverride ?? videoModel;
+      model = useSeed && !VIDEO_IMAGE_INPUT_MODELS.has(baseModel) ? DEFAULT_I2V_MODEL : baseModel;
       endpoint = VIDEO_ENDPOINT;
       // aspect_ratio is token360 (Seedance) only; for other providers we
       // omit it entirely so the upstream picks its own default.
@@ -970,7 +981,7 @@ export function useFranklinChat(
     } else {
       // music — gateway picks the model via `model`; the rest of the params are
       // optional (duration / lyrics / instrumental). Reference is ignored.
-      model = musicModel;
+      model = modelOverride ?? musicModel;
       endpoint = MUSIC_ENDPOINT;
       body = JSON.stringify({ model, prompt });
     }
@@ -1006,7 +1017,7 @@ export function useFranklinChat(
         url = await pollMediaJob(convId, kind, res, abort.signal, model);
       } else {
         if (!res.ok) throw new Error(await errMsg(res));
-        url = extractMediaUrl(await res.json());
+        url = extractMediaUrl(await res.json(), kind);
       }
       if (!url)
         throw new Error(
@@ -1045,7 +1056,7 @@ export function useFranklinChat(
   ): Promise<string | undefined> {
     const submit = await submitRes.json();
     const pollPath: string | undefined = submit.poll_url;
-    if (!pollPath) return extractMediaUrl(submit);
+    if (!pollPath) return extractMediaUrl(submit, kind);
     const proxied = pollPath.startsWith("/api/blockrun")
       ? pollPath
       : `/api/blockrun${pollPath.replace(/^.*\/api/, "")}`;
@@ -1053,7 +1064,8 @@ export function useFranklinChat(
 
     let sig: string | null = null;
     const start = Date.now();
-    const maxMs = kind === "video" ? 300_000 : 180_000;
+    // Image jobs settle quickly; video and music renders can run for minutes.
+    const maxMs = kind === "image" ? 180_000 : 300_000;
     while (Date.now() - start < maxMs) {
       if (signal.aborted) throw new DOMException("Aborted", "AbortError");
       const headers: Record<string, string> = {};
@@ -1073,7 +1085,7 @@ export function useFranklinChat(
       }
       if (!r.ok) throw new Error(await errMsg(r));
       const j = await r.json();
-      if (j.status === "completed" || j.status === "settled" || j.data) return extractMediaUrl(j);
+      if (j.status === "completed" || j.status === "settled" || j.data) return extractMediaUrl(j, kind);
       await new Promise((res) => setTimeout(res, 4000));
     }
     throw new Error("Generation is taking too long — try again.");
@@ -1081,10 +1093,14 @@ export function useFranklinChat(
 
   // Slow-path poll for image/video jobs. First poll typically 402 — sign once
   // and reuse that signature for every subsequent poll (server settles on done).
-  async function pollMedia(submitRes: Response, maxMs: number): Promise<string | undefined> {
+  async function pollMedia(
+    submitRes: Response,
+    maxMs: number,
+    kind: "image" | "video" | "music" = "image",
+  ): Promise<string | undefined> {
     const submit = await submitRes.json();
     const pollPath: string | undefined = submit.poll_url;
-    if (!pollPath) return extractMediaUrl(submit);
+    if (!pollPath) return extractMediaUrl(submit, kind);
     const proxied = pollPath.startsWith("/api/blockrun")
       ? pollPath
       : `/api/blockrun${pollPath.replace(/^.*\/api/, "")}`;
@@ -1112,7 +1128,7 @@ export function useFranklinChat(
       const j = await r.json();
       const st = j.status;
       if (st === "completed" || st === "settled" || j.data) {
-        return extractMediaUrl(j);
+        return extractMediaUrl(j, kind);
       }
       await new Promise((res) => setTimeout(res, 4000));
     }
@@ -1196,12 +1212,21 @@ function extractSources(resultStr: string): { title: string; url: string }[] {
   return out.filter((s) => (seen.has(s.url) ? false : (seen.add(s.url), true))).slice(0, 12);
 }
 
-function extractMediaUrl(json: Record<string, unknown>): string | undefined {
+function extractMediaUrl(
+  json: Record<string, unknown>,
+  kind: "image" | "video" | "music" = "image",
+): string | undefined {
   const data = (json.data as Array<Record<string, string>>) || [];
   const first = data[0];
   if (!first) return undefined;
   if (first.url) return first.url;
-  if (first.b64_json) return `data:image/png;base64,${first.b64_json}`;
+  // Some providers return raw bytes as base64 instead of a hosted URL. The MIME
+  // must match the media kind — wrapping audio as image/png yields an <audio>
+  // element that silently fails to decode.
+  if (first.b64_json) {
+    const mime = kind === "music" ? "audio/mpeg" : kind === "video" ? "video/mp4" : "image/png";
+    return `data:${mime};base64,${first.b64_json}`;
+  }
   return undefined;
 }
 

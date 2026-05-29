@@ -3927,6 +3927,9 @@ h2.dark-h,
   justify-content: center;
 }
 .try-gen-skeleton.is-video { width: 420px; aspect-ratio: 16 / 9; }
+/* Music renders into a ~54px audio pill, not a square — size the skeleton to
+ * match so the layout doesn't jump when the <audio> element replaces it. */
+.try-gen-skeleton.is-music { width: 460px; aspect-ratio: auto; height: 54px; border-radius: 999px; }
 .try-gen-skeleton-icon { width: 30px; height: 30px; color: var(--fg-subtle); opacity: 0.6; }
 .try-gen-skeleton-shimmer {
   position: absolute;

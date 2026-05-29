@@ -104,6 +104,15 @@ export function FranklinChat() {
   // and video mode (Seedance-only `aspect_ratio` list). Other modes / models
   // with a single ratio hide the button entirely.
   const [ratioOpen, setRatioOpen] = useState(false);
+  // Close the ratio flyout on any mode change — otherwise an open menu in image
+  // mode survives a return to chat and re-opens unbidden on the next image/video
+  // entry (the picker is merely hidden in chat, not unmounted-with-reset). Done
+  // via the "adjust state during render" pattern rather than an effect.
+  const [ratioMode, setRatioMode] = useState(mode);
+  if (ratioMode !== mode) {
+    setRatioMode(mode);
+    setRatioOpen(false);
+  }
   const ratioOptions: { ratio: string; value: string }[] =
     mode === "image"
       ? imageSizes.map((s) => ({ ratio: s.ratio, value: s.size }))
@@ -547,15 +556,20 @@ export function FranklinChat() {
                   className="try-file-input"
                   onChange={onPickFile}
                 />
-                <button
-                  className="try-tool-icon"
-                  onClick={() => fileRef.current?.click()}
-                  disabled={busy}
-                  aria-label={t.attachImage}
-                  title={mode === "video" ? t.attachSeed : mode === "image" ? t.attachRef : t.attachImage}
-                >
-                  <Plus className="h-[18px] w-[18px]" />
-                </button>
+                {/* Music ignores reference images, so don't offer an attach
+                    button there — it would accept an image, show a thumbnail,
+                    and silently drop it from the request. */}
+                {mode !== "music" && (
+                  <button
+                    className="try-tool-icon"
+                    onClick={() => fileRef.current?.click()}
+                    disabled={busy}
+                    aria-label={t.attachImage}
+                    title={mode === "video" ? t.attachSeed : mode === "image" ? t.attachRef : t.attachImage}
+                  >
+                    <Plus className="h-[18px] w-[18px]" />
+                  </button>
+                )}
                 <ModelSelect models={models} model={model} onChange={setModel} disabled={busy} />
                 {mode === "chat" ? (
                   <>
