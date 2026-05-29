@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, PanelLeft, ImageIcon, Clapperboard, X, Plus, Check, BarChart3, TrendingUp } from "lucide-react";
+import { ArrowUp, PanelLeft, ImageIcon, Clapperboard, X, Plus, Check, BarChart3, TrendingUp, Music, ChevronDown } from "lucide-react";
 import { ModelSelect } from "./ModelSelect";
 import { HistorySidebar, type TryView } from "./HistorySidebar";
 import { MessageContent } from "./MessageContent";
@@ -24,6 +24,33 @@ import { prepareImageForUpload } from "@/lib/image-compress";
 type ToolFocus = "search_prediction_markets" | "web_search" | "get_market_price";
 const TOOL_FOCUS_MODEL = "google/gemini-2.5-flash";
 
+// Tiny SVG that draws the actual aspect-ratio rectangle (16x16 box, scaled
+// to fit). Beats picking a single lucide icon — users can see horizontal vs
+// vertical at a glance, which is the whole reason for the picker.
+function RatioGlyph({ ratio, className }: { ratio: string; className?: string }) {
+  const [w, h] = ratio.split(":").map(Number);
+  if (!w || !h) return null;
+  const box = 16;
+  const pad = 1;
+  const max = Math.max(w, h);
+  const W = (w / max) * (box - pad * 2);
+  const H = (h / max) * (box - pad * 2);
+  return (
+    <svg width={box} height={box} viewBox={`0 0 ${box} ${box}`} className={className} aria-hidden>
+      <rect
+        x={(box - W) / 2}
+        y={(box - H) / 2}
+        width={W}
+        height={H}
+        rx={1.2}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.4}
+      />
+    </svg>
+  );
+}
+
 // Renders an empty-state title with the word "Franklin" gold-emphasized.
 function EmphTitle({ text }: { text: string }) {
   const parts = text.split("Franklin");
@@ -42,7 +69,7 @@ export function FranklinChat() {
   const history = useChatHistory(auth.address);
   const { usage, recordSpend } = useUsageStats();
   const chat = useFranklinChat(history.messages, history.setMessages, history.ensureConvId, recordSpend);
-  const { mode, setMode, model, setModel, models, selectedModel, status, activeTool, steps, needsToolWallet, genConvId, mediaJobs, error, isBusy, isConnected, send, stop, stopMedia, regenerate } = chat;
+  const { mode, setMode, model, setModel, models, selectedModel, status, activeTool, steps, needsToolWallet, genConvId, mediaJobs, error, isBusy, isConnected, send, stop, stopMedia, regenerate, imageSize, setImageSize, imageSizes, videoRatio, setVideoRatio, videoRatios } = chat;
   // Only show the live (chat) generation UI in the conversation that started it.
   const genHere = genConvId === null || genConvId === history.activeId;
   // Heavy media (image/video) runs as a per-conversation background job — show
@@ -61,8 +88,8 @@ export function FranklinChat() {
   const closeSidebarOnMobile = () => {
     if (typeof window !== "undefined" && window.innerWidth <= MOBILE_BP) setSidebarOpen(false);
   };
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (window.innerWidth <= MOBILE_BP) setSidebarOpen(false);
   }, []);
   // Focus mode: a composer toggle that forces a specific live-data tool (and a
@@ -73,6 +100,19 @@ export function FranklinChat() {
     { key: "get_market_price", icon: <TrendingUp className="h-4 w-4" />, label: t.focusPrice, ph: t.phPrice },
   ];
   const activeFocus = FOCUSES.find((f) => f.key === focus);
+  // Aspect-ratio flyout — shown in image mode (per-model `sizes` whitelist)
+  // and video mode (Seedance-only `aspect_ratio` list). Other modes / models
+  // with a single ratio hide the button entirely.
+  const [ratioOpen, setRatioOpen] = useState(false);
+  const ratioOptions: { ratio: string; value: string }[] =
+    mode === "image"
+      ? imageSizes.map((s) => ({ ratio: s.ratio, value: s.size }))
+      : mode === "video"
+        ? videoRatios.map((r) => ({ ratio: r, value: r }))
+        : [];
+  const ratioValue = mode === "image" ? imageSize : mode === "video" ? videoRatio : "";
+  const setRatioValue = mode === "image" ? setImageSize : mode === "video" ? setVideoRatio : () => {};
+  const currentRatio = ratioOptions.find((o) => o.value === ratioValue)?.ratio ?? ratioOptions[0]?.ratio ?? "";
 
   // Skill cards prefill the composer (and optionally pick a tool-capable model).
   const pickSkill = (template: string, model?: string) => {
@@ -134,7 +174,8 @@ export function FranklinChat() {
   // (paid) vision model, so it needs one as well.
   const needsWallet = (mode !== "chat" || !selectedModel?.free || !!attachment) && !isConnected;
   const canSend = (!!input.trim() || !!attachment) && !busy && !needsWallet;
-  const suggestions = mode === "image" ? t.sugImage : mode === "video" ? t.sugVideo : t.sugChat;
+  const suggestions =
+    mode === "image" ? t.sugImage : mode === "video" ? t.sugVideo : mode === "music" ? t.sugMusic : t.sugChat;
 
   // Chat-mode opening cases showcase the three headline capabilities. Clicking
   // switches to the right mode; image/video need a wallet, so if not connected
@@ -142,7 +183,11 @@ export function FranklinChat() {
   // Prediction cases need a tool-capable model (the free default can't call
   // tools), so they force a cheap one — Gemini 2.5 Flash — and need a wallet.
   const TOOL_MODEL = "google/gemini-2.5-flash";
-  const CASES: { mode: "chat" | "image" | "video"; prompt: string; model?: string }[] = [
+  // `prefillOnly` cases need the user's own media (a selfie, a screenshot,
+  // their cat) — clicking switches mode + prefills the composer so the user
+  // can attach their file and send, rather than firing with no input.
+  type Case = { mode: "chat" | "image" | "video"; prompt: string; model?: string; prefillOnly?: boolean };
+  const CHAT_CASES: Case[] = [
     { mode: "chat", prompt: t.casePrediction, model: TOOL_MODEL },
     { mode: "chat", prompt: t.casePrice, model: TOOL_MODEL },
     { mode: "chat", prompt: t.caseSearch, model: TOOL_MODEL },
@@ -153,11 +198,21 @@ export function FranklinChat() {
     { mode: "chat", prompt: t.caseMusic, model: TOOL_MODEL },
     { mode: "chat", prompt: t.caseTech, model: TOOL_MODEL },
   ];
-  const runCase = (c: { mode: "chat" | "image" | "video"; prompt: string; model?: string }) => {
+  // Image-mode cases — shown only after the user clicks the Image button.
+  const IMAGE_CASES: Case[] = [
+    { mode: "image", prompt: t.caseProductPhotos },
+    { mode: "image", prompt: t.caseFranklinSpeaker },
+    { mode: "image", prompt: t.caseStartupVisuals },
+    { mode: "image", prompt: t.caseHeadshots, prefillOnly: true },
+    { mode: "image", prompt: t.caseScreenshotDemo, prefillOnly: true },
+    { mode: "image", prompt: t.caseCatHedgeFund, prefillOnly: true },
+  ];
+  const runCase = (c: Case) => {
     setMode(c.mode);
-    // Tool/image/video cases are paid — if no wallet yet, switch + prefill.
-    if ((c.mode !== "chat" || c.model) && !isConnected) {
-      if (c.model) setModel(c.model);
+    if (c.model) setModel(c.model);
+    // Prefill-only (needs user's media), or paid case without a wallet → just
+    // switch mode + prefill; let the user attach/edit and send themselves.
+    if (c.prefillOnly || ((c.mode !== "chat" || c.model) && !isConnected)) {
       setInput(c.prompt);
       return;
     }
@@ -183,9 +238,11 @@ export function FranklinChat() {
       ? t.phImage
       : mode === "video"
         ? t.phVideo
-        : activeFocus
-          ? activeFocus.ph
-          : t.phMessage;
+        : mode === "music"
+          ? t.phMusic
+          : activeFocus
+            ? activeFocus.ph
+            : t.phMessage;
 
   return (
     <div className="try-shell">
@@ -277,20 +334,26 @@ export function FranklinChat() {
           {messages.length === 0 ? (
             <div className="try-empty">
               <h2 className="try-empty-title">
-                <EmphTitle text={mode === "image" ? t.emptyImage : mode === "video" ? t.emptyVideo : t.emptyChat} />
+                <EmphTitle text={mode === "image" ? t.emptyImage : mode === "video" ? t.emptyVideo : mode === "music" ? t.emptyMusic : t.emptyChat} />
               </h2>
               <div className="try-suggestions">
                 {mode === "chat"
-                  ? CASES.map((c) => (
+                  ? CHAT_CASES.map((c) => (
                       <button key={c.prompt} className="try-suggestion" onClick={() => runCase(c)}>
                         {c.prompt}
                       </button>
                     ))
-                  : suggestions.map((s) => (
-                      <button key={s} className="try-suggestion" onClick={() => send(s)} disabled={needsWallet}>
-                        {s}
-                      </button>
-                    ))}
+                  : mode === "image"
+                    ? IMAGE_CASES.map((c) => (
+                        <button key={c.prompt} className="try-suggestion" onClick={() => runCase(c)}>
+                          {c.prompt}
+                        </button>
+                      ))
+                    : suggestions.map((s) => (
+                        <button key={s} className="try-suggestion" onClick={() => send(s)} disabled={needsWallet}>
+                          {s}
+                        </button>
+                      ))}
               </div>
             </div>
           ) : (
@@ -316,6 +379,13 @@ export function FranklinChat() {
                     <video src={m.video} controls playsInline preload="metadata" />
                     <a className="try-media-link" href={m.video} target="_blank" rel="noreferrer">
                       {t.downloadMp4}
+                    </a>
+                  </div>
+                ) : m.kind === "music" && m.music ? (
+                  <div className="try-msg-media try-msg-audio">
+                    <audio src={m.music} controls preload="metadata" />
+                    <a className="try-media-link" href={m.music} target="_blank" rel="noreferrer">
+                      {t.downloadAudio}
                     </a>
                   </div>
                 ) : (
@@ -358,9 +428,11 @@ export function FranklinChat() {
           {activeMediaJob && (
             <div className="try-msg try-msg-assistant">
               <div className="try-msg-role">Franklin</div>
-              <div className={`try-gen-skeleton${activeMediaJob.kind === "video" ? " is-video" : ""}`}>
+              <div className={`try-gen-skeleton${activeMediaJob.kind === "video" ? " is-video" : ""}${activeMediaJob.kind === "music" ? " is-music" : ""}`}>
                 {activeMediaJob.kind === "video" ? (
                   <Clapperboard className="try-gen-skeleton-icon" />
+                ) : activeMediaJob.kind === "music" ? (
+                  <Music className="try-gen-skeleton-icon" />
                 ) : (
                   <ImageIcon className="try-gen-skeleton-icon" />
                 )}
@@ -430,7 +502,9 @@ export function FranklinChat() {
                 ? t.hintImage
                 : mode === "video"
                   ? t.hintVideo
-                  : t.hintChat(selectedModel?.label ?? "")}
+                  : mode === "music"
+                    ? t.hintMusic
+                    : t.hintChat(selectedModel?.label ?? "")}
             </div>
           )}
 
@@ -487,6 +561,9 @@ export function FranklinChat() {
                     <button className="try-tool" onClick={() => { setFocus(null); setMode("video"); }} disabled={busy}>
                       <Clapperboard className="h-4 w-4" /> {t.video}
                     </button>
+                    <button className="try-tool" onClick={() => { setFocus(null); setMode("music"); }} disabled={busy}>
+                      <Music className="h-4 w-4" /> {t.music}
+                    </button>
                     {FOCUSES.map((f) => (
                       <button
                         key={f.key}
@@ -500,18 +577,65 @@ export function FranklinChat() {
                     ))}
                   </>
                 ) : (
-                  <span className="try-mode-pill">
-                    {mode === "image" ? <ImageIcon className="h-4 w-4" /> : <Clapperboard className="h-4 w-4" />}
-                    {mode === "image" ? t.image : t.video}
-                    <button
-                      className="try-mode-pill-x"
-                      onClick={() => setMode("chat")}
-                      disabled={busy}
-                      aria-label="Back to chat"
-                    >
-                      <X className="h-3.5 w-3.5" />
-                    </button>
-                  </span>
+                  <>
+                    <span className="try-mode-pill">
+                      {mode === "image" ? (
+                        <ImageIcon className="h-4 w-4" />
+                      ) : mode === "video" ? (
+                        <Clapperboard className="h-4 w-4" />
+                      ) : (
+                        <Music className="h-4 w-4" />
+                      )}
+                      {mode === "image" ? t.image : mode === "video" ? t.video : t.music}
+                      <button
+                        className="try-mode-pill-x"
+                        onClick={() => setMode("chat")}
+                        disabled={busy}
+                        aria-label="Back to chat"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </span>
+                    {ratioOptions.length > 1 && (
+                      <div className="try-ratio">
+                        <button
+                          className={`try-tool try-ratio-btn${ratioOpen ? " is-active" : ""}`}
+                          onClick={() => setRatioOpen((o) => !o)}
+                          disabled={busy}
+                          title={t.ratio}
+                          aria-haspopup="listbox"
+                          aria-expanded={ratioOpen}
+                        >
+                          <RatioGlyph ratio={currentRatio} className="try-ratio-glyph" />
+                          {currentRatio}
+                          <ChevronDown className="try-ratio-chev h-3.5 w-3.5" />
+                        </button>
+                        {ratioOpen && (
+                          <>
+                            <div className="try-ratio-scrim" onClick={() => setRatioOpen(false)} />
+                            <div className="try-ratio-menu" role="listbox" aria-label={t.ratio}>
+                              {ratioOptions.map((o) => (
+                                <button
+                                  key={o.value}
+                                  role="option"
+                                  aria-selected={o.value === ratioValue}
+                                  className={`try-ratio-item${o.value === ratioValue ? " is-active" : ""}`}
+                                  onClick={() => {
+                                    setRatioValue(o.value);
+                                    setRatioOpen(false);
+                                  }}
+                                >
+                                  <RatioGlyph ratio={o.ratio} className="try-ratio-item-glyph" />
+                                  {o.ratio}
+                                  <Check className="try-ratio-item-check h-3.5 w-3.5" />
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               {busy ? (

@@ -3,7 +3,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 import { useX402Payment, parseX402FromResponse } from "./use-x402-payment";
-import { FRANKLIN_SYSTEM_PROMPT, FRANKLIN_TOOLS_PROMPT } from "@/lib/franklin-system-prompt";
+import { FRANKLIN_SYSTEM_PROMPT, FRANKLIN_TOOLS_PROMPT, systemPromptDateLine } from "@/lib/franklin-system-prompt";
+
+// Browser's IANA timezone (e.g. "Asia/Shanghai") — passed to systemPromptDateLine
+// so the model greets in the user's local time. Safe-guarded for SSR.
+function userTz(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  } catch {
+    return "UTC";
+  }
+}
 
 // Browser-side chat + image generation against BlockRun's x402 API, proxied
 // through /api/blockrun. Free chat models return 200 directly; paid models
@@ -22,6 +32,7 @@ const ANTHROPIC_VERSION = "2023-06-01";
 const IMAGE_ENDPOINT = "/api/blockrun/v1/images/generations";
 const IMAGE_EDIT_ENDPOINT = "/api/blockrun/v1/images/image2image";
 const VIDEO_ENDPOINT = "/api/blockrun/v1/videos/generations";
+const MUSIC_ENDPOINT = "/api/blockrun/v1/audio/generations";
 
 // Only OpenAI's edit endpoint accepts a reference image (mirrors Franklin CLI's
 // EDIT_SUPPORTED_MODELS). When a reference is attached we force gpt-image-2.
@@ -37,7 +48,7 @@ const VIDEO_IMAGE_INPUT_MODELS = new Set([
 ]);
 const DEFAULT_I2V_MODEL = "bytedance/seedance-2.0-fast";
 
-export type ChatMode = "chat" | "image" | "video";
+export type ChatMode = "chat" | "image" | "video" | "music";
 
 export interface ChatModel {
   id: string;
@@ -75,10 +86,38 @@ export const CHAT_MODELS: ChatModel[] = [
   { id: "moonshot/kimi-k2.6", label: "Kimi K2.6", group: "Budget" },
 ];
 
+// Image-model aspect-ratio whitelist — mirrors each model's `sizes` in
+// `blockrun/src/lib/models.ts`. Gateway rejects sizes outside this list with
+// 400, so the UI builds its "比例" picker from this map. Single-ratio models
+// (Nano Banana, Grok Imagine) skip the picker. Defaults are always the
+// smallest size in each ratio bucket (cheapest), and the first entry is the
+// default selection for that model.
+export const IMAGE_MODEL_SIZES: Record<string, { ratio: string; size: string }[]> = {
+  "openai/gpt-image-1": [
+    { ratio: "1:1", size: "1024x1024" },
+    { ratio: "3:2", size: "1536x1024" },
+    { ratio: "2:3", size: "1024x1536" },
+  ],
+  "openai/gpt-image-2": [
+    { ratio: "1:1", size: "1024x1024" },
+    { ratio: "3:2", size: "1536x1024" },
+    { ratio: "2:3", size: "1024x1536" },
+  ],
+  "google/nano-banana": [{ ratio: "1:1", size: "1024x1024" }],
+  "google/nano-banana-pro": [{ ratio: "1:1", size: "1024x1024" }],
+  "xai/grok-imagine-image": [{ ratio: "1:1", size: "1024x1024" }],
+};
+function defaultSizeFor(modelId: string): string {
+  return IMAGE_MODEL_SIZES[modelId]?.[0]?.size ?? "1024x1024";
+}
+
 // Typical image models (all paid — image generation always needs a wallet).
+// GPT Image 2 leads — it's the only one in this lineup that supports
+// non-square aspect ratios (3:2 / 2:3), so it lines up with the "比例"
+// picker the rest of the UX is built around.
 export const IMAGE_MODELS: ChatModel[] = [
-  { id: "google/nano-banana-pro", label: "Nano Banana Pro" },
   { id: "openai/gpt-image-2", label: "GPT Image 2" },
+  { id: "google/nano-banana-pro", label: "Nano Banana Pro" },
   { id: "google/nano-banana", label: "Nano Banana" },
   { id: "xai/grok-imagine-image", label: "Grok Imagine" },
 ];
@@ -89,6 +128,28 @@ export const VIDEO_MODELS: ChatModel[] = [
   { id: "bytedance/seedance-2.0", label: "Seedance 2.0 Pro" },
   { id: "xai/grok-imagine-video", label: "Grok Imagine Video" },
   { id: "azure/sora-2", label: "Sora 2" },
+];
+
+// Video-model aspect-ratio whitelist. Only token360-backed Seedance models
+// accept the `aspect_ratio` param (gateway: `videos/generations` route); for
+// xAI Grok Imagine Video and Azure Sora 2 the param is silently ignored, so
+// the UI hides the picker for them. Gateway accepts 16:9, 9:16, 1:1, 4:3,
+// 3:4, 21:9, 9:21, "adaptive" — we expose the five common ones (skipping
+// 21:9 / 9:21 cinematic and "adaptive" auto-mode) to keep the menu tight.
+export const VIDEO_MODEL_RATIOS: Record<string, string[]> = {
+  "bytedance/seedance-2.0-fast": ["16:9", "9:16", "1:1", "4:3", "3:4"],
+  "bytedance/seedance-2.0": ["16:9", "9:16", "1:1", "4:3", "3:4"],
+  "bytedance/seedance-1.5-pro": ["16:9", "9:16", "1:1", "4:3", "3:4"],
+};
+function defaultVideoRatioFor(modelId: string): string {
+  return VIDEO_MODEL_RATIOS[modelId]?.[0] ?? "16:9";
+}
+
+// Music models — only MiniMax Music 2.5+ is wired up at the gateway today.
+// /v1/audio/generations may return 202 (poll) for long renders; the music
+// branch in runMedia handles both 200 and 202 the same way as image/video.
+export const MUSIC_MODELS: ChatModel[] = [
+  { id: "minimax/music-2.5+", label: "MiniMax Music 2.5+" },
 ];
 
 // A compact record of the tool run behind an answer — kept on the message so
@@ -102,9 +163,10 @@ export interface ChatActivity {
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
-  kind?: "text" | "image" | "video";
+  kind?: "text" | "image" | "video" | "music";
   image?: string;
   video?: string;
+  music?: string;
   reasoning?: string;
   activity?: ChatActivity;
 }
@@ -276,7 +338,7 @@ export interface ToolStep {
 // never locks the others (mirrors how ChatGPT/Gemini/Midjourney treat slow
 // image/video as async jobs tied to the thread, not a global busy lock).
 export interface MediaJob {
-  kind: "image" | "video";
+  kind: "image" | "video" | "music";
   phase: "signing" | "generating";
 }
 
@@ -326,8 +388,24 @@ export function useFranklinChat(
 
   const [mode, setMode] = useState<ChatMode>("chat");
   const [chatModel, setChatModel] = useState(CHAT_MODELS[0].id);
-  const [imageModel, setImageModel] = useState(IMAGE_MODELS[0].id);
-  const [videoModel, setVideoModel] = useState(VIDEO_MODELS[0].id);
+  const [imageModel, setImageModelState] = useState(IMAGE_MODELS[0].id);
+  const [imageSize, setImageSize] = useState<string>(defaultSizeFor(IMAGE_MODELS[0].id));
+  // Reset the aspect ratio whenever the image model changes — the old size
+  // may not be in the new model's whitelist (gateway would 400). Picking the
+  // model's first ratio keeps the selection always valid.
+  const setImageModel = useCallback((id: string) => {
+    setImageModelState(id);
+    setImageSize(defaultSizeFor(id));
+  }, []);
+  const [videoModel, setVideoModelState] = useState(VIDEO_MODELS[0].id);
+  const [videoRatio, setVideoRatio] = useState<string>(defaultVideoRatioFor(VIDEO_MODELS[0].id));
+  // Reset video ratio whenever the model changes — Seedance models accept
+  // `aspect_ratio`, others don't have a list, so the picker hides.
+  const setVideoModel = useCallback((id: string) => {
+    setVideoModelState(id);
+    setVideoRatio(defaultVideoRatioFor(id));
+  }, []);
+  const [musicModel, setMusicModel] = useState(MUSIC_MODELS[0].id);
   const [status, setStatus] = useState<ChatStatus>("idle");
   const [activeTool, setActiveTool] = useState<string | null>(null);
   const [steps, setSteps] = useState<ToolStep[]>([]);
@@ -353,9 +431,12 @@ export function useFranklinChat(
     msgRef.current = messages;
   }, [messages]);
 
-  const model = mode === "image" ? imageModel : mode === "video" ? videoModel : chatModel;
-  const setModel = mode === "image" ? setImageModel : mode === "video" ? setVideoModel : setChatModel;
-  const models = mode === "image" ? IMAGE_MODELS : mode === "video" ? VIDEO_MODELS : CHAT_MODELS;
+  const model =
+    mode === "image" ? imageModel : mode === "video" ? videoModel : mode === "music" ? musicModel : chatModel;
+  const setModel =
+    mode === "image" ? setImageModel : mode === "video" ? setVideoModel : mode === "music" ? setMusicModel : setChatModel;
+  const models =
+    mode === "image" ? IMAGE_MODELS : mode === "video" ? VIDEO_MODELS : mode === "music" ? MUSIC_MODELS : CHAT_MODELS;
   const selectedModel = models.find((m) => m.id === model);
 
   const signal = () => abortRef.current?.signal;
@@ -452,7 +533,7 @@ export function useFranklinChat(
       const activeMode0 = modeOverride ?? mode;
       // Heavy media → detached, per-conversation background job. It doesn't take
       // the global chat lock, so other conversations stay usable while it runs.
-      if (activeMode0 === "image" || activeMode0 === "video") {
+      if (activeMode0 === "image" || activeMode0 === "video" || activeMode0 === "music") {
         const mediaConvId = ensureConvId();
         if (mediaAbortRef.current[mediaConvId]) return; // already generating here
         void runMedia(mediaConvId, activeMode0, prompt, attachment);
@@ -512,8 +593,11 @@ export function useFranklinChat(
         setGenConvId(null);
       }
     },
+    // imageSize / videoRatio MUST be in deps — runMedia closes over them, so
+    // a stale send() would always send the initial size/ratio regardless of
+    // what the user picked.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mode, chatModel, imageModel, videoModel, paidFetch, setMessages, setChatModel, ensureConvId],
+    [mode, chatModel, imageModel, videoModel, musicModel, imageSize, videoRatio, paidFetch, setMessages, setChatModel, ensureConvId],
   );
 
   // Regenerate the last answer: drop trailing assistant message(s), then resend
@@ -533,7 +617,8 @@ export function useFranklinChat(
     const base = msgs.slice(0, i);
     msgRef.current = base;
     setMessages(base);
-    const m: ChatMode = lastKind === "image" ? "image" : lastKind === "video" ? "video" : "chat";
+    const m: ChatMode =
+      lastKind === "image" ? "image" : lastKind === "video" ? "video" : lastKind === "music" ? "music" : "chat";
     void send(userMsg.content, userMsg.image, m);
   }, [send, setMessages]);
 
@@ -641,7 +726,7 @@ export function useFranklinChat(
     const focusNudge = forceTool
       ? `\n\nThe user selected the ${toolLabel(forceTool)} capability — use the ${forceTool} tool to answer this turn, then summarize the result clearly.`
       : "";
-    const systemPrompt = `${FRANKLIN_SYSTEM_PROMPT}\n\n${FRANKLIN_TOOLS_PROMPT}${TOOL_ACTIVATION_NOTE}${focusNudge}`;
+    const systemPrompt = `${FRANKLIN_SYSTEM_PROMPT}\n\n${systemPromptDateLine(userTz())}\n\n${FRANKLIN_TOOLS_PROMPT}${TOOL_ACTIVATION_NOTE}${focusNudge}`;
     // Convert a user-attached image to an Anthropic image content block.
     // Browser attachments come in as `data:image/...;base64,...`; remote URLs
     // (e.g. a previously generated image) go through the `url` source kind.
@@ -653,7 +738,7 @@ export function useFranklinChat(
       return { type: "image", source: { type: "url", url: image } };
     };
     const apiMessages: ApiMsg[] = history
-      .filter((m) => m.kind !== "video" && !(m.kind === "image" && m.role === "assistant"))
+      .filter((m) => m.kind !== "video" && m.kind !== "music" && !(m.kind === "image" && m.role === "assistant"))
       .map((m) =>
         m.role === "user" && m.image
           ? {
@@ -820,7 +905,7 @@ export function useFranklinChat(
   // signs + submits, polls, writes the result — all pinned to `convId` and
   // tracked in `mediaJobs[convId]`, so it never touches the global chat run and
   // switching conversations leaves it (and other conversations) unaffected.
-  async function runMedia(convId: string, kind: "image" | "video", prompt: string, reference?: string) {
+  async function runMedia(convId: string, kind: "image" | "video" | "music", prompt: string, reference?: string) {
     const abort = new AbortController();
     mediaAbortRef.current[convId] = abort;
     setMediaJobs((p) => ({ ...p, [convId]: { kind, phase: "generating" } }));
@@ -838,14 +923,35 @@ export function useFranklinChat(
       const useEdit = !!reference;
       model = useEdit && !EDIT_SUPPORTED_IMAGE_MODELS.has(imageModel) ? "openai/gpt-image-2" : imageModel;
       endpoint = useEdit ? IMAGE_EDIT_ENDPOINT : IMAGE_ENDPOINT;
+      // Edit endpoint is locked to 1024² (the only size every edit-capable
+      // model accepts); text-to-image uses the user's selected aspect ratio,
+      // validated against the active model's whitelist.
+      const validSize = IMAGE_MODEL_SIZES[model]?.some((s) => s.size === imageSize)
+        ? imageSize
+        : defaultSizeFor(model);
       body = useEdit
         ? JSON.stringify({ model, prompt, image: reference, size: "1024x1024", n: 1 })
-        : JSON.stringify({ model, prompt, n: 1 });
-    } else {
+        : JSON.stringify({ model, prompt, size: validSize, n: 1 });
+    } else if (kind === "video") {
       const useSeed = !!reference;
       model = useSeed && !VIDEO_IMAGE_INPUT_MODELS.has(videoModel) ? DEFAULT_I2V_MODEL : videoModel;
       endpoint = VIDEO_ENDPOINT;
-      body = JSON.stringify({ model, prompt, ...(useSeed ? { image_url: reference } : {}) });
+      // aspect_ratio is token360 (Seedance) only; for other providers we
+      // omit it entirely so the upstream picks its own default.
+      const ratios = VIDEO_MODEL_RATIOS[model];
+      const aspectRatio = ratios && ratios.includes(videoRatio) ? videoRatio : undefined;
+      body = JSON.stringify({
+        model,
+        prompt,
+        ...(useSeed ? { image_url: reference } : {}),
+        ...(aspectRatio ? { aspect_ratio: aspectRatio } : {}),
+      });
+    } else {
+      // music — gateway picks the model via `model`; the rest of the params are
+      // optional (duration / lyrics / instrumental). Reference is ignored.
+      model = musicModel;
+      endpoint = MUSIC_ENDPOINT;
+      body = JSON.stringify({ model, prompt });
     }
 
     try {
@@ -881,8 +987,15 @@ export function useFranklinChat(
         if (!res.ok) throw new Error(await errMsg(res));
         url = extractMediaUrl(await res.json());
       }
-      if (!url) throw new Error(kind === "image" ? "No image came back from the model." : "No video came back from the model.");
-      const extra = kind === "image" ? { image: url } : { video: url };
+      if (!url)
+        throw new Error(
+          kind === "image"
+            ? "No image came back from the model."
+            : kind === "video"
+              ? "No video came back from the model."
+              : "No audio came back from the model.",
+        );
+      const extra = kind === "image" ? { image: url } : kind === "video" ? { video: url } : { music: url };
       setMessagesRaw((m) => [...m, { role: "assistant", content: prompt, kind, ...extra }], convId);
     } catch (err) {
       const aborted = abort.signal.aborted || (err instanceof Error && err.name === "AbortError");
@@ -904,7 +1017,7 @@ export function useFranklinChat(
   // the global pollMedia used by the music tool.
   async function pollMediaJob(
     convId: string,
-    kind: "image" | "video",
+    kind: "image" | "video" | "music",
     submitRes: Response,
     signal: AbortSignal,
     model: string,
@@ -988,6 +1101,13 @@ export function useFranklinChat(
   const isBusy =
     status === "signing" || status === "thinking" || status === "generating";
 
+  // Aspect-ratio options for the current image model — drives the "比例"
+  // flyout. Empty / single-entry → UI hides the button.
+  const imageSizes = IMAGE_MODEL_SIZES[imageModel] ?? [];
+  // Same for video — only Seedance has an aspect-ratio list (xAI / Sora
+  // ignore the param). Empty → UI hides the button.
+  const videoRatios = VIDEO_MODEL_RATIOS[videoModel] ?? [];
+
   return {
     isConnected,
     mode,
@@ -1008,6 +1128,12 @@ export function useFranklinChat(
     stop,
     stopMedia,
     regenerate,
+    imageSize,
+    setImageSize,
+    imageSizes,
+    videoRatio,
+    setVideoRatio,
+    videoRatios,
   };
 }
 
