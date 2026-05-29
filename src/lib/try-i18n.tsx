@@ -23,6 +23,9 @@ export interface TryDict {
   openInWalletApp: string;
   image: string;
   video: string;
+  music: string;
+  ratio: string;
+  resolution: string;
   attachImage: string;
   attachChatOnly: string;
   attachRef: string;
@@ -94,14 +97,22 @@ export interface TryDict {
   casePrice: string;
   caseSearch: string;
   caseMusic: string;
+  caseProductPhotos: string;
+  caseScreenshotDemo: string;
+  caseFranklinSpeaker: string;
+  caseStartupVisuals: string;
+  caseCatHedgeFund: string;
+  caseHeadshots: string;
   // empty-state titles (the word "Franklin" is highlighted at render time)
   emptyChat: string;
   emptyImage: string;
   emptyVideo: string;
+  emptyMusic: string;
   // composer placeholders
   phMessage: string;
   phImage: string;
   phVideo: string;
+  phMusic: string;
   phConnect: string;
   focusPrediction: string;
   focusSearch: string;
@@ -112,6 +123,7 @@ export interface TryDict {
   // wallet hints
   hintImage: string;
   hintVideo: string;
+  hintMusic: string;
   hintChat: (model: string) => string;
   hintToolWallet: string;
   // status
@@ -122,6 +134,7 @@ export interface TryDict {
   // media links
   openFull: string;
   downloadMp4: string;
+  downloadAudio: string;
   reasoning: string;
   spent: string;
   requests: (n: number) => string;
@@ -132,6 +145,7 @@ export interface TryDict {
   sugChat: string[];
   sugImage: string[];
   sugVideo: string[];
+  sugMusic: string[];
 }
 
 const en: TryDict = {
@@ -147,6 +161,9 @@ const en: TryDict = {
   openInWalletApp: "Open in the MetaMask or Coinbase Wallet app browser.",
   image: "Image",
   video: "Video",
+  music: "Music",
+  ratio: "Ratio",
+  resolution: "Resolution",
   attachImage: "Attach an image",
   attachChatOnly: "Attachments work in Chat mode",
   attachRef: "Attach a reference image (image-to-image)",
@@ -214,12 +231,20 @@ const en: TryDict = {
   casePrice: "Pull a live BTC research brief with cited on-chain sources.",
   caseSearch: "Tell me who owns this wallet — VC, whale, or market maker?",
   caseMusic: "Score my short video with an original 3-minute track.",
+  caseProductPhotos: "Generate premium product photos for my coffee brand.",
+  caseScreenshotDemo: "Turn this screenshot into a polished product demo image.",
+  caseFranklinSpeaker: "Generate a photo of Benjamin Franklin speaking at a crypto conference.",
+  caseStartupVisuals: "Create marketing visuals for an AI startup landing page.",
+  caseCatHedgeFund: "Create a hyper-realistic image of my cat running a hedge fund.",
+  caseHeadshots: "Turn my selfie into 5 LinkedIn headshots.",
   emptyChat: "What should Franklin do?",
   emptyImage: "What should Franklin draw?",
   emptyVideo: "What should Franklin film?",
+  emptyMusic: "What should Franklin compose?",
   phMessage: "Message Franklin…",
   phImage: "Describe an image…",
   phVideo: "Describe a video…",
+  phMusic: "Describe music to compose…",
   phConnect: "Connect a wallet to begin…",
   focusPrediction: "Prediction",
   focusSearch: "Web search",
@@ -229,6 +254,7 @@ const en: TryDict = {
   phPrice: "Ask for a live price…",
   hintImage: "Connect a wallet to generate images.",
   hintVideo: "Connect a wallet to generate videos.",
+  hintMusic: "Connect a wallet to generate music.",
   hintChat: (m) => `Connect a wallet to use ${m}, or switch to a free model.`,
   hintToolWallet: "Franklin needs a paid tool (web search, prediction markets, …). Connect your wallet to continue.",
   statusSigning: "Sign the payment in your wallet…",
@@ -237,6 +263,7 @@ const en: TryDict = {
   statusVideo: "Rendering your video (this can take a minute)…",
   openFull: "Open full size",
   downloadMp4: "Download MP4",
+  downloadAudio: "Download audio",
   reasoning: "Thoughts",
   spent: "Spent",
   requests: (n) => `${n} request${n===1?"":"s"}`,
@@ -253,6 +280,11 @@ const en: TryDict = {
     "Shoot an 8-second product ad with synced sound.",
     "Keep the same AI character across 5 promo clips.",
   ],
+  sugMusic: [
+    "Lo-fi hip hop, mellow piano, rainy afternoon vibes, 60 seconds.",
+    "Cinematic orchestral build-up — strings and brass, epic and hopeful.",
+    "Synthwave instrumental with a driving 80s drum beat, neon-night mood.",
+  ],
 };
 
 const zh: TryDict = {
@@ -262,12 +294,15 @@ const zh: TryDict = {
   connectWallet: "连接钱包",
   connecting: "连接中…",
   installWallet: "安装钱包",
-  baseNetwork: "Base 链",
-  switchToBase: "切换到 Base 链",
+  baseNetwork: "Base",
+  switchToBase: "切换到 Base",
   noWalletFound: "未检测到钱包",
   openInWalletApp: "请在 MetaMask 或 Coinbase Wallet 应用的内置浏览器中打开。",
   image: "图像",
   video: "视频",
+  music: "音乐",
+  ratio: "比例",
+  resolution: "清晰度",
   attachImage: "添加图片",
   attachChatOnly: "附件仅在对话模式可用",
   attachRef: "添加参考图（图生图）",
@@ -335,12 +370,20 @@ const zh: TryDict = {
   casePrice: "拉一份实时 BTC 研究简报，附上链上数据来源。",
   caseSearch: "告诉我这个钱包属于谁 —— VC、巨鲸，还是做市商？",
   caseMusic: "给我这段短视频配一首 3 分钟原创配乐。",
+  caseProductPhotos: "为我的咖啡品牌生成高端产品图。",
+  caseScreenshotDemo: "把这张截图做成精修的产品演示图。",
+  caseFranklinSpeaker: "生成一张富兰克林在加密大会上演讲的照片。",
+  caseStartupVisuals: "为 AI 创业公司的落地页设计营销视觉图。",
+  caseCatHedgeFund: "生成一张写实风格的「我家猫在管对冲基金」。",
+  caseHeadshots: "把我的自拍变成 5 张 LinkedIn 职业头像。",
   emptyChat: "让 Franklin 做点什么？",
   emptyImage: "让 Franklin 画点什么？",
   emptyVideo: "让 Franklin 拍点什么？",
+  emptyMusic: "让 Franklin 作点什么音乐？",
   phMessage: "给 Franklin 发消息…",
   phImage: "描述一张图片…",
   phVideo: "描述一段视频…",
+  phMusic: "描述你想要的音乐…",
   phConnect: "连接钱包后开始…",
   focusPrediction: "预测市场",
   focusSearch: "联网搜索",
@@ -350,6 +393,7 @@ const zh: TryDict = {
   phPrice: "查询实时价格…",
   hintImage: "连接钱包以生成图片。",
   hintVideo: "连接钱包以生成视频。",
+  hintMusic: "连接钱包以生成音乐。",
   hintChat: (m) => `连接钱包以使用 ${m}，或切换到免费模型。`,
   hintToolWallet: "Franklin 需要调用付费工具（联网搜索、预测市场等）。请连接钱包以继续。",
   statusSigning: "请在钱包中签名付款…",
@@ -358,6 +402,7 @@ const zh: TryDict = {
   statusVideo: "正在渲染视频（可能需要一会儿）…",
   openFull: "查看原图",
   downloadMp4: "下载 MP4",
+  downloadAudio: "下载音频",
   reasoning: "推理过程",
   spent: "已花费",
   requests: (n) => `${n} 次请求`,
@@ -374,6 +419,11 @@ const zh: TryDict = {
     "拍一支 8 秒的产品广告，带同步音效。",
     "在 5 段宣传短片里保持同一个 AI 角色。",
   ],
+  sugMusic: [
+    "低保真 Hip-Hop，柔和的钢琴，雨天午后氛围，60 秒。",
+    "电影感管弦乐渐进——弦乐和铜管，史诗且充满希望。",
+    "Synthwave 纯音乐，80 年代鼓点驱动，霓虹夜晚的氛围。",
+  ],
 };
 
 const es: TryDict = {
@@ -389,6 +439,9 @@ const es: TryDict = {
   openInWalletApp: "Ábrelo en el navegador de la app MetaMask o Coinbase Wallet.",
   image: "Imagen",
   video: "Video",
+  music: "Música",
+  ratio: "Proporción",
+  resolution: "Resolución",
   attachImage: "Adjuntar una imagen",
   attachChatOnly: "Los adjuntos funcionan en modo Chat",
   attachRef: "Adjunta una imagen de referencia (imagen a imagen)",
@@ -456,12 +509,20 @@ const es: TryDict = {
   casePrice: "Tráeme un brief de investigación en vivo sobre BTC con fuentes on-chain citadas.",
   caseSearch: "Dime quién es el dueño de esta wallet — VC, whale o market maker.",
   caseMusic: "Pónle a mi video corto una pista original de 3 minutos.",
+  caseProductPhotos: "Genera fotos premium de producto para mi marca de café.",
+  caseScreenshotDemo: "Convierte esta captura en una imagen de demo de producto pulida.",
+  caseFranklinSpeaker: "Genera una foto de Benjamin Franklin dando un discurso en una conferencia cripto.",
+  caseStartupVisuals: "Crea visuales de marketing para la landing de una startup de IA.",
+  caseCatHedgeFund: "Crea una imagen hiperrealista de mi gato dirigiendo un hedge fund.",
+  caseHeadshots: "Convierte mi selfie en 5 fotos de perfil para LinkedIn.",
   emptyChat: "¿Qué debería hacer Franklin?",
   emptyImage: "¿Qué debería dibujar Franklin?",
   emptyVideo: "¿Qué debería filmar Franklin?",
+  emptyMusic: "¿Qué debería componer Franklin?",
   phMessage: "Escribe a Franklin…",
   phImage: "Describe una imagen…",
   phVideo: "Describe un video…",
+  phMusic: "Describe la música a componer…",
   phConnect: "Conecta una billetera para empezar…",
   focusPrediction: "Predicción",
   focusSearch: "Búsqueda web",
@@ -471,6 +532,7 @@ const es: TryDict = {
   phPrice: "Pide un precio en vivo…",
   hintImage: "Conecta una billetera para generar imágenes.",
   hintVideo: "Conecta una billetera para generar videos.",
+  hintMusic: "Conecta una billetera para generar música.",
   hintChat: (m) => `Conecta una billetera para usar ${m}, o cambia a un modelo gratuito.`,
   hintToolWallet: "Franklin necesita una herramienta de pago (búsqueda web, mercados de predicción…). Conecta tu billetera para continuar.",
   statusSigning: "Firma el pago en tu billetera…",
@@ -479,6 +541,7 @@ const es: TryDict = {
   statusVideo: "Renderizando tu video (puede tardar un minuto)…",
   openFull: "Ver tamaño completo",
   downloadMp4: "Descargar MP4",
+  downloadAudio: "Descargar audio",
   reasoning: "Razonamiento",
   spent: "Gastado",
   requests: (n) => `${n} solicitud${n===1?"":"es"}`,
@@ -494,6 +557,11 @@ const es: TryDict = {
   sugVideo: [
     "Filma un anuncio de producto de 8 segundos con sonido sincronizado.",
     "Mantén el mismo personaje IA en 5 clips promocionales.",
+  ],
+  sugMusic: [
+    "Lo-fi hip hop, piano suave, vibras de tarde lluviosa, 60 segundos.",
+    "Crescendo orquestal cinematográfico — cuerdas y metales, épico y esperanzador.",
+    "Synthwave instrumental con batería ochentera, ambiente de noche neón.",
   ],
 };
 

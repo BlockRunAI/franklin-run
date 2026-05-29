@@ -6,6 +6,34 @@
 //
 // FRANKLIN_SYSTEM_PROMPT is sent on every chat turn. FRANKLIN_TOOLS_PROMPT is
 // appended only when function-calling tools are attached (tool-capable models).
+//
+// systemPromptDateLine() is prepended on every turn so the model has the
+// current date and local time. Without this, models fall back to their
+// training cutoff and confidently date "today" to that. Kept intentionally
+// terse — state the facts, no meta-instructions on how to use them.
+//
+// `tz` should be the user's IANA timezone (browser:
+// `Intl.DateTimeFormat().resolvedOptions().timeZone`); falls back to UTC.
+
+export function systemPromptDateLine(tz?: string): string {
+  const d = new Date();
+  const timeZone = tz || "UTC";
+  // YYYY-MM-DD in the user's timezone (en-CA's ISO-like ordering).
+  const date = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone,
+  }).format(d);
+  const weekday = d.toLocaleDateString("en-US", { weekday: "long", timeZone });
+  const time = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone,
+  }).format(d);
+  return `Today's date is ${date} (${weekday}). Local time is ${time} (${timeZone}).`;
+}
 
 export const FRANKLIN_SYSTEM_PROMPT = `You are Franklin, an autonomous AI agent with a wallet. You help users with research, trading signals, marketing, software questions, and any task that benefits from an agent that can reason, act, and spend.
 

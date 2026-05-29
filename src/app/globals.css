@@ -3927,6 +3927,9 @@ h2.dark-h,
   justify-content: center;
 }
 .try-gen-skeleton.is-video { width: 420px; aspect-ratio: 16 / 9; }
+/* Music renders into a ~54px audio pill, not a square — size the skeleton to
+ * match so the layout doesn't jump when the <audio> element replaces it. */
+.try-gen-skeleton.is-music { width: 460px; aspect-ratio: auto; height: 54px; border-radius: 999px; }
 .try-gen-skeleton-icon { width: 30px; height: 30px; color: var(--fg-subtle); opacity: 0.6; }
 .try-gen-skeleton-shimmer {
   position: absolute;
@@ -4194,6 +4197,57 @@ h2.dark-h,
 }
 .try-mode-pill-x:hover:not(:disabled) { background: rgba(201, 162, 39, 0.18); }
 .try-mode-pill-x:disabled { opacity: 0.5; cursor: not-allowed; }
+/* Aspect-ratio picker (image mode). Mirrors the sidebar More-menu flyout so
+ * the chip-and-popup language stays consistent across the app. */
+.try-ratio { position: relative; display: inline-flex; }
+.try-ratio-btn { gap: 4px; padding: 6px 9px; }
+.try-ratio-btn .try-ratio-chev { color: var(--fg-subtle); transition: transform 0.15s; }
+.try-ratio-btn.is-active .try-ratio-chev { transform: rotate(180deg); }
+.try-ratio-scrim { position: fixed; inset: 0; z-index: 55; background: transparent; }
+.try-ratio-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 56;
+  min-width: 160px;
+  padding: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(20, 16, 10, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.try-ratio-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  background: none;
+  border-radius: 9px;
+  cursor: pointer;
+  color: var(--fg-muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s;
+  font-variant-numeric: tabular-nums;
+}
+.try-ratio-item:hover { background: var(--bg-alt); color: var(--fg); }
+.try-ratio-item.is-active { background: var(--gold-soft); color: var(--gold-dim); }
+.try-ratio-glyph { color: var(--fg-subtle); flex: 0 0 auto; }
+.try-ratio-btn .try-ratio-glyph { color: currentColor; }
+.try-ratio-item .try-ratio-item-glyph { color: var(--fg-subtle); flex: 0 0 auto; }
+.try-ratio-item:hover .try-ratio-item-glyph,
+.try-ratio-item.is-active .try-ratio-item-glyph { color: currentColor; }
+.try-ratio-item-check { margin-left: auto; opacity: 0; color: var(--gold-dim); }
+.try-ratio-item.is-active .try-ratio-item-check { opacity: 1; }
+:root[data-theme="light"] .try-ratio-item.is-active .try-ratio-item-check,
+:root[data-theme="dark"] .try-ratio-item.is-active .try-ratio-item-check { color: var(--gold-dim); }
 .try-input::placeholder { color: var(--fg-subtle); }
 .try-send {
   display: inline-flex;
@@ -5434,6 +5488,13 @@ h2.dark-h,
   border-radius: 14px;
   border: 1px solid var(--border);
   background: #000;
+}
+.try-msg-media.try-msg-audio { width: 460px; max-width: 100%; }
+.try-msg-audio audio {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
 }
 /* Attached input image (reference / seed) — small thumbnail, Gemini-style */
 .try-msg-attach {
