@@ -104,14 +104,20 @@ export function FranklinChat() {
   // and video mode (Seedance-only `aspect_ratio` list). Other modes / models
   // with a single ratio hide the button entirely.
   const [ratioOpen, setRatioOpen] = useState(false);
-  // Close the ratio flyout on any mode change — otherwise an open menu in image
-  // mode survives a return to chat and re-opens unbidden on the next image/video
-  // entry (the picker is merely hidden in chat, not unmounted-with-reset). Done
-  // via the "adjust state during render" pattern rather than an effect.
-  const [ratioMode, setRatioMode] = useState(mode);
-  if (ratioMode !== mode) {
-    setRatioMode(mode);
+  // Resolution flyout — Seedance-only. Sits next to the ratio picker. The
+  // gateway accepts 360p/480p/540p/720p/1080p/1K/2K/4K but we expose three
+  // common steps to keep the menu tight.
+  const [resOpen, setResOpen] = useState(false);
+  // Close both composer flyouts on any mode change — otherwise an open menu in
+  // image/video mode survives a return to chat and re-opens unbidden on the next
+  // image/video entry (the pickers are merely hidden in chat, not
+  // unmounted-with-reset). Done via the "adjust state during render" pattern
+  // rather than an effect.
+  const [flyoutMode, setFlyoutMode] = useState(mode);
+  if (flyoutMode !== mode) {
+    setFlyoutMode(mode);
     setRatioOpen(false);
+    setResOpen(false);
   }
   const ratioOptions: { ratio: string; value: string }[] =
     mode === "image"
@@ -122,10 +128,6 @@ export function FranklinChat() {
   const ratioValue = mode === "image" ? imageSize : mode === "video" ? videoRatio : "";
   const setRatioValue = mode === "image" ? setImageSize : mode === "video" ? setVideoRatio : () => {};
   const currentRatio = ratioOptions.find((o) => o.value === ratioValue)?.ratio ?? ratioOptions[0]?.ratio ?? "";
-  // Resolution flyout — Seedance-only. Sits next to the ratio picker. The
-  // gateway accepts 360p/480p/540p/720p/1080p/1K/2K/4K but we expose three
-  // common steps to keep the menu tight.
-  const [resOpen, setResOpen] = useState(false);
 
   // Skill cards prefill the composer (and optionally pick a tool-capable model).
   const pickSkill = (template: string, model?: string) => {
