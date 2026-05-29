@@ -145,6 +145,21 @@ function defaultVideoRatioFor(modelId: string): string {
   return VIDEO_MODEL_RATIOS[modelId]?.[0] ?? "16:9";
 }
 
+// Video-model resolution whitelist — same token360-only constraint as
+// aspect_ratio (xAI / Sora ignore the param). Gateway accepts 360p / 480p
+// / 540p / 720p / 1080p / 1K / 2K / 4K, but pricing scales with tokens
+// (1080p ≈ 2.25x 720p), so we expose the three common steps and default
+// to 720p — matches gateway default for Seedance and what users see from
+// BytePlus/JiMeng directly.
+export const VIDEO_MODEL_RESOLUTIONS: Record<string, string[]> = {
+  "bytedance/seedance-2.0-fast": ["480p", "720p", "1080p"],
+  "bytedance/seedance-2.0": ["480p", "720p", "1080p"],
+  "bytedance/seedance-1.5-pro": ["480p", "720p", "1080p"],
+};
+function defaultVideoResolutionFor(modelId: string): string {
+  return VIDEO_MODEL_RESOLUTIONS[modelId]?.includes("720p") ? "720p" : VIDEO_MODEL_RESOLUTIONS[modelId]?.[0] ?? "720p";
+}
+
 // Music models — only MiniMax Music 2.5+ is wired up at the gateway today.
 // /v1/audio/generations may return 202 (poll) for long renders; the music
 // branch in runMedia handles both 200 and 202 the same way as image/video.
@@ -399,11 +414,14 @@ export function useFranklinChat(
   }, []);
   const [videoModel, setVideoModelState] = useState(VIDEO_MODELS[0].id);
   const [videoRatio, setVideoRatio] = useState<string>(defaultVideoRatioFor(VIDEO_MODELS[0].id));
-  // Reset video ratio whenever the model changes — Seedance models accept
-  // `aspect_ratio`, others don't have a list, so the picker hides.
+  const [videoResolution, setVideoResolution] = useState<string>(defaultVideoResolutionFor(VIDEO_MODELS[0].id));
+  // Reset video ratio + resolution whenever the model changes — Seedance
+  // models accept `aspect_ratio` and `resolution`; others don't have a list,
+  // so both pickers hide.
   const setVideoModel = useCallback((id: string) => {
     setVideoModelState(id);
     setVideoRatio(defaultVideoRatioFor(id));
+    setVideoResolution(defaultVideoResolutionFor(id));
   }, []);
   const [musicModel, setMusicModel] = useState(MUSIC_MODELS[0].id);
   const [status, setStatus] = useState<ChatStatus>("idle");
@@ -593,11 +611,11 @@ export function useFranklinChat(
         setGenConvId(null);
       }
     },
-    // imageSize / videoRatio MUST be in deps — runMedia closes over them, so
-    // a stale send() would always send the initial size/ratio regardless of
-    // what the user picked.
+    // imageSize / videoRatio / videoResolution MUST be in deps — runMedia
+    // closes over them, so a stale send() would always send the initial
+    // values regardless of what the user picked.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [mode, chatModel, imageModel, videoModel, musicModel, imageSize, videoRatio, paidFetch, setMessages, setChatModel, ensureConvId],
+    [mode, chatModel, imageModel, videoModel, musicModel, imageSize, videoRatio, videoResolution, paidFetch, setMessages, setChatModel, ensureConvId],
   );
 
   // Regenerate the last answer: drop trailing assistant message(s), then resend
@@ -940,11 +958,14 @@ export function useFranklinChat(
       // omit it entirely so the upstream picks its own default.
       const ratios = VIDEO_MODEL_RATIOS[model];
       const aspectRatio = ratios && ratios.includes(videoRatio) ? videoRatio : undefined;
+      const resolutions = VIDEO_MODEL_RESOLUTIONS[model];
+      const resolution = resolutions && resolutions.includes(videoResolution) ? videoResolution : undefined;
       body = JSON.stringify({
         model,
         prompt,
         ...(useSeed ? { image_url: reference } : {}),
         ...(aspectRatio ? { aspect_ratio: aspectRatio } : {}),
+        ...(resolution ? { resolution } : {}),
       });
     } else {
       // music — gateway picks the model via `model`; the rest of the params are
@@ -1105,8 +1126,10 @@ export function useFranklinChat(
   // flyout. Empty / single-entry → UI hides the button.
   const imageSizes = IMAGE_MODEL_SIZES[imageModel] ?? [];
   // Same for video — only Seedance has an aspect-ratio list (xAI / Sora
-  // ignore the param). Empty → UI hides the button.
+  // ignore the param). Empty → UI hides the button. Same story for the
+  // resolution picker.
   const videoRatios = VIDEO_MODEL_RATIOS[videoModel] ?? [];
+  const videoResolutions = VIDEO_MODEL_RESOLUTIONS[videoModel] ?? [];
 
   return {
     isConnected,
@@ -1134,6 +1157,9 @@ export function useFranklinChat(
     videoRatio,
     setVideoRatio,
     videoRatios,
+    videoResolution,
+    setVideoResolution,
+    videoResolutions,
   };
 }
 

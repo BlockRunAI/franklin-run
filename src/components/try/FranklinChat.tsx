@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, PanelLeft, ImageIcon, Clapperboard, X, Plus, Check, BarChart3, TrendingUp, Music, ChevronDown } from "lucide-react";
+import { ArrowUp, PanelLeft, ImageIcon, Clapperboard, X, Plus, Check, BarChart3, TrendingUp, Music, ChevronDown, Gauge } from "lucide-react";
 import { ModelSelect } from "./ModelSelect";
 import { HistorySidebar, type TryView } from "./HistorySidebar";
 import { MessageContent } from "./MessageContent";
@@ -69,7 +69,7 @@ export function FranklinChat() {
   const history = useChatHistory(auth.address);
   const { usage, recordSpend } = useUsageStats();
   const chat = useFranklinChat(history.messages, history.setMessages, history.ensureConvId, recordSpend);
-  const { mode, setMode, model, setModel, models, selectedModel, status, activeTool, steps, needsToolWallet, genConvId, mediaJobs, error, isBusy, isConnected, send, stop, stopMedia, regenerate, imageSize, setImageSize, imageSizes, videoRatio, setVideoRatio, videoRatios } = chat;
+  const { mode, setMode, model, setModel, models, selectedModel, status, activeTool, steps, needsToolWallet, genConvId, mediaJobs, error, isBusy, isConnected, send, stop, stopMedia, regenerate, imageSize, setImageSize, imageSizes, videoRatio, setVideoRatio, videoRatios, videoResolution, setVideoResolution, videoResolutions } = chat;
   // Only show the live (chat) generation UI in the conversation that started it.
   const genHere = genConvId === null || genConvId === history.activeId;
   // Heavy media (image/video) runs as a per-conversation background job — show
@@ -113,6 +113,10 @@ export function FranklinChat() {
   const ratioValue = mode === "image" ? imageSize : mode === "video" ? videoRatio : "";
   const setRatioValue = mode === "image" ? setImageSize : mode === "video" ? setVideoRatio : () => {};
   const currentRatio = ratioOptions.find((o) => o.value === ratioValue)?.ratio ?? ratioOptions[0]?.ratio ?? "";
+  // Resolution flyout — Seedance-only. Sits next to the ratio picker. The
+  // gateway accepts 360p/480p/540p/720p/1080p/1K/2K/4K but we expose three
+  // common steps to keep the menu tight.
+  const [resOpen, setResOpen] = useState(false);
 
   // Skill cards prefill the composer (and optionally pick a tool-capable model).
   const pickSkill = (template: string, model?: string) => {
@@ -627,6 +631,44 @@ export function FranklinChat() {
                                 >
                                   <RatioGlyph ratio={o.ratio} className="try-ratio-item-glyph" />
                                   {o.ratio}
+                                  <Check className="try-ratio-item-check h-3.5 w-3.5" />
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+                    {mode === "video" && videoResolutions.length > 1 && (
+                      <div className="try-ratio">
+                        <button
+                          className={`try-tool try-ratio-btn${resOpen ? " is-active" : ""}`}
+                          onClick={() => setResOpen((o) => !o)}
+                          disabled={busy}
+                          title={t.resolution}
+                          aria-haspopup="listbox"
+                          aria-expanded={resOpen}
+                        >
+                          <Gauge className="h-4 w-4" />
+                          {videoResolution}
+                          <ChevronDown className="try-ratio-chev h-3.5 w-3.5" />
+                        </button>
+                        {resOpen && (
+                          <>
+                            <div className="try-ratio-scrim" onClick={() => setResOpen(false)} />
+                            <div className="try-ratio-menu" role="listbox" aria-label={t.resolution}>
+                              {videoResolutions.map((r) => (
+                                <button
+                                  key={r}
+                                  role="option"
+                                  aria-selected={r === videoResolution}
+                                  className={`try-ratio-item${r === videoResolution ? " is-active" : ""}`}
+                                  onClick={() => {
+                                    setVideoResolution(r);
+                                    setResOpen(false);
+                                  }}
+                                >
+                                  {r}
                                   <Check className="try-ratio-item-check h-3.5 w-3.5" />
                                 </button>
                               ))}

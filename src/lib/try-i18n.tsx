@@ -25,6 +25,7 @@ export interface TryDict {
   video: string;
   music: string;
   ratio: string;
+  resolution: string;
   attachImage: string;
   attachChatOnly: string;
   attachRef: string;
@@ -162,6 +163,7 @@ const en: TryDict = {
   video: "Video",
   music: "Music",
   ratio: "Ratio",
+  resolution: "Resolution",
   attachImage: "Attach an image",
   attachChatOnly: "Attachments work in Chat mode",
   attachRef: "Attach a reference image (image-to-image)",
@@ -300,6 +302,7 @@ const zh: TryDict = {
   video: "视频",
   music: "音乐",
   ratio: "比例",
+  resolution: "清晰度",
   attachImage: "添加图片",
   attachChatOnly: "附件仅在对话模式可用",
   attachRef: "添加参考图（图生图）",
@@ -438,6 +441,7 @@ const es: TryDict = {
   video: "Video",
   music: "Música",
   ratio: "Proporción",
+  resolution: "Resolución",
   attachImage: "Adjuntar una imagen",
   attachChatOnly: "Los adjuntos funcionan en modo Chat",
   attachRef: "Adjunta una imagen de referencia (imagen a imagen)",
