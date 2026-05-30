@@ -78,6 +78,7 @@ export const CHAT_MODELS: ChatModel[] = [
   { id: "openai/gpt-5.3-codex", label: "GPT-5.3 Codex", group: "Reasoning" },
   { id: "deepseek/deepseek-v4-pro", label: "DeepSeek V4 Pro", group: "Reasoning" },
   { id: "xai/grok-4-1-fast-reasoning", label: "Grok 4.1 Fast", group: "Reasoning" },
+  { id: "google/gemini-3.5-flash", label: "Gemini 3.5 Flash", group: "Reasoning" },
   // Budget
   { id: "anthropic/claude-haiku-4.5-20251001", label: "Claude Haiku 4.5", group: "Budget" },
   { id: "openai/gpt-5-mini", label: "GPT-5 Mini", group: "Budget" },
@@ -197,6 +198,7 @@ const VISION_MODELS = new Set<string>([
   "openai/gpt-5-mini",
   "openai/o3",
   "google/gemini-3.1-pro",
+  "google/gemini-3.5-flash",
   "google/gemini-2.5-flash",
   "xai/grok-4-0709",
   "moonshot/kimi-k2.6",
