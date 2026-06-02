@@ -85,7 +85,6 @@ export interface TryDict {
   about: string;
   docs: string;
   blog: string;
-  casePrediction: string;
   casePrediction2: string;
   // Additional prediction-market starter prompts — broad, evergreen,
   // live-data queries that always return something regardless of the calendar
@@ -223,7 +222,6 @@ const en: TryDict = {
   about: "About",
   docs: "Docs",
   blog: "Blog",
-  casePrediction: "Show me Fed rate-cut odds on Polymarket vs Kalshi.",
   casePrediction2: "Show me where smart money is positioning on Polymarket.",
   caseMovers: "Show me Polymarket's biggest 24-hour odds movers right now.",
   caseSports: "What are Polymarket's hottest sports markets right now?",
@@ -362,7 +360,6 @@ const zh: TryDict = {
   about: "关于",
   docs: "文档",
   blog: "博客",
-  casePrediction: "Polymarket 和 Kalshi 上美联储降息的赔率分别是多少？",
   casePrediction2: "Polymarket 上聪明钱正在往哪儿押注？",
   caseMovers: "看看 Polymarket 上 24 小时内赔率变动最大的市场。",
   caseSports: "Polymarket 上当下最火的体育市场有哪些？",
@@ -501,7 +498,6 @@ const es: TryDict = {
   about: "Acerca de",
   docs: "Docs",
   blog: "Blog",
-  casePrediction: "Muéstrame las probabilidades de recorte de tipos de la Fed en Polymarket vs Kalshi.",
   casePrediction2: "Muéstrame dónde se está posicionando el smart money en Polymarket.",
   caseMovers: "Muéstrame los mayores movers de Polymarket de las últimas 24 horas.",
   caseSports: "¿Cuáles son los mercados deportivos más calientes ahora mismo en Polymarket?",

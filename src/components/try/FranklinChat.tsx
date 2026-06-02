@@ -203,7 +203,6 @@ export function FranklinChat() {
   // can attach their file and send, rather than firing with no input.
   type Case = { mode: "chat" | "image" | "video"; prompt: string; model?: string; prefillOnly?: boolean };
   const CHAT_CASES: Case[] = [
-    { mode: "chat", prompt: t.casePrediction, model: TOOL_MODEL },
     { mode: "chat", prompt: t.casePrice, model: TOOL_MODEL },
     { mode: "chat", prompt: t.caseSearch, model: TOOL_MODEL },
     { mode: "chat", prompt: t.casePrediction2, model: TOOL_MODEL },
