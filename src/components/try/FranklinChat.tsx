@@ -13,7 +13,7 @@ import { GalleryPanel } from "./GalleryPanel";
 import { WalletPanel } from "./WalletPanel";
 import { SkillsPanel } from "./SkillsPanel";
 import { CLIPanel } from "./CLIPanel";
-import { useFranklinChat } from "@/hooks/use-franklin-chat";
+import { useFranklinChat, maxAttachmentsFor } from "@/hooks/use-franklin-chat";
 import { useChatHistory } from "@/hooks/use-chat-history";
 import { useUsageStats } from "@/hooks/use-usage-stats";
 import { useAuth } from "@/hooks/use-auth";
@@ -78,7 +78,10 @@ export function FranklinChat() {
   const busy = isBusy || !!activeMediaJob;
 
   const [input, setInput] = useState("");
-  const [attachment, setAttachment] = useState<string | null>(null);
+  // Multi-attachment: gateway image2image accepts up to 4 (OpenAI) / 3 (Google);
+  // chat-vision matches the same cap for UX symmetry. maxAttachmentsFor() returns
+  // the per-mode/per-model ceiling; the "+" button hides when reached.
+  const [attachments, setAttachments] = useState<string[]>([]);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [view, setView] = useState<TryView>("chat");
@@ -167,17 +170,30 @@ export function FranklinChat() {
   const messages = history.messages;
 
   const [attachError, setAttachError] = useState<string | null>(null);
+  // Per-mode/per-model attachment ceiling — used for both the file input's
+  // accept gate and to hide the "+" button once the user has hit the limit.
+  // Falls back to chat-mode when no model is picked (no model = no upload).
+  const attachCap = maxAttachmentsFor(mode, model);
   const onPickFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const files = Array.from(e.target.files ?? []);
     e.target.value = "";
-    if (!file) return;
+    if (files.length === 0) return;
     setAttachError(null);
+    // Respect the per-model cap on every pick — if the user already attached
+    // 3 of 4 then drops 3 more in one go, append only the first 1 that fits.
+    const room = Math.max(0, attachCap - attachments.length);
+    const accepted = files.slice(0, room);
+    if (accepted.length === 0) return;
     try {
       // Downscale/re-encode large images before upload (see image-compress.ts).
-      setAttachment(await prepareImageForUpload(file));
+      const prepared = await Promise.all(accepted.map((f) => prepareImageForUpload(f)));
+      setAttachments((cur) => [...cur, ...prepared].slice(0, attachCap));
     } catch (err) {
       setAttachError(err instanceof Error ? err.message : "Could not load that image.");
     }
+  };
+  const removeAttachment = (idx: number) => {
+    setAttachments((cur) => cur.filter((_, i) => i !== idx));
   };
 
   useEffect(() => {
@@ -187,8 +203,8 @@ export function FranklinChat() {
   // Image/video always need a wallet; paid chat models too.
   // Image/video need a wallet; paid chat models too; and an attachment forces a
   // (paid) vision model, so it needs one as well.
-  const needsWallet = (mode !== "chat" || !selectedModel?.free || !!attachment) && !isConnected;
-  const canSend = (!!input.trim() || !!attachment) && !busy && !needsWallet;
+  const needsWallet = (mode !== "chat" || !selectedModel?.free || attachments.length > 0) && !isConnected;
+  const canSend = (!!input.trim() || attachments.length > 0) && !busy && !needsWallet;
   const suggestions =
     mode === "image" ? t.sugImage : mode === "video" ? t.sugVideo : mode === "music" ? t.sugMusic : t.sugChat;
 
@@ -236,15 +252,18 @@ export function FranklinChat() {
 
   const submit = () => {
     if (!canSend) return;
+    // send() normalizes single → array internally; pass undefined when empty
+    // so it can short-circuit the empty-attachment branch cleanly.
+    const atts = attachments.length > 0 ? attachments : undefined;
     if (focus) {
       // Force the focused tool; bump unreliable free models to a tool-capable one.
       const m = model.startsWith("nvidia/") ? TOOL_FOCUS_MODEL : model;
-      send(input, attachment ?? undefined, "chat", m, focus);
+      send(input, atts, "chat", m, focus);
     } else {
-      send(input, attachment ?? undefined);
+      send(input, atts);
     }
     setInput("");
-    setAttachment(null);
+    setAttachments([]);
   };
 
   const placeholder = needsWallet
@@ -405,12 +424,29 @@ export function FranklinChat() {
                   </div>
                 ) : (
                   <>
-                    {m.image && (
-                      <div className="try-msg-attach">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={m.image} alt="attachment" loading="lazy" className="try-zoomable" onClick={() => setLightbox(m.image!)} />
-                      </div>
-                    )}
+                    {/* Render every attached input image. Legacy single-image
+                        messages set `image`; multi-attachment turns use
+                        `images`. Both flatten through this same row so a
+                        single attachment doesn't get the multi-row styling. */}
+                    {(() => {
+                      const imgs = m.images && m.images.length > 0 ? m.images : m.image ? [m.image] : [];
+                      if (imgs.length === 0) return null;
+                      return (
+                        <div className={imgs.length > 1 ? "try-msg-attach-row" : "try-msg-attach"}>
+                          {imgs.map((src, idx) => (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              key={idx}
+                              src={src}
+                              alt={`attachment ${idx + 1}`}
+                              loading="lazy"
+                              className="try-zoomable"
+                              onClick={() => setLightbox(src)}
+                            />
+                          ))}
+                        </div>
+                      );
+                    })()}
                     {m.activity && <ActivitySummary activity={m.activity} />}
                     {m.reasoning && (
                       <details className="try-reasoning">
@@ -525,13 +561,21 @@ export function FranklinChat() {
 
           {/* Composer: textarea on top, tool row inside the same box */}
           <div className="try-composer">
-            {attachment && (
-              <div className="try-attach">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={attachment} alt="attachment" />
-                <button className="try-attach-x" onClick={() => setAttachment(null)} aria-label="Remove attachment">
-                  <X className="h-3.5 w-3.5" />
-                </button>
+            {attachments.length > 0 && (
+              <div className="try-attach-row">
+                {attachments.map((src, i) => (
+                  <div className="try-attach" key={`${i}-${src.slice(0, 24)}`}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt={`attachment ${i + 1}`} />
+                    <button
+                      className="try-attach-x"
+                      onClick={() => removeAttachment(i)}
+                      aria-label={`Remove attachment ${i + 1}`}
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
             {attachError && <div className="try-attach-error">{attachError}</div>}
@@ -556,18 +600,32 @@ export function FranklinChat() {
                   type="file"
                   accept="image/*"
                   className="try-file-input"
+                  // Allow multi-pick when the active model fuses multiple refs
+                  // (OpenAI gpt-image-* / Google Nano Banana). Single-anchor
+                  // modes get the simpler single-pick input behavior.
+                  multiple={attachCap > 1}
                   onChange={onPickFile}
                 />
                 {/* Music ignores reference images, so don't offer an attach
                     button there — it would accept an image, show a thumbnail,
-                    and silently drop it from the request. */}
-                {mode !== "music" && (
+                    and silently drop it from the request. The button also
+                    hides once the per-model cap is hit so users don't pick
+                    a file that would be rejected. */}
+                {mode !== "music" && attachments.length < attachCap && (
                   <button
                     className="try-tool-icon"
                     onClick={() => fileRef.current?.click()}
                     disabled={busy}
                     aria-label={t.attachImage}
-                    title={mode === "video" ? t.attachSeed : mode === "image" ? t.attachRef : t.attachImage}
+                    title={
+                      attachCap > 1
+                        ? `${t.attachImage} (${attachments.length}/${attachCap})`
+                        : mode === "video"
+                          ? t.attachSeed
+                          : mode === "image"
+                            ? t.attachRef
+                            : t.attachImage
+                    }
                   >
                     <Plus className="h-[18px] w-[18px]" />
                   </button>

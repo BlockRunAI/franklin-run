@@ -38,6 +38,38 @@ const MUSIC_ENDPOINT = "/api/blockrun/v1/audio/generations";
 // EDIT_SUPPORTED_MODELS). When a reference is attached we force gpt-image-2.
 const EDIT_SUPPORTED_IMAGE_MODELS = new Set(["openai/gpt-image-1", "openai/gpt-image-2"]);
 
+// Per-provider multi-image fusion cap for image2image. Mirrors the gateway's
+// MAX_IMAGES_BY_PREFIX in `blockrun/src/app/api/v1/images/image2image/route.ts`
+// — OpenAI gpt-image-* fuses up to 4 anchors, Google Nano Banana up to 3, and
+// every other model accepts a single reference. The composer hides the
+// "+" button past this cap and gateway hard-rejects any attempt to exceed it.
+const IMAGE_FUSION_MAX_BY_PREFIX: Record<string, number> = {
+  "openai/": 4,
+  "google/": 3,
+};
+function maxImageFusionFor(modelId: string): number {
+  const prefix = modelId.split("/")[0];
+  return IMAGE_FUSION_MAX_BY_PREFIX[`${prefix}/`] ?? 1;
+}
+
+// Vision-attachment cap for chat mode. Anthropic /v1/messages tolerates 20+
+// image blocks per turn and OpenAI vision similarly accepts many; the actual
+// constraint is token budget + UX. 4 is a clean upper bound that matches the
+// image2image canvas cap so the composer feels symmetric across modes.
+const CHAT_VISION_MAX = 4;
+
+/** Max attachments the composer should accept for the given mode + model.
+ *  Music mode is text-only; video uses a single seed frame; image and chat
+ *  scale by provider. */
+export function maxAttachmentsFor(mode: ChatMode, modelId: string): number {
+  if (mode === "music") return 0;
+  if (mode === "video") return 1;
+  if (mode === "image") return maxImageFusionFor(modelId);
+  // chat — only meaningful when the active model is vision-capable; the UI
+  // gates the file button on that elsewhere.
+  return CHAT_VISION_MAX;
+}
+
 // Video models that accept a seed image (image-to-video). Sora 2 does not, so a
 // reference attached to it falls back to the default img2video model.
 const VIDEO_IMAGE_INPUT_MODELS = new Set([
@@ -180,11 +212,26 @@ export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   kind?: "text" | "image" | "video" | "music";
+  /** Single image, kept for back-compat with legacy single-attachment
+   *  messages already persisted in GCS and for assistant-generated single
+   *  image outputs. New multi-attachment user turns use `images` instead. */
   image?: string;
+  /** Multi-image user attachments (canvas fusion / chat vision). When
+   *  present and non-empty, `image` is ignored on render. */
+  images?: string[];
   video?: string;
   music?: string;
   reasoning?: string;
   activity?: ChatActivity;
+}
+
+/** Read a user message's attached images, normalized to a flat array — covers
+ *  the legacy single-`image` shape and the new `images[]` shape so callers
+ *  don't have to branch. Returns [] when the message has no attachments. */
+function userImages(m: ChatMessage): string[] {
+  if (m.images && m.images.length > 0) return m.images;
+  if (m.image) return [m.image];
+  return [];
 }
 
 // Vision-capable chat models (mirrors Franklin's src/router/vision.ts). Used to
@@ -547,16 +594,30 @@ export function useFranklinChat(
   }, []);
 
   const send = useCallback(
-    async (text: string, attachment?: string, modeOverride?: ChatMode, modelOverride?: string, forceTool?: string) => {
+    async (
+      text: string,
+      attachments?: string | string[],
+      modeOverride?: ChatMode,
+      modelOverride?: string,
+      forceTool?: string,
+    ) => {
       const prompt = text.trim();
-      if (!prompt && !attachment) return;
+      // Normalize the single-string back-compat shape to an array — callers
+      // that were passing one image still work; the new multi-pick composer
+      // passes an array directly.
+      const atts: string[] = Array.isArray(attachments)
+        ? attachments
+        : attachments
+          ? [attachments]
+          : [];
+      if (!prompt && atts.length === 0) return;
       const activeMode0 = modeOverride ?? mode;
       // Heavy media → detached, per-conversation background job. It doesn't take
       // the global chat lock, so other conversations stay usable while it runs.
       if (activeMode0 === "image" || activeMode0 === "video" || activeMode0 === "music") {
         const mediaConvId = ensureConvId();
         if (mediaAbortRef.current[mediaConvId]) return; // already generating here
-        void runMedia(mediaConvId, activeMode0, prompt, attachment, modelOverride);
+        void runMedia(mediaConvId, activeMode0, prompt, atts, modelOverride);
         return;
       }
       if (inFlight.current) return;
@@ -577,7 +638,10 @@ export function useFranklinChat(
         role: "user",
         content: prompt,
         kind: "text",
-        ...(attachment ? { image: attachment } : {}),
+        // Persist using the multi-shape when >1, single-shape for 1, so
+        // legacy single-image renderers and persisted conversations keep
+        // working without a migration.
+        ...(atts.length > 1 ? { images: atts } : atts.length === 1 ? { image: atts[0] } : {}),
       };
       const history = [...msgRef.current, userMsg];
       setMessages(history);
@@ -639,7 +703,7 @@ export function useFranklinChat(
     setMessages(base);
     const m: ChatMode =
       lastKind === "image" ? "image" : lastKind === "video" ? "video" : lastKind === "music" ? "music" : "chat";
-    void send(userMsg.content, userMsg.image, m);
+    void send(userMsg.content, userImages(userMsg), m);
   }, [send, setMessages]);
 
   // Paid request → parsed JSON (handles 402→sign→retry). POST by default; GET
@@ -762,17 +826,22 @@ export function useFranklinChat(
     };
     const apiMessages: ApiMsg[] = history
       .filter((m) => m.kind !== "video" && m.kind !== "music" && !(m.kind === "image" && m.role === "assistant"))
-      .map((m) =>
-        m.role === "user" && m.image
-          ? {
-              role: "user",
-              content: [
-                ...(m.content ? [{ type: "text", text: m.content }] : []),
-                toImageBlock(m.image),
-              ],
-            }
-          : { role: m.role, content: m.content },
-      );
+      .map((m) => {
+        // User message with one or more attached images → Anthropic-shape
+        // content array. userImages() normalizes the legacy single-image
+        // and new multi-image shapes so we render either uniformly.
+        const imgs = m.role === "user" ? userImages(m) : [];
+        if (imgs.length > 0) {
+          return {
+            role: "user",
+            content: [
+              ...(m.content ? [{ type: "text", text: m.content }] : []),
+              ...imgs.map(toImageBlock),
+            ],
+          };
+        }
+        return { role: m.role, content: m.content };
+      });
 
     // Accumulate a compact record of the run so it can collapse into a summary
     // ("searched N keywords · M sources") attached to the final answer.
@@ -916,7 +985,7 @@ export function useFranklinChat(
     // Resolve "Auto" client-side, then vision-route: if the turn carries an
     // image and the chosen model can't see, swap to a vision-capable sibling.
     const base = modelOverride || chatModel;
-    const hasImage = history.some((m) => m.role === "user" && m.image);
+    const hasImage = history.some((m) => m.role === "user" && userImages(m).length > 0);
     const lastPrompt = [...history].reverse().find((m) => m.role === "user")?.content ?? "";
     let effectiveModel = base === "blockrun/auto" ? resolveAuto(lastPrompt) : base;
     if (hasImage && !isVisionModel(effectiveModel)) effectiveModel = pickVisionSibling(effectiveModel);
@@ -932,15 +1001,25 @@ export function useFranklinChat(
     convId: string,
     kind: "image" | "video" | "music",
     prompt: string,
-    reference?: string,
+    references?: string[],
     modelOverride?: string,
   ) {
+    const refs = references ?? [];
+    const firstRef = refs[0]; // video seed / single-ref fallback for legacy paths
     const abort = new AbortController();
     mediaAbortRef.current[convId] = abort;
     setMediaJobs((p) => ({ ...p, [convId]: { kind, phase: "generating" } }));
     const setPhase = (phase: MediaJob["phase"]) => setMediaJobs((p) => ({ ...p, [convId]: { kind, phase } }));
     setMessagesRaw(
-      (m) => [...m, { role: "user", content: prompt, kind: "text", ...(reference ? { image: reference } : {}) }],
+      (m) => [
+        ...m,
+        {
+          role: "user",
+          content: prompt,
+          kind: "text",
+          ...(refs.length > 1 ? { images: refs } : refs.length === 1 ? { image: refs[0] } : {}),
+        },
+      ],
       convId,
     );
 
@@ -949,26 +1028,43 @@ export function useFranklinChat(
     let endpoint: string;
     let body: string;
     if (kind === "image") {
-      const useEdit = !!reference;
+      const useEdit = refs.length > 0;
       const baseModel = modelOverride ?? imageModel;
       model = useEdit && !EDIT_SUPPORTED_IMAGE_MODELS.has(baseModel) ? "openai/gpt-image-2" : baseModel;
       endpoint = useEdit ? IMAGE_EDIT_ENDPOINT : IMAGE_ENDPOINT;
-      // Edit endpoint is locked to 1024² (the only size every edit-capable
-      // model accepts); text-to-image uses the user's selected aspect ratio,
-      // validated against the active model's whitelist.
-      const validSize = IMAGE_MODEL_SIZES[model]?.some((s) => s.size === imageSize)
-        ? imageSize
-        : defaultSizeFor(model);
-      body = useEdit
-        ? JSON.stringify({ model, prompt, image: reference, size: "1024x1024", n: 1 })
-        : JSON.stringify({ model, prompt, size: validSize, n: 1 });
+      if (useEdit) {
+        // Per-provider fusion cap — defensive trim. Gateway also caps but a
+        // 400 round trip is wasted wallet RTT, so the client mirrors the
+        // limit here too.
+        const cap = maxImageFusionFor(model);
+        const trimmed = refs.slice(0, Math.max(1, cap));
+        // The gateway accepts either a single string or a string[] under
+        // the `image` key; passing the multi shape only when we actually
+        // have multiple keeps single-image requests on the same wire format
+        // the route has always honored.
+        body = JSON.stringify({
+          model,
+          prompt,
+          image: trimmed.length === 1 ? trimmed[0] : trimmed,
+          size: "1024x1024",
+          n: 1,
+        });
+      } else {
+        // Text-to-image uses the user's selected aspect ratio, validated
+        // against the active model's whitelist.
+        const validSize = IMAGE_MODEL_SIZES[model]?.some((s) => s.size === imageSize)
+          ? imageSize
+          : defaultSizeFor(model);
+        body = JSON.stringify({ model, prompt, size: validSize, n: 1 });
+      }
     } else if (kind === "video") {
-      const useSeed = !!reference;
+      // Video models still take a single seed image — extra attachments are
+      // dropped here rather than at the composer so the user can pre-stage
+      // images and switch modes without losing them. First image wins.
+      const useSeed = !!firstRef;
       const baseModel = modelOverride ?? videoModel;
       model = useSeed && !VIDEO_IMAGE_INPUT_MODELS.has(baseModel) ? DEFAULT_I2V_MODEL : baseModel;
       endpoint = VIDEO_ENDPOINT;
-      // aspect_ratio is token360 (Seedance) only; for other providers we
-      // omit it entirely so the upstream picks its own default.
       const ratios = VIDEO_MODEL_RATIOS[model];
       const aspectRatio = ratios && ratios.includes(videoRatio) ? videoRatio : undefined;
       const resolutions = VIDEO_MODEL_RESOLUTIONS[model];
@@ -976,13 +1072,13 @@ export function useFranklinChat(
       body = JSON.stringify({
         model,
         prompt,
-        ...(useSeed ? { image_url: reference } : {}),
+        ...(useSeed ? { image_url: firstRef } : {}),
         ...(aspectRatio ? { aspect_ratio: aspectRatio } : {}),
         ...(resolution ? { resolution } : {}),
       });
     } else {
       // music — gateway picks the model via `model`; the rest of the params are
-      // optional (duration / lyrics / instrumental). Reference is ignored.
+      // optional (duration / lyrics / instrumental). References are ignored.
       model = modelOverride ?? musicModel;
       endpoint = MUSIC_ENDPOINT;
       body = JSON.stringify({ model, prompt });
