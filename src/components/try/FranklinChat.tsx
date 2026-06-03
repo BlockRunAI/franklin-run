@@ -565,7 +565,7 @@ export function FranklinChat() {
           {/* Composer: textarea on top, tool row inside the same box */}
           <div className="try-composer">
             {attachments.length > 0 && (
-              <div className="try-attach-row">
+              <div className={attachments.length > 1 ? "try-attach-row" : undefined}>
                 {attachments.map((src, i) => (
                   <div className="try-attach" key={`${i}-${src.slice(0, 24)}`}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
