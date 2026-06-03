@@ -4349,6 +4349,35 @@ h2.dark-h,
   margin: 0 0 8px 2px;
 }
 
+/* Horizontal row of attached input thumbnails — shown above the textarea
+ * when the user picks multiple reference images for image2image fusion or
+ * multi-image chat vision. Single-attachment turns reuse the .try-attach
+ * shape directly, so this row only kicks in at 2+ items. */
+.try-attach-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0 8px 2px;
+}
+.try-attach-row .try-attach { margin: 0; }
+
+/* Multi-image bubble inside the message stream — same row layout, no
+ * outer card chrome (each thumbnail keeps its own subtle border). */
+.try-msg-attach-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.try-msg-attach-row img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  cursor: zoom-in;
+}
+
 /* Nav highlight for Try Franklin */
 .nav-link-try { color: var(--gold-dim); }
 
