@@ -121,6 +121,9 @@ export function FranklinChat() {
     setFlyoutMode(mode);
     setRatioOpen(false);
     setResOpen(false);
+    // Staged attachments are mode-specific (image fusion refs / chat vision);
+    // clearing them here keeps them from leaking into a different mode's send.
+    setAttachments([]);
   }
   const ratioOptions: { ratio: string; value: string }[] =
     mode === "image"
