@@ -19,13 +19,21 @@ const LOCAL_DIR = path.join(process.cwd(), ".franklin-store", "_shares");
 const storage = USE_LOCAL ? null : new Storage();
 const bucket = storage?.bucket(BUCKET);
 
+export interface SharedToolStep {
+  label: string;
+  detail?: string;
+}
+
 export interface SharedMessage {
   role: "user" | "assistant";
   content: string;
-  kind?: "text" | "image" | "video" | "music";
+  kind?: "text" | "image" | "video" | "music" | "tools";
   // Only inline data: images survive a share (local 127.0.0.1 media is stripped
   // at upload — it would 404 for anyone but the original viewer).
   image?: string;
+  // Set when kind === "tools": the tool-call activity for that step, so a shared
+  // conversation reproduces tool usage too, not just the prose.
+  tools?: SharedToolStep[];
 }
 
 export interface SharedConversation {

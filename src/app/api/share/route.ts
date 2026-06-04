@@ -49,6 +49,13 @@ export async function POST(req: NextRequest) {
       if (m.kind) out.kind = m.kind;
       // Only inline data: images travel; local 127.0.0.1 media is dropped.
       if (m.image && m.image.startsWith("data:")) out.image = m.image;
+      // Tool-call activity travels (capped) so the share reproduces tool usage.
+      if (m.kind === "tools" && Array.isArray(m.tools)) {
+        out.tools = m.tools.slice(0, 50).map((s) => ({
+          label: String(s?.label ?? "").slice(0, 120),
+          ...(s?.detail ? { detail: String(s.detail).slice(0, 200) } : {}),
+        }));
+      }
       return out;
     });
 
