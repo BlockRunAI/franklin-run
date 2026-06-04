@@ -5666,3 +5666,30 @@ h2.dark-h,
   text-decoration: none;
 }
 .try-share-page-cta:hover { background: var(--accent-hover); }
+
+/* Tool-call block on the public shared-conversation page (/s/[id]) */
+.try-share-tools {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-alt);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.try-share-tools-head {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+}
+.try-share-tools-row { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.try-share-tools-label { font-size: 13px; color: var(--fg); flex-shrink: 0; }
+.try-share-tools-detail {
+  font-size: 12px;
+  color: var(--fg-subtle);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
