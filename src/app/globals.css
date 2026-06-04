@@ -5614,3 +5614,55 @@ h2.dark-h,
     animation: try-fade 0.15s ease;
   }
 }
+
+/* ── Public shared-conversation page (/s/[id]) ─────────────────────────── */
+.try-share-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+  min-height: 100vh;
+}
+.try-share-page-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.try-share-page-brand {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--fg);
+  text-decoration: none;
+}
+.try-share-page-tag {
+  font-size: 13px;
+  color: var(--fg-subtle);
+}
+.try-share-page-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.try-share-page-omitted {
+  color: var(--fg-subtle);
+  font-style: italic;
+}
+.try-share-page-foot {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.try-share-page-cta {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+}
+.try-share-page-cta:hover { background: var(--accent-hover); }
