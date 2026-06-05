@@ -96,6 +96,28 @@ export async function listConversations(wallet: string): Promise<StoredConversat
     .sort((a, b) => b.updatedAt - a.updatedAt);
 }
 
+/** Lightweight conversation metadata — no message bodies. Lets clients render
+ *  the list (and lazy-load a single conversation on open) without pulling every
+ *  message + inlined image on each load. */
+export interface ConversationMeta {
+  id: string;
+  title: string;
+  createdAt: number;
+  updatedAt: number;
+  messageCount: number;
+}
+
+export async function listConversationMeta(wallet: string): Promise<ConversationMeta[]> {
+  const convos = await listConversations(wallet);
+  return convos.map((c) => ({
+    id: c.id,
+    title: c.title,
+    createdAt: c.createdAt,
+    updatedAt: c.updatedAt,
+    messageCount: Array.isArray(c.messages) ? c.messages.length : 0,
+  }));
+}
+
 export async function getConversation(wallet: string, id: string): Promise<StoredConversation | null> {
   try {
     if (USE_LOCAL) {
