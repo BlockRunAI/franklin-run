@@ -23,9 +23,16 @@ function getSecret(): string {
 export const SESSION_COOKIE = "franklin_try_session";
 export const NONCE_COOKIE = "franklin_try_nonce";
 
+// Bind tokens to this app so an HMAC blob minted elsewhere with the same
+// SESSION_SECRET can't be replayed here. Legacy tokens (no `aud`) are still
+// accepted so existing sessions don't get logged out on deploy.
+const AUDIENCE = "franklin-try";
+const EVM_ADDRESS = /^0x[0-9a-f]{40}$/;
+
 interface Payload {
   address: string;
   exp: number;
+  aud?: string;
 }
 
 function b64url(buf: Buffer | string): string {
@@ -37,7 +44,12 @@ function sign(data: string): string {
 }
 
 export function createSessionToken(address: string): string {
-  const payload: Payload = { address: address.toLowerCase(), exp: Math.floor(Date.now() / 1000) + TTL_SECONDS };
+  const addr = address.toLowerCase();
+  // Only mint for a well-formed EVM address. safeWallet() in franklin-store
+  // assumes this shape (lowercase hex is collision-free under its char strip);
+  // a future multi-chain login must not silently share a storage namespace.
+  if (!EVM_ADDRESS.test(addr)) throw new Error("Invalid EVM address for session token");
+  const payload: Payload = { address: addr, exp: Math.floor(Date.now() / 1000) + TTL_SECONDS, aud: AUDIENCE };
   const body = b64url(JSON.stringify(payload));
   return `${body}.${sign(body)}`;
 }
@@ -53,7 +65,12 @@ export function verifySessionToken(token: string | undefined): string | null {
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
   try {
     const payload = JSON.parse(Buffer.from(body, "base64url").toString()) as Payload;
-    if (!payload.address || payload.exp < Math.floor(Date.now() / 1000)) return null;
+    // exp must be a real number — a missing/NaN exp must NOT read as
+    // never-expiring (NaN comparisons are always false).
+    if (typeof payload.exp !== "number" || !Number.isFinite(payload.exp)) return null;
+    if (payload.exp < Math.floor(Date.now() / 1000)) return null;
+    if (payload.aud !== undefined && payload.aud !== AUDIENCE) return null;
+    if (typeof payload.address !== "string" || !EVM_ADDRESS.test(payload.address)) return null;
     return payload.address;
   } catch {
     return null;
