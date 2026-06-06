@@ -11,9 +11,15 @@ import path from "node:path";
 
 const BUCKET = process.env.GCS_MEDIA_BUCKET || process.env.GCS_LOG_BUCKET || "blockrun-prod-2026-logs";
 const PREFIX = "franklin-share";
+// Use the local fs store ONLY when explicitly asked, or in a genuinely local
+// dev context. `K_SERVICE` is set on every Cloud Run revision, so even a deploy
+// whose NODE_ENV isn't exactly "production" never silently falls back to the
+// container's ephemeral disk (which would lose shares on restart).
 const USE_LOCAL =
   process.env.FRANKLIN_STORE_LOCAL === "1" ||
-  (process.env.NODE_ENV !== "production" && !process.env.GOOGLE_APPLICATION_CREDENTIALS);
+  (!process.env.K_SERVICE &&
+    process.env.NODE_ENV !== "production" &&
+    !process.env.GOOGLE_APPLICATION_CREDENTIALS);
 const LOCAL_DIR = path.join(process.cwd(), ".franklin-store", "_shares");
 
 const storage = USE_LOCAL ? null : new Storage();
@@ -78,16 +84,22 @@ export async function saveShare(input: { title: string; messages: SharedMessage[
 }
 
 export async function getShare(id: string): Promise<SharedConversation | null> {
-  try {
-    if (USE_LOCAL) {
+  if (USE_LOCAL) {
+    try {
       return JSON.parse(await fs.readFile(localPath(id), "utf8")) as SharedConversation;
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "ENOENT") return null;
+      throw e; // real read/parse error — surface as 500, not "share not found"
     }
-    const file = bucket!.file(gcsPath(id));
-    const [exists] = await file.exists();
-    if (!exists) return null;
-    const [buf] = await file.download();
+  }
+  // Single download (no exists() pre-check): a missing object throws a 404 we
+  // translate to null; any other error (outage, corrupt JSON) propagates so the
+  // caller can distinguish a store failure from a genuinely absent share.
+  try {
+    const [buf] = await bucket!.file(gcsPath(id)).download();
     return JSON.parse(buf.toString("utf8")) as SharedConversation;
-  } catch {
-    return null;
+  } catch (e) {
+    if ((e as { code?: number }).code === 404) return null;
+    throw e;
   }
 }
