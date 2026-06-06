@@ -1,25 +1,28 @@
 import type { Metadata } from "next";
-import { WalletProvider } from "@/components/try/WalletProvider";
-import { FranklinChat } from "@/components/try/FranklinChat";
-import { TryLangProvider } from "@/lib/try-i18n";
+import { HomePage } from "@/components/HomePage";
+import { getHomeDict } from "@/lib/home";
+import { LOCALES, LOCALE_META, homeUrl } from "@/lib/locales";
+
+const SITE_URL = "https://franklin.run";
+
+// English marketing homepage. The chat app lives at /chat ("Try Franklin").
+// Linked into the same hreflang cluster as the per-locale homepages.
+const languages: Record<string, string> = {};
+for (const l of LOCALES) {
+  languages[LOCALE_META[l].htmlLang] = `${SITE_URL}${homeUrl(l)}`;
+}
+languages["x-default"] = `${SITE_URL}${homeUrl("en")}`;
 
 export const metadata: Metadata = {
-  title: "Franklin — the AI agent with a wallet",
+  title: "Franklin Agent — the AI agent with a wallet",
   description:
-    "Chat with frontier AI models, generate images and video, and let Franklin use tools — paid per request in USDC via x402. No subscription. Your wallet is your account.",
-  alternates: { canonical: "https://franklin.run" },
+    "Franklin is an autonomous AI agent with a crypto wallet. It holds USDC and spends it on the AI and tools it needs — pay-per-call via x402, no subscription.",
+  alternates: {
+    canonical: `${SITE_URL}${homeUrl("en")}`,
+    languages,
+  },
 };
 
-// Root is the chat app (Gemini-style). Soft login — usable without signing in;
-// sign in (sidebar) to save history across devices. Marketing lives at /about.
 export default function Home() {
-  return (
-    <main className="try-main try-main-full">
-      <WalletProvider>
-        <TryLangProvider>
-          <FranklinChat />
-        </TryLangProvider>
-      </WalletProvider>
-    </main>
-  );
+  return <HomePage dict={getHomeDict("en")} locale="en" />;
 }

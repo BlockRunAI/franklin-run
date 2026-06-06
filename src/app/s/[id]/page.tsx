@@ -31,7 +31,7 @@ export default async function SharePage({ params }: { params: Promise<{ id: stri
   return (
     <div className="try-share-page">
       <header className="try-share-page-head">
-        <Link href="/try" className="try-share-page-brand">Franklin</Link>
+        <Link href="/chat" className="try-share-page-brand">Franklin</Link>
         <span className="try-share-page-tag">Shared conversation</span>
       </header>
 
@@ -70,7 +70,7 @@ export default async function SharePage({ params }: { params: Promise<{ id: stri
       </main>
 
       <footer className="try-share-page-foot">
-        <Link href="/try" className="try-share-page-cta">Try Franklin — the AI agent with a wallet →</Link>
+        <Link href="/chat" className="try-share-page-cta">Try Franklin — the AI agent with a wallet →</Link>
       </footer>
     </div>
   );

@@ -58,7 +58,7 @@ export function HistorySidebar({ conversations, activeId, onNew, onSelect, onDel
   return (
     <>
     <aside className={`try-sidebar${open ? " is-open" : ""}`}>
-      <Link href="/" className="try-brand">
+      <Link href="/chat" className="try-brand">
         <span className="try-brand-ring">
           <Image src={cdnUrl("/images/franklin-portrait.jpg")} alt="Franklin" width={30} height={30} unoptimized />
         </span>
