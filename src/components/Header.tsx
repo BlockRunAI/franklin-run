@@ -26,7 +26,8 @@ export function Header({
   const featuresHref = offHome ? `${home}#features` : "#features";
   const compareHref = offHome ? `${home}#compare` : "#compare";
   const blogHref = `/blog/${locale}`;
-  const getStartedHref = offHome ? `${home}#get-started` : "#get-started";
+  // "Get Started" is the primary CTA — it opens the chat app.
+  const getStartedHref = "/chat";
 
   return (
     <header className={`site-header${variant === "paper" ? " site-header-paper" : ""}`}>
@@ -70,9 +71,9 @@ export function Header({
             <GitHubIcon className="h-3.5 w-3.5" />
             {dict.nav.github}
           </a>
-          <a className="btn-primary" href={getStartedHref}>
+          <Link className="btn-primary" href={getStartedHref}>
             {dict.nav.getStarted}
-          </a>
+          </Link>
         </nav>
 
         <button
@@ -119,13 +120,13 @@ export function Header({
           >
             {dict.nav.github}
           </a>
-          <a
+          <Link
             href={getStartedHref}
             onClick={() => setMenuOpen(false)}
             className="mobile-menu-cta"
           >
             {dict.nav.getStarted}
-          </a>
+          </Link>
         </div>
       )}
     </header>
