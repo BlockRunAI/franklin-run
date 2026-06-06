@@ -64,9 +64,9 @@ export async function POST(req: NextRequest) {
     const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://franklin.run";
     return NextResponse.json({ id, url: `${origin}/s/${id}` }, { headers: CORS });
   } catch (e) {
-    return NextResponse.json(
-      { error: e instanceof Error ? e.message : "Store error" },
-      { status: 500, headers: CORS },
-    );
+    // Log the real error; return a generic message. This is a public endpoint —
+    // raw GCS errors carry bucket/project/object-path details we must not leak.
+    console.error("[api/share] store error:", e);
+    return NextResponse.json({ error: "Store error" }, { status: 500, headers: CORS });
   }
 }
