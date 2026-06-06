@@ -17,17 +17,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const entries: MetadataRoute.Sitemap = [];
 
-  // Chat app — the product front door at /, standalone (not part of the
+  // Chat app — lives at /chat, standalone (not part of the
   // marketing-homepage hreflang cluster).
   entries.push({
-    url: `${SITE_URL}/`,
+    url: `${SITE_URL}/chat`,
     lastModified: now,
     changeFrequency: "weekly",
-    priority: 1,
+    priority: 0.9,
   });
 
   // Marketing home — emit one entry per locale with hreflang to all sibling
-  // translations. English lives at /about (see homeUrl).
+  // translations. English lives at / (see homeUrl).
   const homeLanguages: Record<string, string> = {};
   for (const l of LOCALES) {
     homeLanguages[LOCALE_META[l].htmlLang] = `${SITE_URL}${homeUrl(l)}`;

@@ -62,7 +62,7 @@ export const NON_DEFAULT_LOCALES: ReadonlyArray<Exclude<Locale, "en">> = LOCALES
 );
 
 /** Canonical homepage URL for a locale. The English marketing homepage lives
- * at /about (the chat app now occupies /); other locales stay at /<locale>. */
+ * at / (the chat app lives at /chat); other locales stay at /<locale>. */
 export function homeUrl(locale: Locale): string {
-  return locale === "en" ? "/about" : `/${locale}`;
+  return locale === "en" ? "/" : `/${locale}`;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckIcon, CopyIcon, GitHubIcon } from "./icons";
 import { cdnUrl } from "@/lib/cdn";
@@ -224,9 +225,9 @@ export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
           </p>
 
           <div className="hero-ctas">
-            <a className="btn-primary lg" href="#get-started">
+            <Link className="btn-primary lg" href="/chat">
               {h.ctaPrimary}
-            </a>
+            </Link>
             <a
               className="btn-outline lg"
               href="https://github.com/blockrunai/franklin"

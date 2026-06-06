@@ -102,7 +102,7 @@ export function MoreMenu() {
           </div>
 
           <div className="try-select-divider" />
-          <Link className="try-select-option" href="/about">
+          <Link className="try-select-option" href="/">
             <Globe className="h-4 w-4" />
             <span className="try-select-option-label">{t.officialSite}</span>
           </Link>
