@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, PanelLeft, ImageIcon, Clapperboard, X, Plus, Check, BarChart3, TrendingUp, Music, ChevronDown, Gauge } from "lucide-react";
+import { ArrowUp, PanelLeft, ImageIcon, Clapperboard, X, Plus, Check, BarChart3, TrendingUp, Music, ChevronDown, Gauge, Share2 } from "lucide-react";
 import { ModelSelect } from "./ModelSelect";
+import { ShareDialog } from "./ShareDialog";
 import { HistorySidebar, type TryView } from "./HistorySidebar";
 import { MessageContent } from "./MessageContent";
 import { ActivitySummary } from "./ActivitySummary";
@@ -85,6 +86,7 @@ export function FranklinChat() {
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [view, setView] = useState<TryView>("chat");
+  const [showShare, setShowShare] = useState(false);
   // On mobile the sidebar overlays the chat (position: fixed), so start it
   // collapsed and close it after navigating — the chat should be visible first.
   const MOBILE_BP = 880;
@@ -349,6 +351,17 @@ export function FranklinChat() {
                 </button>
               )}
             </div>
+          )}
+
+          {view === "chat" && messages.length > 0 && (
+            <button
+              className="try-share-bar-btn"
+              onClick={() => setShowShare(true)}
+              title={t.share}
+            >
+              <Share2 className="h-4 w-4" />
+              {t.share}
+            </button>
           )}
         </div>
 
@@ -785,6 +798,8 @@ export function FranklinChat() {
           </button>
         </div>
       )}
+
+      {showShare && <ShareDialog messages={messages} onClose={() => setShowShare(false)} />}
     </div>
   );
 }

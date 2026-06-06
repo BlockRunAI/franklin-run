@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
-import { Instrument_Serif, Noto_Serif_SC } from "next/font/google";
+import { Instrument_Serif, Noto_Serif_SC, Poppins } from "next/font/google";
 import "./globals.css";
 import { cdnUrl } from "@/lib/cdn";
 import { LOCALES, LOCALE_META } from "@/lib/blog";
@@ -28,6 +28,16 @@ const instrumentSerif = Instrument_Serif({
 const notoSerifSC = Noto_Serif_SC({
   variable: "--font-serif-sc",
   weight: ["400", "700"],
+});
+
+// Wordmark only ("Franklin" next to the avatar) — geometric sans (Gemini-style),
+// distinct from the headings' Instrument Serif.
+const poppins = Poppins({
+  variable: "--font-wordmark",
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
 const SITE_URL = "https://franklin.run";
@@ -115,7 +125,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${plexSans.variable} ${plexMono.variable} ${instrumentSerif.variable} ${notoSerifSC.variable} antialiased`}
+      className={`${plexSans.variable} ${plexMono.variable} ${instrumentSerif.variable} ${notoSerifSC.variable} ${poppins.variable} antialiased`}
     >
       <head>
         <Script

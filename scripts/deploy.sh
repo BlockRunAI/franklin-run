@@ -26,24 +26,31 @@ fi
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
 
-# NEXT_PUBLIC_CDN_BASE is inlined at build time by Next.js. Set it as an
-# env var before running this script (or in your shell profile) to point
-# blog asset URLs at GCS. Empty/unset → assets continue serving from /public.
-#
+# NEXT_PUBLIC_* vars are inlined at BUILD time by Next.js — pass them as
+# build-env-vars. Set them before running (or in your shell profile):
+#   NEXT_PUBLIC_CDN_BASE   → point blog asset URLs at GCS (else serve from /public)
+#   NEXT_PUBLIC_CANVAS_URL → show the "Canvas" sidebar link → the canvas site
 # Example:
 #   export NEXT_PUBLIC_CDN_BASE=https://storage.googleapis.com/franklin-run-assets
+#   export NEXT_PUBLIC_CANVAS_URL=https://canvas.franklin.run
 #   npm run deploy
-if [ -n "${NEXT_PUBLIC_CDN_BASE:-}" ]; then
-  echo " cdn     : ${NEXT_PUBLIC_CDN_BASE}"
+BUILD_ENVS=""
+[ -n "${NEXT_PUBLIC_CDN_BASE:-}" ]   && BUILD_ENVS="${BUILD_ENVS},NEXT_PUBLIC_CDN_BASE=${NEXT_PUBLIC_CDN_BASE}"
+[ -n "${NEXT_PUBLIC_CANVAS_URL:-}" ] && BUILD_ENVS="${BUILD_ENVS},NEXT_PUBLIC_CANVAS_URL=${NEXT_PUBLIC_CANVAS_URL}"
+BUILD_ENVS="${BUILD_ENVS#,}" # strip leading comma
+
+echo " cdn     : ${NEXT_PUBLIC_CDN_BASE:-(none — serving assets from container)}"
+echo " canvas  : ${NEXT_PUBLIC_CANVAS_URL:-(none — link hidden)}"
+
+if [ -n "${BUILD_ENVS}" ]; then
   gcloud run deploy "${SERVICE}" \
     --source . \
     --region "${REGION}" \
     --project "${PROJECT}" \
     --allow-unauthenticated \
-    --set-build-env-vars="NEXT_PUBLIC_CDN_BASE=${NEXT_PUBLIC_CDN_BASE}" \
+    --set-build-env-vars="${BUILD_ENVS}" \
     --quiet
 else
-  echo " cdn     : (none — serving assets from container)"
   gcloud run deploy "${SERVICE}" \
     --source . \
     --region "${REGION}" \

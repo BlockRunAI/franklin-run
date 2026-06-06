@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Plus, MessageSquare, Trash2, Phone, Blocks, Images, Wallet, Sparkles, Search,
-  Grid2x2, ChevronRight, Terminal,
+  Grid2x2, ChevronRight, Terminal, Palette, ExternalLink,
 } from "lucide-react";
 import type { Conversation } from "@/hooks/use-chat-history";
 import { cdnUrl } from "@/lib/cdn";
@@ -158,6 +158,22 @@ export function HistorySidebar({ conversations, activeId, onNew, onSelect, onDel
               {n.label}
             </button>
           ))}
+          {/* Canvas — the node-based media studio, deployed as its own site.
+              Shown only when NEXT_PUBLIC_CANVAS_URL is set (inlined at build).
+              External link, opens in a new tab. */}
+          {process.env.NEXT_PUBLIC_CANVAS_URL && (
+            <a
+              className="try-more-item"
+              href={process.env.NEXT_PUBLIC_CANVAS_URL}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setMoreOpen(false)}
+            >
+              <Palette className="h-4 w-4" />
+              Canvas
+              <ExternalLink className="h-3 w-3" style={{ marginLeft: "auto", opacity: 0.5 }} />
+            </a>
+          )}
         </div>
       </>
     )}
