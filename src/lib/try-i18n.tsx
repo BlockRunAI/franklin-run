@@ -82,6 +82,7 @@ export interface TryDict {
   settings: string;
   officialSite: string;
   rename: string;
+  share: string;
   about: string;
   docs: string;
   blog: string;
@@ -219,6 +220,7 @@ const en: TryDict = {
   settings: "Settings",
   officialSite: "Official site",
   rename: "Rename",
+  share: "Share",
   about: "About",
   docs: "Docs",
   blog: "Blog",
@@ -357,6 +359,7 @@ const zh: TryDict = {
   settings: "设置",
   officialSite: "官网",
   rename: "重命名",
+  share: "分享",
   about: "关于",
   docs: "文档",
   blog: "博客",
@@ -495,6 +498,7 @@ const es: TryDict = {
   settings: "Ajustes",
   officialSite: "Sitio oficial",
   rename: "Renombrar",
+  share: "Compartir",
   about: "Acerca de",
   docs: "Docs",
   blog: "Blog",
