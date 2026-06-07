@@ -101,6 +101,9 @@ export function Footer({ dict = defaultDict, locale = "en" }: FooterProps) {
                 <Link href="/docs">{dict.footer.linkDocs}</Link>
               </li>
               <li>
+                <Link href="/gallery">{dict.footer.linkGallery}</Link>
+              </li>
+              <li>
                 <a href={`/blog/${locale}`}>{dict.footer.linkBlog}</a>
               </li>
               <li>

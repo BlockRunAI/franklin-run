@@ -59,6 +59,9 @@ export function Header({
           <Link className="nav-link" href="/docs">
             {dict.nav.docs}
           </Link>
+          <Link className="nav-link" href="/gallery">
+            {dict.nav.gallery}
+          </Link>
           <Link className="nav-link nav-link-try" href="/chat">
             {dict.nav.tryFranklin}
           </Link>
@@ -110,6 +113,9 @@ export function Header({
           </a>
           <Link href="/docs" onClick={() => setMenuOpen(false)}>
             {dict.nav.docs}
+          </Link>
+          <Link href="/gallery" onClick={() => setMenuOpen(false)}>
+            {dict.nav.gallery}
           </Link>
           <Link href="/chat" onClick={() => setMenuOpen(false)}>
             {dict.nav.tryFranklin}

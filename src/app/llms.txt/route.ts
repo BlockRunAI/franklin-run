@@ -1,5 +1,6 @@
 import { getAllPages } from "@/lib/docs-navigation";
 import { getPostsByLocale } from "@/lib/blog";
+import { SHOWCASE_ITEMS } from "@/lib/showcase-gallery";
 
 const SITE_URL = "https://franklin.run";
 
@@ -88,6 +89,13 @@ export async function GET() {
     })
     .join("\n");
 
+  const galleryLines = SHOWCASE_ITEMS.map(
+    (it) =>
+      `- [${it.title}](${SITE_URL}/gallery/${it.id}): ${it.model} ${it.type} example${
+        it.prompt ? " with the full copyable prompt" : ""
+      }.`,
+  ).join("\n");
+
   const body = `# Franklin
 
 > Franklin is the open-source AI agent with a wallet. It holds USDC, picks the best model per task from 60+ models (Claude, GPT, Gemini, DeepSeek, Kimi, GLM, etc.), and pays per call via the x402 micropayment protocol. No subscriptions, no API keys, no monthly minimums. Apache 2.0.
@@ -112,6 +120,12 @@ ${docsLines}
 ## Blog
 
 ${blogLines}
+
+## Prompt Gallery
+
+> Real AI images and SeeDance videos made with Franklin (GPT Image 2 / SeeDance via BlockRun), each on its own page with the exact, copyable prompt. Index: ${SITE_URL}/gallery
+
+${galleryLines}
 
 ## Source
 

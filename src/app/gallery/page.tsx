@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { SHOWCASE_ITEMS } from "@/lib/showcase-gallery";
+import { SHOWCASE_ITEMS, showcasePoster } from "@/lib/showcase-gallery";
 import { GalleryShare } from "@/components/gallery/GalleryShare";
 import { cdnUrl } from "@/lib/cdn";
 
@@ -70,7 +70,7 @@ export default function GalleryIndexPage() {
               <Link key={it.id} href={`/gallery/${it.id}`} className="gallery-card" aria-label={it.title}>
                 <div className="gallery-thumb">
                   {it.type === "video" ? (
-                    <video src={`${cdnUrl(it.path)}#t=0.1`} muted playsInline preload="metadata" />
+                    <video src={cdnUrl(it.path)} poster={cdnUrl(showcasePoster(it))} muted playsInline preload="none" />
                   ) : (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={cdnUrl(it.path)} alt={it.title} loading="lazy" />
