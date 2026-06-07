@@ -7,6 +7,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/developer-guide/architecture" },
   title: "Architecture",
   description: "System overview, key modules, token pipeline, and error recovery.",
 };

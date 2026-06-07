@@ -6,6 +6,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/reference" },
   title: "Reference",
   description: "CLI commands, configuration files, pricing, and frequently asked questions.",
 };

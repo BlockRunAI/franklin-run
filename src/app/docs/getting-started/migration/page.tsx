@@ -7,6 +7,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/getting-started/migration" },
   title: "Migration",
   description: "Coming from Claude Code? Migrate your setup in seconds.",
 };

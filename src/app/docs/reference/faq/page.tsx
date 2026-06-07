@@ -7,6 +7,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/reference/faq" },
   title: "FAQ",
   description: "Frequently asked questions about models, payments, privacy, and more.",
 };

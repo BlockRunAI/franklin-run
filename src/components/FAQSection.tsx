@@ -13,8 +13,19 @@ export function FAQSection({ dict = defaultDict }: FAQSectionProps) {
   const [openIdx, setOpenIdx] = useState<number>(0);
   const f = dict.faq;
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: f.items.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  };
+
   return (
     <section className="light">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <div className="inner">
         <div className="faq-grid">
           <div className="faq-left">

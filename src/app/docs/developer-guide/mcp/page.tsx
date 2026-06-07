@@ -7,6 +7,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/developer-guide/mcp" },
   title: "MCP Integration",
   description: "Connect external tools via Model Context Protocol servers.",
 };

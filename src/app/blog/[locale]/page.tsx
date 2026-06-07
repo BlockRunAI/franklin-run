@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { PostCard } from "@/components/blog/PostCard";
 import { LocaleSwitcher } from "@/components/blog/LocaleSwitcher";
 import { HtmlLangSync } from "@/components/blog/HtmlLangSync";
+import { cdnUrl } from "@/lib/cdn";
 import {
   LOCALES,
   LOCALE_META,
@@ -84,6 +85,13 @@ export async function generateMetadata({
       description: descriptions[locale],
       locale: meta.htmlLang,
       siteName: "Franklin",
+      images: [cdnUrl("/images/og-image.png")],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: titles[locale],
+      description: descriptions[locale],
+      images: [cdnUrl("/images/og-image.png")],
     },
   };
 }
@@ -209,14 +217,14 @@ export default async function BlogLocaleIndex({
                   <span className="line" />
                   <span className="engraved">{h.eyebrow}</span>
                 </div>
-                <h2 className="section-h">
+                <h1 className="section-h">
                   {h.title}
                   <br />
                   <em style={{ fontStyle: "italic", color: "var(--gold-dim)" }}>
                     {h.em}
                   </em>
                   .
-                </h2>
+                </h1>
               </div>
               <div className="right">
                 <p className="intro">{h.intro}</p>
