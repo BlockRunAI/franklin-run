@@ -5,7 +5,7 @@ import { ImageIcon, Trash2, Copy, Check, X, Play } from "lucide-react";
 import type { Conversation } from "@/hooks/use-chat-history";
 import { useTryLang } from "@/lib/try-i18n";
 import { cdnUrl } from "@/lib/cdn";
-import type { ShowcaseItem } from "@/lib/showcase-gallery";
+import { showcasePoster, type ShowcaseItem } from "@/lib/showcase-gallery";
 
 interface MediaItem {
   type: "image" | "video";
@@ -100,7 +100,7 @@ export function GalleryPanel({
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={url} alt={it.title} loading="lazy" />
                     ) : (
-                      <video src={`${url}#t=0.1`} muted playsInline preload="metadata" />
+                      <video src={url} poster={cdnUrl(showcasePoster(it))} muted playsInline preload="none" />
                     )}
                     {it.type === "video" && (
                       <span className="try-gallery-play">

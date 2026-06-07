@@ -19,6 +19,7 @@ export interface HomeDict {
     features: string;
     compare: string;
     blog: string;
+    gallery: string;
     docs: string;
     tryFranklin: string;
     github: string;
@@ -142,6 +143,7 @@ export interface HomeDict {
     linkNpm: string;
     linkDocs: string;
     linkBlog: string;
+    linkGallery: string;
     linkGateway: string;
     linkX402: string;
     linkGitHub: string;

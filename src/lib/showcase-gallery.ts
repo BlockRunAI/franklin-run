@@ -172,13 +172,21 @@ export function getShowcaseItem(id: string): ShowcaseItem | undefined {
   return SHOWCASE_ITEMS.find((i) => i.id === id);
 }
 
-/** Short, plain-text description for <meta> / OG / JSON-LD (prompts can be long
- *  JSON, so collapse whitespace and clip). */
+/** Clean, plain-text description for <meta> / OG / JSON-LD. The full prompt
+ *  (often long JSON) lives in the page body for indexing; the description stays
+ *  a readable, keyword-rich summary for good SERP/social CTR. */
 export function showcaseDescription(item: ShowcaseItem): string {
-  const base = `${item.title} — made with ${item.model} on Franklin.`;
-  if (!item.prompt) return base;
-  const clean = item.prompt.replace(/\s+/g, " ").trim();
-  return `${base} Prompt: ${clean}`.slice(0, 300);
+  const kind = item.type === "video" ? "video" : "image";
+  const tail = item.prompt
+    ? "Read and copy the exact prompt to make your own."
+    : "Made with Franklin — open the chat to make your own.";
+  return `${item.title} — a ${item.model} ${kind} made with Franklin, the AI agent with a wallet. ${tail}`;
+}
+
+/** Poster image path (the image itself, or a video's first-frame poster) — used
+ *  for OG/Twitter cards, JSON-LD thumbnails, and the <video poster>. */
+export function showcasePoster(item: ShowcaseItem): string {
+  return item.type === "video" ? item.path.replace(/\.mp4$/, "-poster.jpg") : item.path;
 }
 
 /** Chat model id to preselect when "Make your own" loads this example. */
