@@ -431,6 +431,7 @@ export function useFranklinChat(
   setMessagesRaw: (m: Setter, targetId?: string) => void,
   ensureConvId: () => string,
   onSpend?: (model: string, usd: number) => void,
+  prefill?: { mode?: ChatMode; imageModel?: string; videoModel?: string },
 ) {
   const { isConnected } = useAccount();
   const { makePayment } = useX402Payment();
@@ -450,10 +451,10 @@ export function useFranklinChat(
   // Model attributed to the next payment (set by each run* before it pays).
   const modelRef = useRef("");
 
-  const [mode, setMode] = useState<ChatMode>("chat");
+  const [mode, setMode] = useState<ChatMode>(prefill?.mode ?? "chat");
   const [chatModel, setChatModel] = useState(CHAT_MODELS[0].id);
-  const [imageModel, setImageModelState] = useState(IMAGE_MODELS[0].id);
-  const [imageSize, setImageSize] = useState<string>(defaultSizeFor(IMAGE_MODELS[0].id));
+  const [imageModel, setImageModelState] = useState(prefill?.imageModel ?? IMAGE_MODELS[0].id);
+  const [imageSize, setImageSize] = useState<string>(defaultSizeFor(prefill?.imageModel ?? IMAGE_MODELS[0].id));
   // Reset the aspect ratio whenever the image model changes — the old size
   // may not be in the new model's whitelist (gateway would 400). Picking the
   // model's first ratio keeps the selection always valid.
@@ -461,9 +462,9 @@ export function useFranklinChat(
     setImageModelState(id);
     setImageSize(defaultSizeFor(id));
   }, []);
-  const [videoModel, setVideoModelState] = useState(VIDEO_MODELS[0].id);
-  const [videoRatio, setVideoRatio] = useState<string>(defaultVideoRatioFor(VIDEO_MODELS[0].id));
-  const [videoResolution, setVideoResolution] = useState<string>(defaultVideoResolutionFor(VIDEO_MODELS[0].id));
+  const [videoModel, setVideoModelState] = useState(prefill?.videoModel ?? VIDEO_MODELS[0].id);
+  const [videoRatio, setVideoRatio] = useState<string>(defaultVideoRatioFor(prefill?.videoModel ?? VIDEO_MODELS[0].id));
+  const [videoResolution, setVideoResolution] = useState<string>(defaultVideoResolutionFor(prefill?.videoModel ?? VIDEO_MODELS[0].id));
   // Reset video ratio + resolution whenever the model changes — Seedance
   // models accept `aspect_ratio` and `resolution`; others don't have a list,
   // so both pickers hide.
@@ -1251,6 +1252,8 @@ export function useFranklinChat(
     setMode,
     model,
     setModel,
+    setImageModel,
+    setVideoModel,
     models,
     selectedModel,
     status,
