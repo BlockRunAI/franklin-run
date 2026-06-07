@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CopyPromptButton } from "@/components/gallery/CopyPromptButton";
+import { GalleryShare } from "@/components/gallery/GalleryShare";
 import { SHOWCASE_ITEMS, getShowcaseItem, showcaseDescription } from "@/lib/showcase-gallery";
 import { cdnUrl } from "@/lib/cdn";
 
@@ -118,6 +119,8 @@ export default async function GalleryItemPage({ params }: { params: Promise<{ id
               <Link href={item.prompt ? `/chat?from=${item.id}` : "/chat"} className="gallery-cta">
                 {item.prompt ? "Make your own — open this prompt in Franklin →" : "Make your own in Franklin →"}
               </Link>
+
+              <GalleryShare url={`${SITE_URL}/gallery/${id}`} title={item.title} />
             </div>
           </div>
         </div>
