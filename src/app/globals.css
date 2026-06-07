@@ -6122,3 +6122,34 @@ h2.dark-h,
   .gallery-detail-grid { grid-template-columns: 1fr; gap: 22px; }
   .gallery-detail-media { position: static; }
 }
+
+/* Gallery social share (X / Telegram / copy link) */
+.gallery-share {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0 36px;
+}
+.gallery-detail-side .gallery-share { margin: 18px 0 0; }
+.gallery-share-label {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+  margin-right: 2px;
+}
+.gallery-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  color: var(--fg);
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.14s, color 0.14s, background 0.14s;
+}
+.gallery-share-btn:hover { border-color: var(--gold); color: var(--gold); }

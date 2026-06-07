@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SHOWCASE_ITEMS } from "@/lib/showcase-gallery";
+import { GalleryShare } from "@/components/gallery/GalleryShare";
 import { cdnUrl } from "@/lib/cdn";
 
 const SITE_URL = "https://franklin.run";
@@ -61,6 +62,8 @@ export default function GalleryIndexPage() {
             Every image and video below was made with Franklin — GPT Image 2 and SeeDance, paid per
             generation in USDC. Open any one to read the full prompt, copy it, and make your own.
           </p>
+
+          <GalleryShare url={`${SITE_URL}/gallery`} title="Franklin Prompt Gallery" />
 
           <div className="gallery-grid">
             {SHOWCASE_ITEMS.map((it) => (
