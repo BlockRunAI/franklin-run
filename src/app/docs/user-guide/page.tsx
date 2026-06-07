@@ -6,6 +6,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/user-guide" },
   title: "User Guide",
   description: "Learn how to use Franklin day-to-day.",
 };

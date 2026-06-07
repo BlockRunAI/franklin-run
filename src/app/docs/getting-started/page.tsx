@@ -8,6 +8,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/getting-started" },
   title: "Getting Started",
   description: "Up and running with Franklin in 60 seconds.",
 };

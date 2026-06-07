@@ -7,6 +7,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/user-guide/smart-router" },
   title: "Smart Router",
   description: "How Franklin picks the best model for every request — routing in <1ms with 7-layer compression.",
 };

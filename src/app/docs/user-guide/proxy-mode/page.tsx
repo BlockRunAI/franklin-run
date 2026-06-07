@@ -7,6 +7,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/user-guide/proxy-mode" },
   title: "Proxy Mode",
   description: "Use Franklin as a local API server for other tools.",
 };

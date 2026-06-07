@@ -7,6 +7,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/user-guide/models" },
   title: "Models",
   description: "60+ models from 12+ providers, including a free tier.",
 };

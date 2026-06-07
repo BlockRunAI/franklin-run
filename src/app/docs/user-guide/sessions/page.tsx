@@ -7,6 +7,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/user-guide/sessions" },
   title: "Sessions",
   description: "Persistent session history with full-text search.",
 };

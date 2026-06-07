@@ -65,6 +65,9 @@ export function Header({
           <Link className="nav-link nav-link-try" href="/chat">
             {dict.nav.tryFranklin}
           </Link>
+          <a className="nav-link" href="https://blockrun.ai" target="_blank" rel="noreferrer">
+            BlockRun
+          </a>
           <a
             className="btn-outline"
             href="https://github.com/blockrunai/franklin"
@@ -120,6 +123,9 @@ export function Header({
           <Link href="/chat" onClick={() => setMenuOpen(false)}>
             {dict.nav.tryFranklin}
           </Link>
+          <a href="https://blockrun.ai" target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>
+            BlockRun
+          </a>
           <a
             href="https://github.com/blockrunai/franklin"
             onClick={() => setMenuOpen(false)}

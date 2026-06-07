@@ -7,6 +7,7 @@ import { DocsPagination } from "@/components/docs/DocsPagination";
 import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/docs/reference/pricing" },
   title: "Pricing",
   description: "Pay-per-action micropayments, free tier, and cost tracking.",
 };
