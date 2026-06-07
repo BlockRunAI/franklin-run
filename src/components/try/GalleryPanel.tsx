@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ImageIcon, Trash2, Copy, Check, X, Play } from "lucide-react";
+import { ImageIcon, Trash2, Play, ExternalLink } from "lucide-react";
 import type { Conversation } from "@/hooks/use-chat-history";
 import { useTryLang } from "@/lib/try-i18n";
 import { cdnUrl } from "@/lib/cdn";
@@ -20,8 +19,9 @@ interface MediaItem {
 //
 // A curated `showcase` (seeded examples) renders above the user's own media so
 // a brand-new user opens the gallery to inspiration, not an empty state. Each
-// showcase tile opens a detail modal with the verbatim prompt + a copy button,
-// so anyone can reproduce it.
+// showcase tile is a real link to its own /gallery/<id> page (image/video, the
+// full copyable prompt, share, and "make your own"), opened in a new tab so the
+// chat session is preserved.
 export function GalleryPanel({
   conversations,
   showcase = [],
@@ -34,28 +34,6 @@ export function GalleryPanel({
   onDelete: (convId: string, url: string) => void;
 }) {
   const { t } = useTryLang();
-  const [detail, setDetail] = useState<ShowcaseItem | null>(null);
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (!detail) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setDetail(null);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [detail]);
-
-  const copyPrompt = async () => {
-    if (!detail?.prompt) return;
-    try {
-      await navigator.clipboard.writeText(detail.prompt);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
-    } catch {
-      /* clipboard blocked */
-    }
-  };
 
   const items: MediaItem[] = [];
   for (const c of conversations) {
@@ -87,14 +65,13 @@ export function GalleryPanel({
               {showcase.map((it) => {
                 const url = cdnUrl(it.path);
                 return (
-                  <div
+                  <a
                     key={it.id}
-                    className="try-gallery-item"
+                    className="try-gallery-item try-gallery-link"
+                    href={`/gallery/${it.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     title={it.title}
-                    onClick={() => {
-                      setCopied(false);
-                      setDetail(it);
-                    }}
                   >
                     {it.type === "image" ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -109,27 +86,12 @@ export function GalleryPanel({
                     )}
                     <div className="try-gallery-cap">
                       <span className="try-gallery-cap-title">{it.title}</span>
-                      {it.credit &&
-                        (it.sourceUrl ? (
-                          <a
-                            className="try-gallery-cap-credit"
-                            href={it.sourceUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {it.credit}
-                          </a>
-                        ) : (
-                          <span className="try-gallery-cap-credit">{it.credit}</span>
-                        ))}
+                      {it.credit && <span className="try-gallery-cap-credit">{it.credit}</span>}
                     </div>
-                    {it.prompt && (
-                      <span className="try-gallery-badge">
-                        <Copy className="h-3 w-3" /> {t.promptLabel}
-                      </span>
-                    )}
-                  </div>
+                    <span className="try-gallery-badge">
+                      <ExternalLink className="h-3 w-3" /> {it.prompt ? t.promptLabel : t.galleryOpenPage}
+                    </span>
+                  </a>
                 );
               })}
             </div>
@@ -168,64 +130,6 @@ export function GalleryPanel({
           </p>
         )}
       </div>
-
-      {detail && (
-        <div className="try-showcase-modal" onClick={() => setDetail(null)}>
-          <div className="try-showcase-card" onClick={(e) => e.stopPropagation()}>
-            <button className="try-showcase-close" aria-label="Close" onClick={() => setDetail(null)}>
-              <X className="h-4 w-4" />
-            </button>
-            <div className="try-showcase-media">
-              {detail.type === "video" ? (
-                <video src={cdnUrl(detail.path)} controls autoPlay loop muted playsInline />
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={cdnUrl(detail.path)} alt={detail.title} />
-              )}
-            </div>
-            <div className="try-showcase-side">
-              <h3 className="try-showcase-title">{detail.title}</h3>
-              <p className="try-showcase-meta">
-                {detail.model}
-                {detail.credit && (
-                  <>
-                    {" · "}
-                    {detail.sourceUrl ? (
-                      <a href={detail.sourceUrl} target="_blank" rel="noopener noreferrer">
-                        {detail.credit}
-                      </a>
-                    ) : (
-                      detail.credit
-                    )}
-                  </>
-                )}
-              </p>
-              <a
-                className="try-showcase-page"
-                href={`/gallery/${detail.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t.galleryOpenPage}
-              </a>
-              {detail.prompt ? (
-                <>
-                  <div className="try-showcase-prompt-head">
-                    <span>{t.promptLabel}</span>
-                    <button className="try-showcase-copy" onClick={copyPrompt}>
-                      {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                      {copied ? t.copied : t.copyPrompt}
-                    </button>
-                  </div>
-                  <pre className="try-showcase-prompt">{detail.prompt}</pre>
-                </>
-              ) : (
-                <p className="try-showcase-note">{t.showcaseFilmNote}</p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

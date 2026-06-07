@@ -5245,6 +5245,7 @@ h2.dark-h,
   pointer-events: none;
 }
 .try-gallery-item:hover .try-gallery-badge { opacity: 1; }
+.try-gallery-link { display: block; text-decoration: none; color: inherit; cursor: pointer; }
 
 /* Play affordance on video showcase tiles */
 .try-gallery-play {
