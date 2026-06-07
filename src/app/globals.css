@@ -5158,6 +5158,215 @@ h2.dark-h,
 .try-gallery-del:focus-visible { opacity: 1; transform: scale(1); }
 .try-gallery-del:hover { background: #9a3412; }
 
+/* Section headings inside the gallery (Showcase / Your creations) */
+.try-gallery-section {
+  margin-top: 30px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+.try-gallery-grid + .try-gallery-section { margin-top: 34px; }
+
+/* Showcase caption/credit overlay (showcase tiles carry no delete button) */
+.try-gallery-cap {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 18px 10px 8px;
+  background: linear-gradient(to top, rgba(28, 22, 14, 0.8), rgba(28, 22, 14, 0));
+  opacity: 0;
+  transition: opacity 0.16s;
+  pointer-events: none;
+}
+.try-gallery-item:hover .try-gallery-cap { opacity: 1; }
+.try-gallery-cap-title {
+  font-size: 11.5px;
+  line-height: 1.25;
+  font-weight: 500;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.try-gallery-cap-credit {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  pointer-events: auto;
+  width: fit-content;
+}
+.try-gallery-cap-credit:hover { color: var(--gold); }
+
+/* "Prompt" badge on showcase tiles that carry a copyable prompt */
+.try-gallery-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: 7px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(28, 22, 14, 0.6);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.14s;
+  pointer-events: none;
+}
+.try-gallery-item:hover .try-gallery-badge { opacity: 1; }
+
+/* Play affordance on video showcase tiles */
+.try-gallery-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.55));
+}
+.try-gallery-item video { width: 100%; height: 100%; object-fit: cover; display: block; cursor: pointer; }
+
+/* Showcase detail modal — image + copyable prompt */
+.try-showcase-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(20, 16, 10, 0.62);
+  backdrop-filter: blur(6px);
+}
+.try-showcase-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 0;
+  width: min(900px, 100%);
+  max-height: 86vh;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  box-shadow: 0 24px 70px rgba(20, 16, 10, 0.35);
+}
+.try-showcase-media {
+  background: var(--bg-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 86vh;
+  overflow: hidden;
+}
+.try-showcase-media img,
+.try-showcase-media video {
+  width: 100%;
+  height: 100%;
+  max-height: 86vh;
+  object-fit: contain;
+  display: block;
+}
+.try-showcase-media video { background: #000; }
+.try-showcase-side {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 22px 22px 20px;
+}
+.try-showcase-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fg);
+  margin: 0 0 4px;
+  padding-right: 28px;
+}
+.try-showcase-meta {
+  font-size: 12px;
+  color: var(--fg-subtle);
+  margin: 0 0 14px;
+}
+.try-showcase-meta a { color: var(--fg-subtle); text-decoration: underline; }
+.try-showcase-meta a:hover { color: var(--gold); }
+.try-showcase-prompt-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.try-showcase-prompt-head > span {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+.try-showcase-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  color: var(--fg);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.14s, color 0.14s;
+}
+.try-showcase-copy:hover { border-color: var(--gold); color: var(--gold); }
+.try-showcase-prompt {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-alt);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fg);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.try-showcase-note { font-size: 13px; color: var(--fg-subtle); }
+.try-showcase-note a { color: var(--gold); text-decoration: none; }
+.try-showcase-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: none;
+  background: rgba(28, 22, 14, 0.55);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  cursor: pointer;
+}
+.try-showcase-close:hover { background: rgba(28, 22, 14, 0.8); }
+@media (max-width: 720px) {
+  .try-showcase-card { grid-template-columns: 1fr; max-height: 90vh; overflow-y: auto; }
+  .try-showcase-media { max-height: 40vh; }
+  .try-showcase-media img { max-height: 40vh; }
+  .try-showcase-prompt { max-height: 32vh; }
+}
+
 /* Usage summary card (above New chat) */
 .try-usage {
   border: 1px solid var(--border);

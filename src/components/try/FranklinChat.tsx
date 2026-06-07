@@ -10,6 +10,7 @@ import { MessageActions } from "./MessageActions";
 import { PhonePanel } from "./PhonePanel";
 import { ToolsPanel, type TryAction } from "./ToolsPanel";
 import { GalleryPanel } from "./GalleryPanel";
+import { SHOWCASE_ITEMS } from "@/lib/showcase-gallery";
 import { WalletPanel } from "./WalletPanel";
 import { SkillsPanel } from "./SkillsPanel";
 import { CLIPanel } from "./CLIPanel";
@@ -361,7 +362,7 @@ export function FranklinChat() {
         ) : view === "skills" ? (
           <SkillsPanel onPick={pickSkill} />
         ) : view === "gallery" ? (
-          <GalleryPanel conversations={history.conversations} onZoom={setLightbox} onDelete={history.deleteMedia} />
+          <GalleryPanel conversations={history.conversations} showcase={SHOWCASE_ITEMS} onZoom={setLightbox} onDelete={history.deleteMedia} />
         ) : view === "wallet" ? (
           <WalletPanel usage={usage} />
         ) : (

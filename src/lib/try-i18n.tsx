@@ -65,6 +65,11 @@ export interface TryDict {
   galleryEmpty: string;
   galleryDelete: string;
   galleryDeleteConfirm: string;
+  showcaseTitle: string;
+  galleryYours: string;
+  promptLabel: string;
+  copyPrompt: string;
+  showcaseFilmNote: string;
   walletTitle: string;
   balance: string;
   topUp: string;
@@ -202,6 +207,11 @@ const en: TryDict = {
   galleryEmpty: "Images and videos you generate will show up here.",
   galleryDelete: "Delete",
   galleryDeleteConfirm: "Delete this from your gallery? It will also be removed from the conversation.",
+  showcaseTitle: "Showcase",
+  galleryYours: "Your creations",
+  promptLabel: "Prompt",
+  copyPrompt: "Copy prompt",
+  showcaseFilmNote: "Assembled with the /launch-film skill (SeeDance).",
   walletTitle: "Wallet",
   balance: "Balance",
   topUp: "Send USDC on Base to your connected wallet to top up.",
@@ -340,6 +350,11 @@ const zh: TryDict = {
   galleryEmpty: "你生成的图片和视频会显示在这里。",
   galleryDelete: "删除",
   galleryDeleteConfirm: "从图库删除这张?它也会从对话里一并移除。",
+  showcaseTitle: "精选示例",
+  galleryYours: "你的作品",
+  promptLabel: "提示词",
+  copyPrompt: "复制提示词",
+  showcaseFilmNote: "由 /launch-film 技能(SeeDance)合成。",
   walletTitle: "钱包",
   balance: "余额",
   topUp: "在 Base 上把 USDC 转到你连接的钱包即可充值。",
@@ -478,6 +493,11 @@ const es: TryDict = {
   galleryEmpty: "Las imágenes y videos que generes aparecerán aquí.",
   galleryDelete: "Eliminar",
   galleryDeleteConfirm: "¿Eliminar esto de tu galería? También se quitará de la conversación.",
+  showcaseTitle: "Galería de ejemplos",
+  galleryYours: "Tus creaciones",
+  promptLabel: "Prompt",
+  copyPrompt: "Copiar prompt",
+  showcaseFilmNote: "Creado con la skill /launch-film (SeeDance).",
   walletTitle: "Billetera",
   balance: "Saldo",
   topUp: "Envía USDC en Base a tu billetera conectada para recargar.",
