@@ -77,7 +77,12 @@ export function GalleryPanel({
 
         {showcase.length > 0 && (
           <>
-            <h3 className="try-gallery-section">{t.showcaseTitle}</h3>
+            <div className="try-gallery-section-row">
+              <h3 className="try-gallery-section">{t.showcaseTitle}</h3>
+              <a className="try-gallery-browse" href="/gallery" target="_blank" rel="noopener noreferrer">
+                {t.galleryBrowseAll}
+              </a>
+            </div>
             <div className="try-gallery-grid">
               {showcase.map((it) => {
                 const url = cdnUrl(it.path);
@@ -195,6 +200,14 @@ export function GalleryPanel({
                   </>
                 )}
               </p>
+              <a
+                className="try-showcase-page"
+                href={`/gallery/${detail.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t.galleryOpenPage}
+              </a>
               {detail.prompt ? (
                 <>
                   <div className="try-showcase-prompt-head">

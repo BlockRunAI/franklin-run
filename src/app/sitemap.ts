@@ -10,6 +10,7 @@ import {
 } from "@/lib/blog";
 import { homeUrl } from "@/lib/home";
 import { getAllPages } from "@/lib/docs-navigation";
+import { SHOWCASE_ITEMS } from "@/lib/showcase-gallery";
 
 const SITE_URL = "https://franklin.run";
 
@@ -40,6 +41,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: locale === "en" ? 1 : 0.9,
       alternates: { languages: homeLanguages },
+    });
+  }
+
+  // Prompt gallery — index + one indexable page per showcase example.
+  entries.push({
+    url: `${SITE_URL}/gallery`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  });
+  for (const item of SHOWCASE_ITEMS) {
+    entries.push({
+      url: `${SITE_URL}/gallery/${item.id}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
     });
   }
 

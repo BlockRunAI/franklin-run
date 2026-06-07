@@ -70,6 +70,8 @@ export interface TryDict {
   promptLabel: string;
   copyPrompt: string;
   showcaseFilmNote: string;
+  galleryBrowseAll: string;
+  galleryOpenPage: string;
   walletTitle: string;
   balance: string;
   topUp: string;
@@ -212,6 +214,8 @@ const en: TryDict = {
   promptLabel: "Prompt",
   copyPrompt: "Copy prompt",
   showcaseFilmNote: "Assembled with the /launch-film skill (SeeDance).",
+  galleryBrowseAll: "Browse all →",
+  galleryOpenPage: "Open full page ↗",
   walletTitle: "Wallet",
   balance: "Balance",
   topUp: "Send USDC on Base to your connected wallet to top up.",
@@ -355,6 +359,8 @@ const zh: TryDict = {
   promptLabel: "提示词",
   copyPrompt: "复制提示词",
   showcaseFilmNote: "由 /launch-film 技能(SeeDance)合成。",
+  galleryBrowseAll: "查看全部 →",
+  galleryOpenPage: "打开完整页面 ↗",
   walletTitle: "钱包",
   balance: "余额",
   topUp: "在 Base 上把 USDC 转到你连接的钱包即可充值。",
@@ -498,6 +504,8 @@ const es: TryDict = {
   promptLabel: "Prompt",
   copyPrompt: "Copiar prompt",
   showcaseFilmNote: "Creado con la skill /launch-film (SeeDance).",
+  galleryBrowseAll: "Ver todo →",
+  galleryOpenPage: "Abrir página completa ↗",
   walletTitle: "Billetera",
   balance: "Saldo",
   topUp: "Envía USDC en Base a tu billetera conectada para recargar.",

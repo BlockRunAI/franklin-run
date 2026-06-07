@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { WalletProvider } from "@/components/try/WalletProvider";
-import { FranklinChat } from "@/components/try/FranklinChat";
+import { FranklinChat, type ChatPrefill } from "@/components/try/FranklinChat";
 import { TryLangProvider } from "@/lib/try-i18n";
+import { getShowcaseItem, showcaseModelId } from "@/lib/showcase-gallery";
 
 export const metadata: Metadata = {
   title: "Franklin — the AI agent with a wallet",
@@ -12,12 +13,31 @@ export const metadata: Metadata = {
 
 // The chat app (Gemini-style). Soft login — usable without signing in;
 // sign in (sidebar) to save history across devices. Marketing lives at /.
-export default function Chat() {
+//
+// `?from=<showcase id>` (the public /gallery "Make your own" CTA) loads that
+// example's prompt + mode + model straight into the composer.
+export default async function Chat({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string }>;
+}) {
+  const { from } = await searchParams;
+  const item = from ? getShowcaseItem(from) : undefined;
+  const initial: ChatPrefill | undefined = item?.prompt
+    ? {
+        input: item.prompt,
+        mode: item.type === "video" ? "video" : "image",
+        ...(item.type === "video"
+          ? { videoModel: showcaseModelId(item) }
+          : { imageModel: showcaseModelId(item) }),
+      }
+    : undefined;
+
   return (
     <main className="try-main try-main-full">
       <WalletProvider>
         <TryLangProvider>
-          <FranklinChat />
+          <FranklinChat initial={initial} />
         </TryLangProvider>
       </WalletProvider>
     </main>

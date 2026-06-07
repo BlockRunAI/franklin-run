@@ -64,12 +64,23 @@ function EmphTitle({ text }: { text: string }) {
   );
 }
 
-export function FranklinChat() {
+export interface ChatPrefill {
+  input?: string;
+  mode?: "chat" | "image" | "video" | "music";
+  imageModel?: string;
+  videoModel?: string;
+}
+
+export function FranklinChat({ initial }: { initial?: ChatPrefill } = {}) {
   const { t } = useTryLang();
   const auth = useAuth();
   const history = useChatHistory(auth.address);
   const { usage, recordSpend } = useUsageStats();
-  const chat = useFranklinChat(history.messages, history.setMessages, history.ensureConvId, recordSpend);
+  const chat = useFranklinChat(history.messages, history.setMessages, history.ensureConvId, recordSpend, {
+    mode: initial?.mode,
+    imageModel: initial?.imageModel,
+    videoModel: initial?.videoModel,
+  });
   const { mode, setMode, model, setModel, models, selectedModel, status, activeTool, steps, needsToolWallet, genConvId, mediaJobs, error, isBusy, isConnected, send, stop, stopMedia, regenerate, imageSize, setImageSize, imageSizes, videoRatio, setVideoRatio, videoRatios, videoResolution, setVideoResolution, videoResolutions } = chat;
   // Only show the live (chat) generation UI in the conversation that started it.
   const genHere = genConvId === null || genConvId === history.activeId;
@@ -78,7 +89,7 @@ export function FranklinChat() {
   const activeMediaJob = history.activeId ? mediaJobs[history.activeId] : undefined;
   const busy = isBusy || !!activeMediaJob;
 
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(initial?.input ?? "");
   // Multi-attachment: gateway image2image accepts up to 4 (OpenAI) / 3 (Google);
   // chat-vision matches the same cap for UX symmetry. maxAttachmentsFor() returns
   // the per-mode/per-model ceiling; the "+" button hides when reached.

@@ -167,3 +167,21 @@ export const SHOWCASE_ITEMS: ShowcaseItem[] = [
   { id: "launch-film-3", type: "image", path: "/showcase/launch-film-03-terminal-camera.jpg", title: "Franklin Launch Film — Terminal", model: "SeeDance", credit: "BlockRun", sourceUrl: "https://github.com/BlockRunAI/Claude-Code-GPT-IMAGE2-SeeDance-BlockRun" },
   { id: "launch-film-4", type: "image", path: "/showcase/launch-film-04-cinematic-finish.jpg", title: "Franklin Launch Film — Finish", model: "SeeDance", credit: "BlockRun", sourceUrl: "https://github.com/BlockRunAI/Claude-Code-GPT-IMAGE2-SeeDance-BlockRun" },
 ];
+
+export function getShowcaseItem(id: string): ShowcaseItem | undefined {
+  return SHOWCASE_ITEMS.find((i) => i.id === id);
+}
+
+/** Short, plain-text description for <meta> / OG / JSON-LD (prompts can be long
+ *  JSON, so collapse whitespace and clip). */
+export function showcaseDescription(item: ShowcaseItem): string {
+  const base = `${item.title} — made with ${item.model} on Franklin.`;
+  if (!item.prompt) return base;
+  const clean = item.prompt.replace(/\s+/g, " ").trim();
+  return `${base} Prompt: ${clean}`.slice(0, 300);
+}
+
+/** Chat model id to preselect when "Make your own" loads this example. */
+export function showcaseModelId(item: ShowcaseItem): string {
+  return item.type === "video" ? "bytedance/seedance-2.0-fast" : "openai/gpt-image-2";
+}
