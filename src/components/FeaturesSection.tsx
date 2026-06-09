@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { en as defaultDict } from "@/lib/home/en";
 import type { HomeDict } from "@/lib/home/types";
 
@@ -123,6 +126,126 @@ function SignalCard() {
   );
 }
 
+/**
+ * Animated model-routing visualization. A prompt enters, the classifier tags it
+ * (CODING / TRADING / REASONING / RESEARCH), an arrow routes to the cheapest
+ * capable model, and a live USDC cost + "saved N% vs Opus" appears. The active
+ * example cycles every ~2.6s. Deterministic (index-driven, no random/Date in
+ * render) and respects prefers-reduced-motion by holding the first example.
+ */
+type RouteExample = {
+  prompt: string;
+  cat: "CODING" | "TRADING" | "REASONING" | "RESEARCH";
+  model: string;
+  cost: string;
+  save: number;
+};
+
+const ROUTE_EXAMPLES: RouteExample[] = [
+  {
+    prompt: "refactor src/auth.ts to use the jwt helper",
+    cat: "CODING",
+    model: "kimi-k2.6",
+    cost: "$0.0023",
+    save: 84,
+  },
+  {
+    prompt: "what's the BTC outlook for the week?",
+    cat: "TRADING",
+    model: "grok-4-fast",
+    cost: "$0.0008",
+    save: 95,
+  },
+  {
+    prompt: "prove this algorithm is O(n log n)",
+    cat: "REASONING",
+    model: "sonnet-4.6",
+    cost: "$0.0312",
+    save: 41,
+  },
+  {
+    prompt: "compare the top 5 AI agent pricing models",
+    cat: "RESEARCH",
+    model: "gemini-2.5-flash",
+    cost: "$0.0012",
+    save: 91,
+  },
+];
+
+const CATEGORIES: RouteExample["cat"][] = [
+  "CODING",
+  "TRADING",
+  "REASONING",
+  "RESEARCH",
+];
+
+function RoutingFlow() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduce) return;
+    const id = window.setInterval(() => {
+      setActive((i) => (i + 1) % ROUTE_EXAMPLES.length);
+    }, 2600);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const ex = ROUTE_EXAMPLES[active];
+
+  return (
+    <div className="route-flow" aria-hidden="true">
+      <div className="route-flow-head">
+        <span className="route-flow-k">
+          <span className="route-flow-dot" />
+          live router
+        </span>
+        <span className="route-flow-meta">classify · route · settle</span>
+      </div>
+
+      {/* Stage 1 — prompt enters */}
+      <div className="route-stage route-stage--prompt" key={`p-${active}`}>
+        <span className="route-stage-caret">❯</span>
+        <span className="route-stage-text">{ex.prompt}</span>
+      </div>
+
+      {/* Stage 2 — classifier tags it */}
+      <div className="route-classify">
+        {CATEGORIES.map((cat) => (
+          <span
+            key={cat}
+            className={`route-tag${cat === ex.cat ? " on" : ""}`}
+          >
+            {cat}
+          </span>
+        ))}
+      </div>
+
+      {/* Stage 3 — route to cheapest capable model */}
+      <div className="route-pipe" key={`r-${active}`}>
+        <span className="route-pipe-from">{ex.cat}</span>
+        <span className="route-pipe-arrow">
+          <span className="route-pipe-dash" />
+          <span className="route-pipe-head">→</span>
+        </span>
+        <span className="route-pipe-to">{ex.model}</span>
+      </div>
+
+      {/* Stage 4 — live cost + savings */}
+      <div className="route-result" key={`c-${active}`}>
+        <span className="route-cost">{ex.cost}</span>
+        <span className="route-cost-unit">USDC / call</span>
+        <span className="route-save">
+          saved {ex.save}% <span className="route-save-vs">vs Opus</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function RoutingLedger() {
   const rows: Array<{
     req: string;
@@ -165,6 +288,7 @@ function RoutingLedger() {
 
   return (
     <div className="ledger">
+      <RoutingFlow />
       <div className="ledger-head">
         <span className="l">
           <span className="dot" />
