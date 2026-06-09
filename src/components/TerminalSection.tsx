@@ -1,6 +1,7 @@
 "use client";
 
 import { useTerminalDemo } from "./HeroSection";
+import { Guilloche } from "./Guilloche";
 import { en as defaultDict } from "@/lib/home/en";
 import type { HomeDict } from "@/lib/home/types";
 
@@ -14,7 +15,10 @@ export function TerminalSection({ dict = defaultDict }: TerminalSectionProps) {
   const t = dict.terminalDemo;
 
   return (
-    <section className="term-section">
+    <section className="term-section term-section--dark">
+      <div className="guilloche-bg" aria-hidden="true">
+        <Guilloche variant="wave" opacity={0.12} className="guilloche-wave-fill" />
+      </div>
       <div className="inner">
         <div className="eyebrow">
           <span className="engraved label">{t.eyebrow}</span>
