@@ -113,6 +113,17 @@ type Entry =
   | { kind: "msg"; m: ChatMessage; key: string }
   | { kind: "tools"; tools: ToolStep[]; key: string };
 
+// Shape posted to /api/share — mirrors the server's SharedMessage. A single
+// optional-field type so each selected message can fan out into an image bubble
+// and/or a text bubble (or a tools block) without union-typing friction.
+type SharePayloadMsg = {
+  role: "user" | "assistant";
+  content: string;
+  kind?: ChatMessage["kind"] | "tools";
+  image?: string;
+  tools?: ToolStep[];
+};
+
 export function ShareDialog({ messages, onClose }: { messages: ChatMessage[]; onClose: () => void }) {
   const { lang, t } = useTryLang();
   const L = LABELS[lang] ?? LABELS.en;
@@ -233,18 +244,22 @@ export function ShareDialog({ messages, onClose }: { messages: ChatMessage[]; on
     try {
       const payload = {
         title: selected.find((x) => x.m.role === "user")?.m.content?.slice(0, 80) || "Franklin chat",
-        messages: entries.map((e) =>
-          e.kind === "tools"
-            ? { role: "assistant" as const, content: "", kind: "tools" as const, tools: e.tools }
-            : {
-                role: e.m.role,
-                content: e.m.content,
-                kind: e.m.kind,
-                // Only inline data: images travel (remote/local media is stripped
-                // server-side anyway).
-                image: msgImages(e.m).find((u) => u.startsWith("data:")),
-              },
-        ),
+        messages: entries.flatMap((e): SharePayloadMsg[] => {
+          if (e.kind === "tools") {
+            return [{ role: "assistant" as const, content: "", kind: "tools" as const, tools: e.tools }];
+          }
+          // Only inline data: images travel (remote/local media is stripped
+          // server-side anyway). Send the image as its own kind:"image" bubble:
+          // the /s page renders images only when kind === "image", and user
+          // uploads carry kind:"text", so folding the image into the text
+          // message would drop it from the shared page. A text+image message
+          // becomes two bubbles (image, then prose) so neither is lost.
+          const dataImg = msgImages(e.m).find((u) => u.startsWith("data:"));
+          return [
+            ...(dataImg ? [{ role: e.m.role, content: "", kind: "image" as const, image: dataImg }] : []),
+            ...(e.m.content || !dataImg ? [{ role: e.m.role, content: e.m.content, kind: e.m.kind }] : []),
+          ];
+        }),
       };
       const res = await fetch(SHARE_API, {
         method: "POST",
