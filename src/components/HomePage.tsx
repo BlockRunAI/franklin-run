@@ -33,11 +33,11 @@ export function HomePage({ dict, locale }: HomePageProps) {
           dir={isRTL(locale) ? "rtl" : "ltr"}
         />
       ) : null}
-      <div style={{ position: "relative" }}>
+      <div className="home-hero-frame">
         <Header dict={dict} locale={locale} />
         <HeroSection dict={dict} />
       </div>
-      <TrustBar />
+      <TrustBar dict={dict} />
       <TerminalSection dict={dict} />
       <FeaturesSection dict={dict} />
       <GettingStartedSection dict={dict} />
@@ -45,7 +45,7 @@ export function HomePage({ dict, locale }: HomePageProps) {
       <OpenSourceSection dict={dict} />
       <BlogSection dict={dict} locale={locale} />
       <FAQSection dict={dict} />
-      <ClosingCTA />
+      <ClosingCTA dict={dict} />
       <Footer dict={dict} locale={locale} />
     </>
   );

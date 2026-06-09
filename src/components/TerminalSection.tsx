@@ -11,20 +11,18 @@ interface TerminalSectionProps {
 export function TerminalSection({ dict = defaultDict }: TerminalSectionProps) {
   const { prompt, responseLines } = useTerminalDemo();
   const h = dict.hero;
+  const t = dict.terminalDemo;
 
   return (
     <section className="term-section">
       <div className="inner">
         <div className="eyebrow">
-          <span className="engraved label">See it run</span>
+          <span className="engraved label">{t.eyebrow}</span>
         </div>
         <h2>
-          Five tasks. <em>Five runs. Five receipts.</em>
+          {t.titlePre} <em>{t.titleEm}</em>
         </h2>
-        <p className="sub">
-          A real Franklin Agent session. Each command spawns calls to a routed
-          model, pays per call in USDC, and prints the cost.
-        </p>
+        <p className="sub">{t.sub}</p>
 
         <div className="terminal">
           <div className="term-titlebar">

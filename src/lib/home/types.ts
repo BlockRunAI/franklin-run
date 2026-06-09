@@ -55,6 +55,20 @@ export interface HomeDict {
     termAbort: string;
   };
 
+  trustBar: {
+    builtOn: string;
+    routesPrefix: string;
+    routesModels: string;
+    providersPrefix: string;
+  };
+
+  terminalDemo: {
+    eyebrow: string;
+    titlePre: string;
+    titleEm: string;
+    sub: string;
+  };
+
   features: {
     eyebrow: string;
     /** "What a wallet" */
@@ -126,6 +140,13 @@ export interface HomeDict {
     titleEm: string;
     intro: string;
     items: Array<{ q: string; a: string }>;
+  };
+
+  closing: {
+    kicker: string;
+    titleTop: string;
+    titleEm: string;
+    cta: string;
   };
 
   footer: {

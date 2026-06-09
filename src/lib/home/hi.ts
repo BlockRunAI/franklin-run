@@ -31,6 +31,21 @@ export const hi: HomeDict = {
     termAbort: "रोकने के लिए esc",
   },
 
+  trustBar: {
+    builtOn: "बना है",
+    routesPrefix: "रूट करता है",
+    routesModels: "60+ frontier models",
+    providersPrefix: "इनसे:",
+  },
+
+  terminalDemo: {
+    eyebrow: "चलता हुआ देखें",
+    titlePre: "पांच tasks.",
+    titleEm: "पांच runs. पांच receipts.",
+    sub:
+      "एक असली Franklin Agent session. हर command routed model को call करती है, हर call पर USDC में भुगतान करती है, और cost print करती है.",
+  },
+
   features: {
     eyebrow: "चार अध्याय",
     titleTop: "Wallet क्या",
@@ -242,6 +257,13 @@ export const hi: HomeDict = {
         a: "तेज़ finality, नगण्य fees, mature USDC support, और दोनों पर असली x402 ecosystem। Setup पर चुनिए, कभी भी switch करें। वही wallet UX, वही models, सिर्फ़ rails अलग।",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "एक Economic Agent चलाइए.",
+    titleEm: "Agents को पैसे पर fail होते देखना बंद करें.",
+    cta: "Franklin Agent install करें",
   },
 
   footer: {

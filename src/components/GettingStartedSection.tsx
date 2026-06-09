@@ -46,10 +46,10 @@ export function GettingStartedSection({
         </h2>
 
         <div className="stamp-402">
-          <span className="stamp-c" style={{ top: 12, left: 16 }}>◆ HTTP</span>
-          <span className="stamp-c" style={{ top: 12, right: 16 }}>◆ x402</span>
-          <span className="stamp-c" style={{ bottom: 12, left: 16 }}>◆ EIP-712</span>
-          <span className="stamp-c" style={{ bottom: 12, right: 16 }}>◆ USDC</span>
+          <span className="stamp-c stamp-c-tl">◆ HTTP</span>
+          <span className="stamp-c stamp-c-tr">◆ x402</span>
+          <span className="stamp-c stamp-c-bl">◆ EIP-712</span>
+          <span className="stamp-c stamp-c-br">◆ USDC</span>
           <div className="stamp-row">
             <span className="stamp-num">402</span>
             <div className="stamp-body">
@@ -91,7 +91,7 @@ export function GettingStartedSection({
           </a>
         </div>
 
-        <div style={{ marginTop: 80 }}>
+        <div className="slash-section">
           <div className="eyebrow">
             <span className="engraved label">{g.slashEyebrow}</span>
           </div>

@@ -38,6 +38,21 @@ export const en: HomeDict = {
     termAbort: "esc to abort",
   },
 
+  trustBar: {
+    builtOn: "Built on",
+    routesPrefix: "routes across",
+    routesModels: "60+ frontier models",
+    providersPrefix: "from",
+  },
+
+  terminalDemo: {
+    eyebrow: "See it run",
+    titlePre: "Five tasks.",
+    titleEm: "Five runs. Five receipts.",
+    sub:
+      "A real Franklin Agent session. Each command spawns calls to a routed model, pays per call in USDC, and prints the cost.",
+  },
+
   features: {
     eyebrow: "Four Chapters",
     titleTop: "What a wallet",
@@ -249,6 +264,13 @@ export const en: HomeDict = {
         a: "Fast finality, negligible fees, mature USDC support, and a real x402 ecosystem on both. You pick at setup and can switch anytime. Same wallet UX, same models, different rails.",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "Run an Economic Agent.",
+    titleEm: "Stop watching agents fail at money.",
+    cta: "Install Franklin Agent",
   },
 
   footer: {

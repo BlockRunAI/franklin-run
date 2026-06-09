@@ -38,6 +38,21 @@ export const id: HomeDict = {
     termAbort: "esc untuk batal",
   },
 
+  trustBar: {
+    builtOn: "Dibangun di atas",
+    routesPrefix: "merutekan ke",
+    routesModels: "60+ model frontier",
+    providersPrefix: "dari",
+  },
+
+  terminalDemo: {
+    eyebrow: "Lihat berjalan",
+    titlePre: "Lima tugas.",
+    titleEm: "Lima run. Lima tanda terima.",
+    sub:
+      "Sesi Franklin Agent sungguhan. Tiap command memanggil model hasil routing, membayar per call dalam USDC, lalu mencetak biayanya.",
+  },
+
   features: {
     eyebrow: "Empat Bab",
     titleTop: "Apa yang dompet",
@@ -249,6 +264,13 @@ export const id: HomeDict = {
         a: "Finalitas cepat, biaya nyaris nol, dukungan USDC matang, dan ekosistem x402 nyata di keduanya. Pilih saat setup dan bisa ganti kapan saja. UX dompet sama, model sama, rel berbeda.",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "Jalankan Agent Ekonomi.",
+    titleEm: "Berhenti melihat agent gagal soal uang.",
+    cta: "Pasang Franklin Agent",
   },
 
   footer: {

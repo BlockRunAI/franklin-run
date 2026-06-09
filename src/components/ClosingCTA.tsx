@@ -1,15 +1,24 @@
-export function ClosingCTA() {
+import { en as defaultDict } from "@/lib/home/en";
+import type { HomeDict } from "@/lib/home/types";
+
+interface ClosingCTAProps {
+  dict?: HomeDict;
+}
+
+export function ClosingCTA({ dict = defaultDict }: ClosingCTAProps) {
+  const c = dict.closing;
+
   return (
     <section className="closing-cta">
       <div className="inner">
-        <div className="logo-name">Franklin Agent</div>
+        <div className="logo-name">{c.kicker}</div>
         <h2>
-          Run an Economic Agent.
+          {c.titleTop}
           <br />
-          <em>Stop watching agents fail at money.</em>
+          <em>{c.titleEm}</em>
         </h2>
         <a className="btn-primary lg" href="#get-started">
-          Install Franklin Agent
+          {c.cta}
         </a>
       </div>
     </section>

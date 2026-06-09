@@ -38,6 +38,21 @@ export const tr: HomeDict = {
     termAbort: "iptal için esc",
   },
 
+  trustBar: {
+    builtOn: "Üzerine kurulu:",
+    routesPrefix: "şunlara yönlendirir:",
+    routesModels: "60+ frontier model",
+    providersPrefix: "sağlayıcılar:",
+  },
+
+  terminalDemo: {
+    eyebrow: "Çalışırken gör",
+    titlePre: "Beş görev.",
+    titleEm: "Beş çalıştırma. Beş makbuz.",
+    sub:
+      "Gerçek bir Franklin Agent oturumu. Her komut yönlendirilmiş bir modeli çağırır, çağrı başına USDC ile öder ve maliyeti yazdırır.",
+  },
+
   features: {
     eyebrow: "Dört Bölüm",
     titleTop: "Bir cüzdanın",
@@ -249,6 +264,13 @@ export const tr: HomeDict = {
         a: "Hızlı kesinleşme, ihmal edilebilir ücretler, olgun USDC desteği ve her ikisinde de gerçek bir x402 ekosistemi. Kurulumda seçersiniz, dilediğiniz zaman değiştirirsiniz. Aynı cüzdan UX'i, aynı modeller, farklı raylar.",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "Ekonomik bir ajan çalıştırın.",
+    titleEm: "Ajanların para konusunda başarısız olmasını izlemeyi bırakın.",
+    cta: "Franklin Agent'i kur",
   },
 
   footer: {

@@ -31,6 +31,21 @@ export const ko: HomeDict = {
     termAbort: "esc로 중단",
   },
 
+  trustBar: {
+    builtOn: "기반:",
+    routesPrefix: "라우팅 대상",
+    routesModels: "60+ 프런티어 모델",
+    providersPrefix: "제공사:",
+  },
+
+  terminalDemo: {
+    eyebrow: "실행 보기",
+    titlePre: "다섯 가지 작업.",
+    titleEm: "다섯 번의 실행. 다섯 장의 영수증.",
+    sub:
+      "실제 Franklin Agent 세션. 각 명령은 라우팅된 모델을 호출하고, 호출마다 USDC로 지불하며, 비용을 출력한다.",
+  },
+
   features: {
     eyebrow: "네 개의 장",
     titleTop: "지갑이",
@@ -242,6 +257,13 @@ export const ko: HomeDict = {
         a: "빠른 파이널리티, 무시할 만한 수수료, 성숙한 USDC 지원, 그리고 양쪽 모두에 실재하는 x402 생태계. 셋업할 때 고르고 언제든 전환할 수 있다. 같은 지갑 UX, 같은 모델, 다른 레일.",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "경제 에이전트를 실행하라.",
+    titleEm: "돈 앞에서 실패하는 에이전트는 그만 보라.",
+    cta: "Franklin Agent 설치",
   },
 
   footer: {

@@ -38,6 +38,21 @@ export const ar: HomeDict = {
     termAbort: "اضغط esc للإلغاء",
   },
 
+  trustBar: {
+    builtOn: "مبني على",
+    routesPrefix: "يوجّه عبر",
+    routesModels: "أكثر من 60 نموذجًا حدوديًا",
+    providersPrefix: "من",
+  },
+
+  terminalDemo: {
+    eyebrow: "شاهده يعمل",
+    titlePre: "خمس مهام.",
+    titleEm: "خمس تشغيلات. خمس إيصالات.",
+    sub:
+      "جلسة Franklin Agent حقيقية. كل أمر يستدعي نموذجًا موجّهًا، ويدفع لكل استدعاء بعملة USDC، ثم يطبع التكلفة.",
+  },
+
   features: {
     eyebrow: "أربعة فصول",
     titleTop: "ما الذي تغيّره",
@@ -249,6 +264,13 @@ export const ar: HomeDict = {
         a: "حسم سريع، رسوم ضئيلة، دعم ناضج لـ USDC، ومنظومة x402 حقيقية على كليهما. تختار عند الإعداد ويمكنك التبديل في أي وقت. نفس تجربة المحفظة، نفس النماذج، سكك مختلفة.",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "شغّل وكيلاً اقتصاديًا.",
+    titleEm: "توقف عن مشاهدة الوكلاء يفشلون أمام المال.",
+    cta: "ثبّت Franklin Agent",
   },
 
   footer: {

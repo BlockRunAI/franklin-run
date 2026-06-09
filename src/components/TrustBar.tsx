@@ -1,11 +1,20 @@
-export function TrustBar() {
+import { en as defaultDict } from "@/lib/home/en";
+import type { HomeDict } from "@/lib/home/types";
+
+interface TrustBarProps {
+  dict?: HomeDict;
+}
+
+export function TrustBar({ dict = defaultDict }: TrustBarProps) {
+  const t = dict.trustBar;
+
   return (
     <div className="trust-bar">
       <p>
-        Built on <strong>USDC</strong> · <strong>Base</strong> ·{" "}
-        <strong>Solana</strong> · <strong>x402</strong> · routes across{" "}
-        <strong>60+ frontier models</strong> from Anthropic, OpenAI, Google,
-        DeepSeek, Moonshot and Z.AI.
+        {t.builtOn} <strong>USDC</strong> · <strong>Base</strong> ·{" "}
+        <strong>Solana</strong> · <strong>x402</strong> · {t.routesPrefix}{" "}
+        <strong>{t.routesModels}</strong> {t.providersPrefix} Anthropic,
+        OpenAI, Google, DeepSeek, Moonshot and Z.AI.
       </p>
     </div>
   );

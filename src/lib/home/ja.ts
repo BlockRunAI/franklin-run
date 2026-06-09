@@ -31,6 +31,21 @@ export const ja: HomeDict = {
     termAbort: "esc で中断",
   },
 
+  trustBar: {
+    builtOn: "基盤は",
+    routesPrefix: "ルーティング先は",
+    routesModels: "60+ のフロンティアモデル",
+    providersPrefix: "提供元は",
+  },
+
+  terminalDemo: {
+    eyebrow: "実行を見る",
+    titlePre: "5つのタスク。",
+    titleEm: "5回の実行。5枚のレシート。",
+    sub:
+      "実際の Franklin Agent セッション。各コマンドはルーティングされたモデルを呼び出し、USDC でコールごとに支払い、コストを出力する。",
+  },
+
   features: {
     eyebrow: "四つの章",
     titleTop: "ウォレットが",
@@ -241,6 +256,13 @@ export const ja: HomeDict = {
         a: "高速なファイナリティ、無視できる手数料、成熟した USDC サポート、そして両方に本物の x402 エコシステムがあるから。セットアップ時に選び、いつでも切り替え可能。同じウォレット UX、同じモデル、異なるレール。",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "経済エージェントを走らせる。",
+    titleEm: "お金で失敗するエージェントを見るのは終わり。",
+    cta: "Franklin Agent をインストール",
   },
 
   footer: {

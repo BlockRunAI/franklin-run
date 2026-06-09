@@ -31,6 +31,21 @@ export const zhCN: HomeDict = {
     termAbort: "按 esc 中止",
   },
 
+  trustBar: {
+    builtOn: "构建于",
+    routesPrefix: "可路由到",
+    routesModels: "60+ 前沿模型",
+    providersPrefix: "来自",
+  },
+
+  terminalDemo: {
+    eyebrow: "实际运行",
+    titlePre: "五个任务。",
+    titleEm: "五次执行。五张收据。",
+    sub:
+      "一段真实的 Franklin Agent 会话。每条命令都会调用路由后的模型，按次用 USDC 付款，并打印成本。",
+  },
+
   features: {
     eyebrow: "四个篇章",
     titleTop: "钱包带来的",
@@ -242,6 +257,13 @@ export const zhCN: HomeDict = {
         a: "终局速度快、手续费可忽略、USDC 支持成熟，且两条链上都有真正可用的 x402 生态。安装时挑一条，随时切换。同样的钱包体验，同样的模型，只是底层轨道不同。",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "运行一个经济智能体。",
+    titleEm: "别再看智能体在花钱这件事上失败。",
+    cta: "安装 Franklin Agent",
   },
 
   footer: {

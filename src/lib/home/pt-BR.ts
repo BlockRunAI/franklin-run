@@ -37,6 +37,21 @@ export const ptBR: HomeDict = {
     termAbort: "esc para abortar",
   },
 
+  trustBar: {
+    builtOn: "Construído sobre",
+    routesPrefix: "roteia por",
+    routesModels: "60+ modelos frontier",
+    providersPrefix: "de",
+  },
+
+  terminalDemo: {
+    eyebrow: "Veja rodando",
+    titlePre: "Cinco tarefas.",
+    titleEm: "Cinco execuções. Cinco recibos.",
+    sub:
+      "Uma sessão real do Franklin Agent. Cada comando chama um modelo roteado, paga por chamada em USDC e imprime o custo.",
+  },
+
   features: {
     eyebrow: "Quatro Capítulos",
     titleTop: "O que uma carteira",
@@ -248,6 +263,13 @@ export const ptBR: HomeDict = {
         a: "Finalidade rápida, taxas irrisórias, suporte maduro a USDC e um ecossistema x402 real nas duas. Você escolhe na configuração e pode trocar quando quiser. Mesma UX de carteira, mesmos modelos, trilhos diferentes.",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "Rode um agente econômico.",
+    titleEm: "Pare de ver agentes falharem com dinheiro.",
+    cta: "Instalar Franklin Agent",
   },
 
   footer: {

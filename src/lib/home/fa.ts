@@ -39,6 +39,21 @@ export const fa: HomeDict = {
     termAbort: "esc برای لغو",
   },
 
+  trustBar: {
+    builtOn: "ساخته‌شده روی",
+    routesPrefix: "مسیریابی به",
+    routesModels: "بیش از ۶۰ مدل مرزی",
+    providersPrefix: "از",
+  },
+
+  terminalDemo: {
+    eyebrow: "اجرای واقعی",
+    titlePre: "پنج وظیفه.",
+    titleEm: "پنج اجرا. پنج رسید.",
+    sub:
+      "یک نشست واقعی Franklin Agent. هر فرمان مدل مسیریابی‌شده را فراخوانی می‌کند، برای هر فراخوانی با USDC می‌پردازد و هزینه را چاپ می‌کند.",
+  },
+
   features: {
     eyebrow: "چهار فصل",
     titleTop: "آنچه یک کیف پول",
@@ -250,6 +265,13 @@ export const fa: HomeDict = {
         a: "نهایی‌سازی سریع، کارمزد ناچیز، پشتیبانی بالغ از USDC و یک اکوسیستم x402 واقعی روی هر دو. هنگام راه‌اندازی انتخاب می‌کنید و هر زمان می‌توانید جابه‌جا شوید. همان تجربه کیف پول، همان مدل‌ها، ریل‌های متفاوت.",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "یک عامل اقتصادی اجرا کنید.",
+    titleEm: "دیگر شکست عامل‌ها در برابر پول را تماشا نکنید.",
+    cta: "نصب Franklin Agent",
   },
 
   footer: {

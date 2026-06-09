@@ -31,6 +31,21 @@ export const vi: HomeDict = {
     termAbort: "esc để hủy",
   },
 
+  trustBar: {
+    builtOn: "Xây dựng trên",
+    routesPrefix: "định tuyến qua",
+    routesModels: "60+ frontier models",
+    providersPrefix: "từ",
+  },
+
+  terminalDemo: {
+    eyebrow: "Xem chạy thật",
+    titlePre: "Năm tác vụ.",
+    titleEm: "Năm lần chạy. Năm biên lai.",
+    sub:
+      "Một phiên Franklin Agent thật. Mỗi command gọi model đã được định tuyến, trả phí từng call bằng USDC, rồi in chi phí.",
+  },
+
   features: {
     eyebrow: "Bốn chương",
     titleTop: "Một chiếc ví",
@@ -242,6 +257,13 @@ export const vi: HomeDict = {
         a: "Finality nhanh, phí gần như bằng không, hỗ trợ USDC trưởng thành, và một hệ sinh thái x402 thực sự trên cả hai. Bạn chọn lúc setup và đổi lúc nào cũng được. Cùng UX ví, cùng models, khác đường ray.",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "Chạy một tác nhân kinh tế.",
+    titleEm: "Đừng xem agent thất bại vì tiền nữa.",
+    cta: "Cài Franklin Agent",
   },
 
   footer: {

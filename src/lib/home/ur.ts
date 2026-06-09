@@ -37,6 +37,21 @@ export const ur: HomeDict = {
     termAbort: "روکنے کے لیے esc",
   },
 
+  trustBar: {
+    builtOn: "بنا ہے",
+    routesPrefix: "روٹ کرتا ہے",
+    routesModels: "60+ frontier models",
+    providersPrefix: "ان سے:",
+  },
+
+  terminalDemo: {
+    eyebrow: "چلتا ہوا دیکھیں",
+    titlePre: "پانچ tasks۔",
+    titleEm: "پانچ runs۔ پانچ receipts۔",
+    sub:
+      "ایک حقیقی Franklin Agent session۔ ہر command routed model کو call کرتی ہے، ہر call پر USDC میں ادائیگی کرتی ہے، اور cost print کرتی ہے۔",
+  },
+
   features: {
     eyebrow: "چار باب",
     titleTop: "والیٹ کیا کچھ",
@@ -248,6 +263,13 @@ export const ur: HomeDict = {
         a: "تیز finality، نہ ہونے کے برابر فیس، پختہ USDC سپورٹ، اور دونوں پر حقیقی x402 ایکو سسٹم۔ سیٹ اپ پر چن لیں اور کسی بھی وقت سوئچ کر لیں۔ ایک ہی والیٹ UX، ایک ہی ماڈلز، مختلف rails۔",
       },
     ],
+  },
+
+  closing: {
+    kicker: "Franklin Agent",
+    titleTop: "ایک Economic Agent چلائیں۔",
+    titleEm: "Agents کو پیسے پر fail ہوتے دیکھنا بند کریں۔",
+    cta: "Franklin Agent install کریں",
   },
 
   footer: {
