@@ -13,7 +13,15 @@ export function CompareSection({ dict = defaultDict }: CompareSectionProps) {
   const c = dict.compare;
 
   return (
-    <section id="compare" className="light darker compare-section--dark">
+    <section id="compare" className="light darker compare-section--dark surface-dark">
+      <div className="surface-grid" aria-hidden="true" />
+      <div className="surface-status" aria-hidden="true">
+        <span className="surface-status-l">
+          <span className="surface-status-dot" /> ledger
+        </span>
+        <span className="surface-status-c">23 reqs · 4 models · saved 67%</span>
+        <span className="surface-status-r">settle · USDC · Base / Solana</span>
+      </div>
       <div className="guilloche-bg" aria-hidden="true">
         <Guilloche variant="wave" opacity={0.1} className="guilloche-wave-fill" />
       </div>
