@@ -1,3 +1,4 @@
+import { Guilloche } from "./Guilloche";
 import { en as defaultDict } from "@/lib/home/en";
 import type { HomeDict } from "@/lib/home/types";
 
@@ -9,7 +10,10 @@ export function ClosingCTA({ dict = defaultDict }: ClosingCTAProps) {
   const c = dict.closing;
 
   return (
-    <section className="closing-cta">
+    <section className="closing-cta closing-cta--green">
+      <div className="guilloche-bg guilloche-bg--closing" aria-hidden="true">
+        <Guilloche variant="rosette" opacity={0.16} />
+      </div>
       <div className="inner">
         <div className="logo-name">{c.kicker}</div>
         <h2>

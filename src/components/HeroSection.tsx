@@ -1,10 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckIcon, CopyIcon, GitHubIcon } from "./icons";
-import { cdnUrl } from "@/lib/cdn";
+import { Guilloche } from "./Guilloche";
 import { en as defaultDict } from "@/lib/home/en";
 import type { HomeDict } from "@/lib/home/types";
 
@@ -162,6 +161,116 @@ export function useTerminalDemo() {
   return { prompt, responseLines };
 }
 
+/**
+ * Gentle USDC balance count-up that drifts down a few cents over time —
+ * conveys a live wallet paying for tasks. Pure CSS-free, lightweight JS.
+ * Respects prefers-reduced-motion by holding a static value.
+ */
+const USDC_START = 128.38;
+
+function useUsdcBalance() {
+  const [balance, setBalance] = useState(USDC_START);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduce) return;
+
+    let current = USDC_START;
+    const id = window.setInterval(() => {
+      // Tiny stochastic debit, looping back up so the figure stays alive.
+      const debit = 0.0007 + Math.random() * 0.0042;
+      current = current - debit;
+      if (current < USDC_START - 0.45) current = USDC_START;
+      setBalance(current);
+    }, 1400);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return balance;
+}
+
+const TECH_CHIPS = ["x402", "EIP-712", "● Base", "● Solana", "402 → paid"];
+
+/** Compact live agent panel — the technical "star" of the hero. */
+function HeroLivePanel() {
+  const { prompt, responseLines } = useTerminalDemo();
+  const balance = useUsdcBalance();
+
+  return (
+    <div className="hero-panel" aria-hidden="true">
+      {/* Wallet strip + on-chain credibility chips */}
+      <div className="hero-wallet">
+        <div className="hero-wallet-bal">
+          <span className="hero-wallet-k">USDC</span>
+          <span className="hero-wallet-n">{balance.toFixed(2)}</span>
+          <span className="hero-wallet-net">· Base</span>
+          <span className="hero-wallet-tick" />
+        </div>
+        <div className="hero-chips">
+          {TECH_CHIPS.map((chip) => (
+            <span className="hero-chip" key={chip}>
+              {chip}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Streaming terminal (reuses the live typing demo) */}
+      <div className="terminal hero-terminal">
+        <div className="term-titlebar">
+          <span className="dot r" />
+          <span className="dot y" />
+          <span className="dot g" />
+          <span className="term-path">franklin · ~/work</span>
+          <span className="term-live">
+            <span className="hero-live-dot" /> live
+          </span>
+        </div>
+        <div className="term-body">
+          <div className="prompt-line">
+            <span className="prompt-caret">❯ </span>
+            <span className="prompt-text">{prompt}</span>
+            <span className="caret" />
+          </div>
+          <div className="term-resp">
+            {responseLines.map((line, idx) => (
+              <div
+                key={idx}
+                style={{ color: line.color || "rgba(255,255,255,.6)" }}
+              >
+                {line.text || " "}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="term-statusbar">
+          <span className="model">router → cheapest capable</span>
+          <span>·</span>
+          <span className="cost">x402 micropayment</span>
+        </div>
+      </div>
+
+      {/* Model-routing + savings indicator */}
+      <div className="hero-route">
+        <div className="hero-route-line">
+          <span className="hero-route-cat">CODING</span>
+          <span className="hero-route-arrow">→</span>
+          <span className="hero-route-model">kimi-k2.6</span>
+        </div>
+        <div className="hero-route-meter">
+          <div className="hero-route-bar">
+            <span className="hero-route-fill" style={{ width: "95%" }} />
+          </div>
+          <span className="hero-route-save">saved 95% vs Opus</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function InstallBox({ ariaLabel }: { ariaLabel: string }) {
   const [copied, setCopied] = useState(false);
@@ -195,18 +304,16 @@ export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
   const h = dict.hero;
 
   return (
-    <section className="hero">
-      <div className="hero-backdrop" aria-hidden="true">
-        <Image
-          src={cdnUrl("/images/franklin-portrait.jpg")}
-          alt=""
-          fill
-          priority
-          unoptimized
-          sizes="100vw"
-        />
+    <section className="hero hero--tech">
+      {/* Engineered hairline grid backdrop ("the technology") */}
+      <div className="hero-grid" aria-hidden="true" />
+      {/* Faint gold guilloché ("the money") — coexists with the grid */}
+      <div className="guilloche-bg guilloche-bg--hero">
+        <Guilloche variant="rosette" opacity={0.16} />
       </div>
-      <div className="hero-wrap">
+
+      <div className="hero-wrap hero-wrap--split">
+        {/* Editorial statement */}
         <div className="hero-inner">
           <div className="eyebrow">
             <span className="engraved label">{h.eyebrow}</span>
@@ -244,6 +351,9 @@ export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
             Trusted by developers shipping autonomous agents on <strong>Base</strong> and <strong>Solana</strong>.
           </p>
         </div>
+
+        {/* Live technical product panel — the star */}
+        <HeroLivePanel />
       </div>
     </section>
   );

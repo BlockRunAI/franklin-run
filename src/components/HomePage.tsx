@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
+import { ActivityTicker } from "@/components/ActivityTicker";
 import { TrustBar } from "@/components/TrustBar";
 import { TerminalSection } from "@/components/TerminalSection";
 import { FeaturesSection } from "@/components/FeaturesSection";
@@ -10,6 +11,7 @@ import { BlogSection } from "@/components/BlogSection";
 import { FAQSection } from "@/components/FAQSection";
 import { ClosingCTA } from "@/components/ClosingCTA";
 import { Footer } from "@/components/Footer";
+import { Guilloche } from "@/components/Guilloche";
 import { HtmlLangSync } from "@/components/blog/HtmlLangSync";
 import { isRTL, LOCALE_META, type Locale } from "@/lib/locales";
 import type { HomeDict } from "@/lib/home/types";
@@ -17,6 +19,17 @@ import type { HomeDict } from "@/lib/home/types";
 interface HomePageProps {
   dict: HomeDict;
   locale: Locale;
+}
+
+/** Gold engraved divider recurring between major light sections. */
+function SectionDivider() {
+  return (
+    <div className="section-divider" aria-hidden="true">
+      <div className="guilloche-rule">
+        <Guilloche variant="wave" />
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -37,13 +50,16 @@ export function HomePage({ dict, locale }: HomePageProps) {
         <Header dict={dict} locale={locale} />
         <HeroSection dict={dict} />
       </div>
+      <ActivityTicker />
       <TrustBar dict={dict} />
       <TerminalSection dict={dict} />
       <FeaturesSection dict={dict} />
+      <SectionDivider />
       <GettingStartedSection dict={dict} />
       <CompareSection dict={dict} />
       <OpenSourceSection dict={dict} />
       <BlogSection dict={dict} locale={locale} />
+      <SectionDivider />
       <FAQSection dict={dict} />
       <ClosingCTA dict={dict} />
       <Footer dict={dict} locale={locale} />
