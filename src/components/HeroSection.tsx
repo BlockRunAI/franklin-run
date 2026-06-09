@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckIcon, CopyIcon, GitHubIcon } from "./icons";
+import { Guilloche } from "./Guilloche";
 import { cdnUrl } from "@/lib/cdn";
 import { en as defaultDict } from "@/lib/home/en";
 import type { HomeDict } from "@/lib/home/types";
@@ -196,6 +197,9 @@ export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
 
   return (
     <section className="hero">
+      <div className="guilloche-bg">
+        <Guilloche variant="rosette" opacity={0.12} />
+      </div>
       <div className="hero-backdrop" aria-hidden="true">
         <Image
           src={cdnUrl("/images/franklin-portrait.jpg")}
@@ -223,6 +227,10 @@ export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
           <p className="hero-sub">
             {h.subPre} <em>{h.subEm}</em> {h.subPost}
           </p>
+
+          <div className="guilloche-rule" aria-hidden="true">
+            <Guilloche variant="wave" />
+          </div>
 
           <div className="hero-ctas">
             <Link className="btn-primary lg" href="/chat">
