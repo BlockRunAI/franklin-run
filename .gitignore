@@ -57,3 +57,4 @@ temp/
 
 # Local dev conversation store
 .franklin-store/
+.worktrees/
