@@ -1,3 +1,4 @@
+import { Guilloche } from "./Guilloche";
 import { en as defaultDict } from "@/lib/home/en";
 import type { HomeDict } from "@/lib/home/types";
 
@@ -12,7 +13,10 @@ export function CompareSection({ dict = defaultDict }: CompareSectionProps) {
   const c = dict.compare;
 
   return (
-    <section id="compare" className="light darker">
+    <section id="compare" className="light darker compare-section--dark">
+      <div className="guilloche-bg" aria-hidden="true">
+        <Guilloche variant="wave" opacity={0.1} className="guilloche-wave-fill" />
+      </div>
       <div className="inner">
         <div className="features-head">
           <div>
