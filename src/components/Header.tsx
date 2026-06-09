@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { GitHubIcon } from "./icons";
-import { cdnUrl } from "@/lib/cdn";
 import { en as defaultDict } from "@/lib/home/en";
 import type { HomeDict } from "@/lib/home/types";
 import { homeUrl, type Locale } from "@/lib/locales";
@@ -34,13 +32,14 @@ export function Header({
       <div className="hdr-inner">
         <Link href={home} className="logo">
           <div className="logo-ring">
-            <Image
-              src={cdnUrl("/images/franklin-portrait.jpg")}
-              alt="Franklin"
-              width={32}
-              height={32}
-              priority
-              unoptimized
+            {/* Plain <img> (no static import) so a missing avatar 404s gracefully
+                without breaking the build; the user drops the file in at deploy. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/franklin-avatar.png"
+              alt="Franklin Agent"
+              width={30}
+              height={30}
             />
           </div>
           <div className="logo-name">Franklin Agent</div>
