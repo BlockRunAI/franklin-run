@@ -197,9 +197,6 @@ export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
 
   return (
     <section className="hero">
-      <div className="guilloche-bg">
-        <Guilloche variant="rosette" opacity={0.12} />
-      </div>
       <div className="hero-backdrop" aria-hidden="true">
         <Image
           src={cdnUrl("/images/franklin-portrait.jpg")}
@@ -210,8 +207,14 @@ export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
           sizes="100vw"
         />
       </div>
+      <div className="guilloche-bg guilloche-bg--hero">
+        <Guilloche variant="rosette" opacity={0.34} />
+      </div>
       <div className="hero-wrap">
-        <div className="hero-inner">
+        <div className="hero-inner hero-inner--framed">
+          <div className="guilloche-rule guilloche-rule--top" aria-hidden="true">
+            <Guilloche variant="wave" />
+          </div>
           <div className="eyebrow">
             <span className="engraved label">{h.eyebrow}</span>
           </div>

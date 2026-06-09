@@ -6886,3 +6886,244 @@ h2.dark-h {
   height: 100%;
   display: block;
 }
+
+/* =====================================================
+   BOLD REDESIGN — light → dark → light → dark → light pulse
+   Dark bands = petrol-ink / bill-green. Gold guilloché motif
+   made genuinely visible. Light cream stays the dominant base.
+   ===================================================== */
+
+/* ---- Hero: visible engraving + grander headline + frame ---- */
+.guilloche-bg--hero {
+  /* Layer the rosette ABOVE the portrait backdrop but BELOW the text. */
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.guilloche-bg--hero > svg {
+  /* Constrain the rosette to a centered framing disc behind the headline. */
+  width: min(120vh, 1100px);
+  height: min(120vh, 1100px);
+  margin: 0 auto;
+  -webkit-mask-image: radial-gradient(closest-side, #000 58%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 58%, transparent 100%);
+}
+
+/* Engraved double-rule frame around the hero copy block */
+.hero-inner--framed {
+  position: relative;
+  padding: 44px 48px;
+  border: 1px solid var(--gold-line);
+  border-radius: 4px;
+  background: linear-gradient(
+    180deg,
+    rgba(244, 241, 234, 0.5) 0%,
+    rgba(244, 241, 234, 0.32) 100%
+  );
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+  box-shadow: inset 0 0 0 4px rgba(244, 241, 234, 0.45),
+    inset 0 0 0 5px var(--gold-line);
+}
+
+@media (max-width: 1023px) {
+  .hero-inner--framed {
+    padding: 32px 24px;
+  }
+}
+
+.guilloche-rule--top {
+  margin: 0 0 24px;
+}
+
+/* Bigger, more confident hero headline */
+h1.hero-title {
+  font-size: clamp(52px, 7.4vw, 96px);
+  line-height: 0.96;
+}
+
+@media (max-width: 1023px) {
+  h1.hero-title {
+    font-size: clamp(44px, 9vw, 64px);
+  }
+}
+
+@media (max-width: 640px) {
+  h1.hero-title {
+    font-size: 42px;
+  }
+}
+
+/* Shared full-bleed wave watermark fill (used on dark bands) */
+.guilloche-wave-fill {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- Dark band 1: Terminal section (petrol-ink) ---- */
+.term-section--dark {
+  position: relative;
+  background: var(--accent) !important;
+  overflow: hidden;
+}
+.term-section--dark .guilloche-bg {
+  z-index: 0;
+  display: flex;
+  align-items: center;
+}
+.term-section--dark .inner {
+  position: relative;
+  z-index: 1;
+}
+.term-section--dark .eyebrow .engraved,
+.term-section--dark .eyebrow .label {
+  color: rgba(244, 241, 234, 0.72);
+}
+.term-section--dark .eyebrow .engraved::after {
+  background: linear-gradient(90deg, transparent, var(--gold-line), transparent);
+}
+.term-section--dark h2 {
+  color: #f4f1ea;
+}
+.term-section--dark h2 em {
+  color: var(--gold-dim);
+}
+.term-section--dark .sub {
+  color: rgba(244, 241, 234, 0.72);
+}
+
+/* ---- Dark band 2: Compare section (petrol-ink) ---- */
+.compare-section--dark {
+  position: relative;
+  background: var(--accent) !important;
+  overflow: hidden;
+}
+.compare-section--dark .guilloche-bg {
+  z-index: 0;
+  display: flex;
+  align-items: center;
+}
+.compare-section--dark .inner {
+  position: relative;
+  z-index: 1;
+}
+.compare-section--dark .features-head .eyebrow .engraved,
+.compare-section--dark .features-head .eyebrow .label {
+  color: rgba(244, 241, 234, 0.72);
+}
+.compare-section--dark h2.section-h {
+  color: #f4f1ea;
+}
+.compare-section--dark h2.section-h em {
+  color: var(--gold-dim);
+}
+.compare-section--dark .features-intro {
+  color: rgba(244, 241, 234, 0.74);
+}
+.compare-section--dark .features-intro em {
+  color: #f4f1ea;
+}
+
+/* Comparison table on dark */
+.compare-section--dark .compare-wrap {
+  background: rgba(10, 16, 19, 0.42);
+  border-color: rgba(244, 241, 234, 0.16);
+}
+.compare-section--dark .compare thead th {
+  background: rgba(10, 16, 19, 0.5);
+  color: rgba(244, 241, 234, 0.66);
+  border-bottom-color: rgba(244, 241, 234, 0.16);
+}
+.compare-section--dark .compare thead th.franklin {
+  color: var(--gold-dim);
+}
+.compare-section--dark .compare thead th.franklin::before {
+  background: var(--gold);
+}
+.compare-section--dark .compare tbody td {
+  color: rgba(244, 241, 234, 0.68);
+  border-bottom-color: rgba(244, 241, 234, 0.12);
+}
+.compare-section--dark .compare tbody td.label {
+  color: #f4f1ea;
+}
+.compare-section--dark .compare tbody td.no {
+  color: rgba(244, 241, 234, 0.4);
+  text-decoration-color: rgba(244, 241, 234, 0.3);
+}
+.compare-section--dark .compare tbody td.franklin-col {
+  background: rgba(201, 162, 39, 0.12);
+  border-left-color: var(--gold-line);
+  border-right-color: var(--gold-line);
+  color: #f4f1ea;
+}
+.compare-section--dark .compare tbody tr:last-child .franklin-col {
+  border-bottom-color: var(--gold-line);
+}
+.compare-section--dark .compare tbody td.franklin-col strong {
+  color: var(--gold-dim);
+}
+
+/* ---- Dark finale: Closing CTA (bill-green) ---- */
+.closing-cta--green {
+  position: relative;
+  background: var(--bill-green) !important;
+  overflow: hidden;
+}
+/* Neutralize the cream override layer's gold glow on the green finale */
+.closing-cta--green::before {
+  background: none !important;
+}
+.closing-cta--green .guilloche-bg--closing {
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.closing-cta--green .guilloche-bg--closing > svg {
+  width: min(118vh, 980px);
+  height: min(118vh, 980px);
+  margin: 0 auto;
+}
+.closing-cta--green .inner {
+  position: relative;
+  z-index: 1;
+}
+.closing-cta--green .logo-name {
+  color: var(--gold-dim) !important;
+  opacity: 1;
+}
+.closing-cta--green h2 {
+  color: #f6f3ec !important;
+}
+.closing-cta--green h2 em {
+  color: rgba(246, 243, 236, 0.7) !important;
+}
+.closing-cta--green .btn-primary {
+  background: #f4f1ea !important;
+  color: var(--bill-green) !important;
+  border-color: #f4f1ea !important;
+}
+.closing-cta--green .btn-primary:hover {
+  background: #ffffff !important;
+  border-color: var(--gold) !important;
+}
+
+/* ---- Recurring gold section dividers between light sections ---- */
+.section-divider {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.section-divider .guilloche-rule {
+  opacity: 0.7;
+  margin: 8px 0;
+}
+
+@media (max-width: 1023px) {
+  .section-divider {
+    padding: 0 24px;
+  }
+}
