@@ -378,12 +378,20 @@ const TOOL_ACTIVATION_NOTE =
 // the model to answer from search snippets. The CLI exposes this capability
 // directly, so mirror that behaviour here for clear Polymarket/odds requests.
 // The focused-tool buttons still take precedence over this automatic routing.
+//
+// A match here forces a PAID tool call the model cannot decline, so the
+// patterns must be near-zero false positive: venue names (except "limitless",
+// a common adjective, which needs market context) and unambiguous
+// prediction-market phrases only. Bare "odds"/胜率/盘口 fire on everyday
+// language ("odds and ends", game win rates, order-book slang) and are
+// deliberately excluded; ambiguous CJK betting terms require betting context.
 function impliedToolForPrompt(prompt: string): string | undefined {
   const text = prompt.toLowerCase();
   if (
-    /\b(polymarket|kalshi|limitless|predict\.fun)\b/.test(text) ||
-    /\b(prediction market|betting odds|implied probability|odds)\b/.test(text) ||
-    /预测市场|赔率|盘口|胜率/.test(prompt)
+    /\b(polymarket|kalshi|predict\.fun|limitless\.exchange|limitless (?:exchange|markets?))\b/.test(text) ||
+    /\b(prediction markets?|betting odds|market odds|implied probabilit(?:y|ies))\b/.test(text) ||
+    /预测市场/.test(prompt) ||
+    (/赔率|盘口|胜率/.test(prompt) && /预测|押注|下注|博彩/.test(prompt))
   ) {
     return "search_prediction_markets";
   }
@@ -824,13 +832,18 @@ export function useFranklinChat(
   // (mirrors Franklin CLI's src/agent/llm.ts). Tool-use / tool-result blocks
   // live only in this API-local array; the user only sees their message and
   // the final answer text.
-  async function runChatWithTools(history: ChatMessage[], model: string, forceTool?: string) {
+  async function runChatWithTools(history: ChatMessage[], model: string, forceTool?: string, impliedTool?: boolean) {
     setStatus("thinking");
     type ApiMsg = Record<string, unknown>;
     // Focus mode: nudge the model to use the chosen tool (tool_choice forces it,
-    // this just improves the phrasing of the answer afterwards).
+    // this just improves the phrasing of the answer afterwards). Implied routing
+    // (regex-detected, not user-selected) must NOT claim the user chose the tool:
+    // on a false-positive match the honest framing lets the model discard an
+    // irrelevant result and answer the actual question.
     const focusNudge = forceTool
-      ? `\n\nThe user selected the ${toolLabel(forceTool)} capability — use the ${forceTool} tool to answer this turn, then summarize the result clearly.`
+      ? impliedTool
+        ? `\n\nThe request looks like a prediction-market question, so the ${forceTool} tool has been pre-selected for this turn. If its result is irrelevant to what the user actually asked, ignore it and answer the question directly.`
+        : `\n\nThe user selected the ${toolLabel(forceTool)} capability — use the ${forceTool} tool to answer this turn, then summarize the result clearly.`
       : "";
     const systemPrompt = `${FRANKLIN_SYSTEM_PROMPT}\n\n${systemPromptDateLine(userTz())}\n\n${FRANKLIN_TOOLS_PROMPT}${TOOL_ACTIVATION_NOTE}${focusNudge}`;
     // Convert a user-attached image to an Anthropic image content block.
@@ -1009,7 +1022,12 @@ export function useFranklinChat(
     let effectiveModel = base === "blockrun/auto" ? resolveAuto(lastPrompt) : base;
     if (hasImage && !isVisionModel(effectiveModel)) effectiveModel = pickVisionSibling(effectiveModel);
     modelRef.current = effectiveModel;
-    await runChatWithTools(history, effectiveModel, forceTool ?? impliedToolForPrompt(lastPrompt));
+    // Implied routing only runs with a connected wallet: forcing a paid tool on
+    // a wallet-less visitor would replace their answer with a connect-wallet
+    // prompt. Without a wallet the model routes normally (and can still ask).
+    const implied =
+      !forceTool && isConnectedRef.current ? impliedToolForPrompt(lastPrompt) : undefined;
+    await runChatWithTools(history, effectiveModel, forceTool ?? implied, Boolean(implied));
   }
 
   // Detached, per-conversation media job (image/video). Adds the user message,
