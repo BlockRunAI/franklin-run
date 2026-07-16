@@ -372,6 +372,24 @@ const TOOL_ACTIVATION_NOTE =
   "\n\nIMPORTANT: Your tools are hidden by default. To use any capability (web search, prediction markets, prices, music, phone), " +
   "first call activate_tool with the names you need, then call the tool on the following turn.";
 
+// The web client intentionally starts with a tiny tool inventory, but an
+// explicit prediction-market request is not ambiguous: routing it through a
+// general web search loses the live, structured Predexon result and encourages
+// the model to answer from search snippets. The CLI exposes this capability
+// directly, so mirror that behaviour here for clear Polymarket/odds requests.
+// The focused-tool buttons still take precedence over this automatic routing.
+function impliedToolForPrompt(prompt: string): string | undefined {
+  const text = prompt.toLowerCase();
+  if (
+    /\b(polymarket|kalshi|limitless|predict\.fun)\b/.test(text) ||
+    /\b(prediction market|betting odds|implied probability|odds)\b/.test(text) ||
+    /预测市场|赔率|盘口|胜率/.test(prompt)
+  ) {
+    return "search_prediction_markets";
+  }
+  return undefined;
+}
+
 // Split inline <think>…</think> chain-of-thought out of a model's text.
 function splitThinking(raw: string): { answer: string; thinking: string } {
   let thinking = "";
@@ -991,7 +1009,7 @@ export function useFranklinChat(
     let effectiveModel = base === "blockrun/auto" ? resolveAuto(lastPrompt) : base;
     if (hasImage && !isVisionModel(effectiveModel)) effectiveModel = pickVisionSibling(effectiveModel);
     modelRef.current = effectiveModel;
-    await runChatWithTools(history, effectiveModel, forceTool);
+    await runChatWithTools(history, effectiveModel, forceTool ?? impliedToolForPrompt(lastPrompt));
   }
 
   // Detached, per-conversation media job (image/video). Adds the user message,
