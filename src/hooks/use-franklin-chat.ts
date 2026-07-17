@@ -339,10 +339,11 @@ const TOOL_SCHEMAS = [
   {
     name: "search_prediction_markets",
     description:
-      "Search prediction markets (Polymarket, Kalshi, Limitless, etc.) for live odds on an event or topic. Use for questions about prediction-market odds or what the market thinks.",
+      "Search prediction markets (Polymarket, Kalshi, Limitless, etc.) for live odds on an event or topic. Use for questions about prediction-market odds or what the market thinks. " +
+      'Search is strict keyword AND-matching over market titles — query with 1-3 entity keywords (e.g. "World Cup", "Fed rate cut"), never full sentences or qualifiers like "final", "odds", "vs".',
     input_schema: {
       type: "object",
-      properties: { query: { type: "string", description: "Event or topic to search for" } },
+      properties: { query: { type: "string", description: '1-3 entity keywords naming the event or topic, e.g. "World Cup" or "Fed rate cut"' } },
       required: ["query"],
     },
   },
@@ -394,6 +395,49 @@ function impliedToolForPrompt(prompt: string): string | undefined {
     (/赔率|盘口|胜率/.test(prompt) && /预测|押注|下注|博彩/.test(prompt))
   ) {
     return "search_prediction_markets";
+  }
+  return undefined;
+}
+
+// Predexon /markets/search is strict keyword AND-matching over market titles,
+// so a verbose model-composed query ("World Cup final Spain vs Argentina")
+// matches nothing while a broader one ("World Cup") has many live markets.
+// These helpers back a single automatic retry with the query stripped down to
+// its strongest entity keywords. Qualifier/filler words the model tends to
+// add that break AND-matching:
+const PM_QUERY_FILLER = new Set([
+  "a", "an", "the", "this", "that", "these", "those", "next", "last",
+  "final", "finals", "game", "games", "match", "matches", "event", "events",
+  "odds", "probability", "chance", "chances", "hottest", "top", "best",
+  "vs", "versus", "against", "winner", "winners", "win", "wins", "winning",
+  "right", "now", "current", "currently", "latest", "live", "today", "upcoming",
+  "bet", "bets", "betting", "wager", "market", "markets", "prediction", "predictions",
+  "on", "for", "of", "in", "at", "to", "will", "who", "what", "when", "is", "are",
+]);
+
+// Strip filler words and keep the first 1-3 remaining entity keywords.
+// Returns "" when nothing survives (query was all filler — no retry).
+function broadenPmQuery(query: string): string {
+  return query
+    .split(/\s+/)
+    .map((w) => w.replace(/^[^\w]+|[^\w]+$/g, ""))
+    .filter((w) => w && !PM_QUERY_FILLER.has(w.toLowerCase()))
+    .slice(0, 3)
+    .join(" ");
+}
+
+// Count hits in a Predexon search response without pinning its exact shape:
+// the market list is either the top-level array or under a common container
+// key. Unrecognized non-empty shapes return undefined ("has content") so we
+// never double-pay a retry on a response we can't read.
+function pmResultCount(j: unknown): number | undefined {
+  if (Array.isArray(j)) return j.length;
+  if (j && typeof j === "object") {
+    for (const key of ["data", "markets", "results", "items"]) {
+      const v = (j as Record<string, unknown>)[key];
+      if (Array.isArray(v)) return v.length;
+    }
+    if (Object.keys(j).length === 0) return 0;
   }
   return undefined;
 }
@@ -816,8 +860,23 @@ export function useFranklinChat(
       }
       if (name === "search_prediction_markets") {
         modelRef.current = "search_prediction_markets";
-        const q = encodeURIComponent(String(args.query ?? ""));
-        const j = await paidJson(`/api/blockrun/v1/pm/markets/search?q=${q}&limit=10`, undefined, "GET");
+        const query = String(args.query ?? "");
+        const search = (q: string) =>
+          paidJson(`/api/blockrun/v1/pm/markets/search?q=${encodeURIComponent(q)}&limit=10`, undefined, "GET");
+        const j = await search(query);
+        // Strict AND-matching means over-specific queries return 0 results;
+        // retry once with the query broadened to its entity keywords so the
+        // model gets real markets instead of an empty list to hallucinate on.
+        const broadened = broadenPmQuery(query);
+        if (pmResultCount(j) === 0 && broadened && broadened.toLowerCase() !== query.toLowerCase()) {
+          const retry = await search(broadened);
+          if ((pmResultCount(retry) ?? 1) > 0) {
+            return JSON.stringify({
+              note: `No markets matched "${query}"; results below are for the broadened query "${broadened}".`,
+              results: retry,
+            }).slice(0, 4000);
+          }
+        }
         return JSON.stringify(j).slice(0, 4000);
       }
       return `Unknown tool: ${name}`;

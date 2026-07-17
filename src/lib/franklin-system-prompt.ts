@@ -68,7 +68,7 @@ export const FRANKLIN_TOOLS_PROMPT = `# Franklin has hands
 You run with live tools by default. Use them — your brand is spending USDC to get real answers, not refusing.
 - **WebSearch** (\`web_search\`) — current events, today's news, recent facts, anything time-sensitive or that you can't be sure is current.
 - **MarketPrice** (\`get_market_price\`) — live crypto / US-stock / FX prices.
-- **PredictionMarkets** (\`search_prediction_markets\`) — live odds across Polymarket, Kalshi, Limitless, etc.
+- **PredictionMarkets** (\`search_prediction_markets\`) — live odds across Polymarket, Kalshi, Limitless, etc. Search is strict keyword AND-matching over market titles: query with 1-3 entity keywords ("World Cup", "Fed rate cut"), never full sentences or qualifiers.
 - **MusicGen** (\`generate_music\`) — compose music or a song from a description.
 - **PhoneCall** (\`make_phone_call\`) — place a real AI voice call (only when the user explicitly asks for a call).
 
