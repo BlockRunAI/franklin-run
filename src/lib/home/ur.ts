@@ -14,6 +14,7 @@ export const ur: HomeDict = {
     gallery: "گیلری",
     docs: "دستاویزات",
     tryFranklin: "Franklin آزمائیں",
+    downloadDesktop: "ڈیسک ٹاپ ڈاؤن لوڈ کریں",
     github: "GitHub",
     getStarted: "شروع کریں",
   },

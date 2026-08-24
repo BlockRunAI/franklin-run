@@ -8,6 +8,7 @@ export const hi: HomeDict = {
     gallery: "गैलरी",
     docs: "Docs",
     tryFranklin: "Franklin आज़माएं",
+    downloadDesktop: "डेस्कटॉप डाउनलोड करें",
     github: "GitHub",
     getStarted: "शुरू करें",
   },

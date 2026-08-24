@@ -15,6 +15,7 @@ export const id: HomeDict = {
     gallery: "Galeri",
     docs: "Docs",
     tryFranklin: "Coba Franklin",
+    downloadDesktop: "Unduh Desktop",
     github: "GitHub",
     getStarted: "Mulai",
   },
