@@ -21,6 +21,14 @@ export interface TryDict {
   switchToBase: string;
   noWalletFound: string;
   openInWalletApp: string;
+  chooseNetwork: string;
+  networkEthereum: string;
+  networkSolana: string;
+  solanaNetwork: string;
+  noSolanaWallet: string;
+  installSolanaWallet: string;
+  solanaCannotPay: string;
+  back: string;
   image: string;
   video: string;
   music: string;
@@ -165,6 +173,14 @@ const en: TryDict = {
   switchToBase: "Switch to Base",
   noWalletFound: "No wallet found",
   openInWalletApp: "Open in the MetaMask or Coinbase Wallet app browser.",
+  chooseNetwork: "Choose a network",
+  networkEthereum: "Ethereum",
+  networkSolana: "Solana",
+  solanaNetwork: "Solana",
+  noSolanaWallet: "No Solana wallet found",
+  installSolanaWallet: "Install Phantom, Solflare or Backpack.",
+  solanaCannotPay: "Solana keeps your history in sync. Paid requests need an Ethereum wallet for now.",
+  back: "Back",
   image: "Image",
   video: "Video",
   music: "Music",
@@ -310,6 +326,14 @@ const zh: TryDict = {
   switchToBase: "切换到 Base",
   noWalletFound: "未检测到钱包",
   openInWalletApp: "请在 MetaMask 或 Coinbase Wallet 应用的内置浏览器中打开。",
+  chooseNetwork: "选择网络",
+  networkEthereum: "以太坊",
+  networkSolana: "Solana",
+  solanaNetwork: "Solana",
+  noSolanaWallet: "未检测到 Solana 钱包",
+  installSolanaWallet: "请安装 Phantom、Solflare 或 Backpack。",
+  solanaCannotPay: "Solana 可用于同步历史记录。付费请求目前仍需以太坊钱包。",
+  back: "返回",
   image: "图像",
   video: "视频",
   music: "音乐",
@@ -455,6 +479,14 @@ const es: TryDict = {
   switchToBase: "Cambiar a Base",
   noWalletFound: "No se encontró billetera",
   openInWalletApp: "Ábrelo en el navegador de la app MetaMask o Coinbase Wallet.",
+  chooseNetwork: "Elige una red",
+  networkEthereum: "Ethereum",
+  networkSolana: "Solana",
+  solanaNetwork: "Solana",
+  noSolanaWallet: "No se encontró billetera de Solana",
+  installSolanaWallet: "Instala Phantom, Solflare o Backpack.",
+  solanaCannotPay: "Solana mantiene tu historial sincronizado. Las solicitudes de pago aún requieren una billetera de Ethereum.",
+  back: "Atrás",
   image: "Imagen",
   video: "Video",
   music: "Música",

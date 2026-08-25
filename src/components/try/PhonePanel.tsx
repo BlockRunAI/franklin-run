@@ -8,7 +8,7 @@ import { usePhoneCall } from "@/hooks/use-phone-call";
 // release), paid via x402. Placing calls happens in chat (the agent tool).
 export function PhonePanel() {
   const {
-    isConnected,
+    canPay,
     numbers,
     numbersError,
     loadingNumbers,
@@ -23,8 +23,8 @@ export function PhonePanel() {
   const [areaCode, setAreaCode] = useState("");
 
   useEffect(() => {
-    if (isConnected) loadNumbers();
-  }, [isConnected, loadNumbers]);
+    if (canPay) loadNumbers();
+  }, [canPay, loadNumbers]);
 
   const fmtExpiry = (v?: string | number) => {
     if (!v) return "";
@@ -35,11 +35,11 @@ export function PhonePanel() {
   return (
     <div className="try-phone">
       <div className="try-phone-card">
-        {!isConnected && <p className="try-phone-hint">Connect your wallet to manage phone numbers.</p>}
+        {!canPay && <p className="try-phone-hint">Connect your wallet to manage phone numbers.</p>}
 
         <div className="try-phone-section-head">
           <h2 className="try-phone-title">Your numbers</h2>
-          <button className="try-reset" onClick={loadNumbers} disabled={!isConnected || loadingNumbers}>
+          <button className="try-reset" onClick={loadNumbers} disabled={!canPay || loadingNumbers}>
             <RefreshCw className={`h-3.5 w-3.5${loadingNumbers ? " try-spin" : ""}`} /> Refresh
           </button>
         </div>
@@ -77,7 +77,7 @@ export function PhonePanel() {
             className="try-phone-input"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            disabled={actionBusy || !isConnected}
+            disabled={actionBusy || !canPay}
           >
             <option value="US">United States (+1)</option>
             <option value="GB">United Kingdom (+44)</option>
@@ -88,12 +88,12 @@ export function PhonePanel() {
             value={areaCode}
             onChange={(e) => setAreaCode(e.target.value)}
             placeholder="Area code (optional)"
-            disabled={actionBusy || !isConnected}
+            disabled={actionBusy || !canPay}
           />
           <button
             className="btn-primary"
             onClick={() => buyNumber(country, areaCode || undefined)}
-            disabled={!isConnected || actionBusy}
+            disabled={!canPay || actionBusy}
           >
             {actionBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
             Get a number · $5

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { useAccount } from "wagmi";
+import { useWallet } from "./use-wallet";
 import { useX402Payment, parseX402FromResponse } from "./use-x402-payment";
 
 // Phone number management (dashboard-style) + AI voice calls, all via BlockRun's
@@ -29,7 +29,8 @@ export interface PhoneCall {
 }
 
 export function usePhoneCall() {
-  const { isConnected } = useAccount();
+  // Phone numbers are a paid resource — gate on payability, not connection.
+  const { canPay } = useWallet();
   const { makePayment } = useX402Payment();
   const [numbers, setNumbers] = useState<PhoneNumber[]>([]);
   const [numbersError, setNumbersError] = useState<string | null>(null);
@@ -170,7 +171,7 @@ export function usePhoneCall() {
   const callBusy = call?.status === "signing" || call?.status === "calling" || call?.status === "polling";
 
   return {
-    isConnected,
+    canPay,
     numbers,
     numbersError,
     loadingNumbers,

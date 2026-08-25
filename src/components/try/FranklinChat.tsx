@@ -81,7 +81,7 @@ export function FranklinChat({ initial }: { initial?: ChatPrefill } = {}) {
     imageModel: initial?.imageModel,
     videoModel: initial?.videoModel,
   });
-  const { mode, setMode, model, setModel, models, selectedModel, status, activeTool, steps, needsToolWallet, genConvId, mediaJobs, error, isBusy, isConnected, send, stop, stopMedia, regenerate, imageSize, setImageSize, imageSizes, videoRatio, setVideoRatio, videoRatios, videoResolution, setVideoResolution, videoResolutions } = chat;
+  const { mode, setMode, model, setModel, models, selectedModel, status, activeTool, steps, needsToolWallet, genConvId, mediaJobs, error, isBusy, canPay, send, stop, stopMedia, regenerate, imageSize, setImageSize, imageSizes, videoRatio, setVideoRatio, videoRatios, videoResolution, setVideoResolution, videoResolutions } = chat;
   // Only show the live (chat) generation UI in the conversation that started it.
   const genHere = genConvId === null || genConvId === history.activeId;
   // Heavy media (image/video) runs as a per-conversation background job — show
@@ -218,7 +218,7 @@ export function FranklinChat({ initial }: { initial?: ChatPrefill } = {}) {
   // Image/video always need a wallet; paid chat models too.
   // Image/video need a wallet; paid chat models too; and an attachment forces a
   // (paid) vision model, so it needs one as well.
-  const needsWallet = (mode !== "chat" || !selectedModel?.free || attachments.length > 0) && !isConnected;
+  const needsWallet = (mode !== "chat" || !selectedModel?.free || attachments.length > 0) && !canPay;
   const canSend = (!!input.trim() || attachments.length > 0) && !busy && !needsWallet;
   const suggestions =
     mode === "image" ? t.sugImage : mode === "video" ? t.sugVideo : mode === "music" ? t.sugMusic : t.sugChat;
@@ -257,7 +257,7 @@ export function FranklinChat({ initial }: { initial?: ChatPrefill } = {}) {
     if (c.model) setModel(c.model);
     // Prefill-only (needs user's media), or paid case without a wallet → just
     // switch mode + prefill; let the user attach/edit and send themselves.
-    if (c.prefillOnly || ((c.mode !== "chat" || c.model) && !isConnected)) {
+    if (c.prefillOnly || ((c.mode !== "chat" || c.model) && !canPay)) {
       setInput(c.prompt);
       return;
     }

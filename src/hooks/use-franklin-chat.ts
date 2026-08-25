@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useAccount } from "wagmi";
+import { useWallet } from "./use-wallet";
 import { useX402Payment, parseX402FromResponse } from "./use-x402-payment";
 import { FRANKLIN_SYSTEM_PROMPT, FRANKLIN_TOOLS_PROMPT, systemPromptDateLine } from "@/lib/franklin-system-prompt";
 
@@ -503,7 +503,10 @@ export function useFranklinChat(
   onSpend?: (model: string, usd: number) => void,
   prefill?: { mode?: ChatMode; imageModel?: string; videoModel?: string },
 ) {
-  const { isConnected } = useAccount();
+  // Paid features gate on `canPay`, not merely "a wallet is attached": a
+  // connected Solana wallet is a valid identity but cannot settle an x402
+  // invoice today (see use-wallet).
+  const { canPay } = useWallet();
   const { makePayment } = useX402Payment();
   const onSpendRef = useRef(onSpend);
   // A generation is pinned to the conversation it started in: all writes target
@@ -555,10 +558,10 @@ export function useFranklinChat(
   const [mediaJobs, setMediaJobs] = useState<Record<string, MediaJob>>({});
   const mediaAbortRef = useRef<Record<string, AbortController>>({});
   // Freshest connection state for async flows (send's closure can be stale).
-  const isConnectedRef = useRef(isConnected);
+  const canPayRef = useRef(canPay);
   useEffect(() => {
-    isConnectedRef.current = isConnected;
-  }, [isConnected]);
+    canPayRef.current = canPay;
+  }, [canPay]);
   const [error, setError] = useState<string | null>(null);
   const inFlight = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -1017,7 +1020,7 @@ export function useFranklinChat(
 
           // A real (paid) tool. If there's no wallet, stop and prompt rather
           // than failing on the signature step.
-          if (!isConnectedRef.current) {
+          if (!canPayRef.current) {
             setSteps([]);
             setNeedsToolWallet(true);
             setStatus("idle");
@@ -1085,7 +1088,7 @@ export function useFranklinChat(
     // a wallet-less visitor would replace their answer with a connect-wallet
     // prompt. Without a wallet the model routes normally (and can still ask).
     const implied =
-      !forceTool && isConnectedRef.current ? impliedToolForPrompt(lastPrompt) : undefined;
+      !forceTool && canPayRef.current ? impliedToolForPrompt(lastPrompt) : undefined;
     await runChatWithTools(history, effectiveModel, forceTool ?? implied, Boolean(implied));
   }
 
@@ -1342,7 +1345,7 @@ export function useFranklinChat(
   const videoResolutions = VIDEO_MODEL_RESOLUTIONS[videoModel] ?? [];
 
   return {
-    isConnected,
+    canPay,
     mode,
     setMode,
     model,

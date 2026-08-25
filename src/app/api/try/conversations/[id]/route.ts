@@ -11,8 +11,10 @@ import {
 } from "@/lib/franklin-store";
 import { jsonPrivate, notSignedIn, storeError } from "@/lib/api-response";
 
+// The per-chain, collision-free storage namespace for the signed-in wallet —
+// not the raw address (see session.ts).
 function wallet(req: NextRequest): string | null {
-  return verifySessionToken(req.cookies.get(SESSION_COOKIE)?.value);
+  return verifySessionToken(req.cookies.get(SESSION_COOKIE)?.value)?.storageKey ?? null;
 }
 
 function badId() {
