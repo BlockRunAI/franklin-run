@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import {
   useConnect as useSolanaConnect,
@@ -102,18 +102,21 @@ export function useWallet(): WalletFacade {
   const { dispatchAsync: solanaSignIn } = useSolanaSignIn(solanaClient);
   const { dispatch: solanaDisconnect } = useSolanaDisconnect(solanaClient);
 
-  // Read in an effect rather than a lazy initializer: the server renders null,
-  // so hydration matches, and the value lands on the first client commit.
-  const [preferred, setPreferred] = useState<WalletChain | null>(null);
-  useEffect(() => {
+  // Read on the first client render, not in an effect. Hydration is safe
+  // because this value only ever changes the outcome when BOTH wallets are
+  // connected, which cannot be true on the first render — both stacks start
+  // disconnected on the server and in the browser. Loading it a render late
+  // instead is what would be visible: it is needed the moment the warm-up
+  // below resolves, not one commit afterwards.
+  const [preferred, setPreferred] = useState<WalletChain | null>(() => {
+    if (typeof window === "undefined") return null;
     try {
       const v = localStorage.getItem(ACTIVE_CHAIN_KEY);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (v === "evm" || v === "solana") setPreferred(v);
+      return v === "evm" || v === "solana" ? v : null;
     } catch {
-      /* private mode / storage disabled — fall back to the connected chain */
+      return null; // private mode / storage disabled — fall back to what is connected
     }
-  }, []);
+  });
 
   const rememberChain = useCallback((c: WalletChain | null) => {
     setPreferred(c);
@@ -209,9 +212,24 @@ export function useWallet(): WalletFacade {
     // deliberately connected on wins. Preferring one chain unconditionally is
     // what made connecting Phantom look like it did nothing when an injected
     // EVM wallet happened to be auto-reconnected.
-    const chain: WalletChain | null =
-      evmConnected && solanaConnected
-        ? (preferred ?? "evm")
+    //
+    // With no recorded choice, Solana is the default: it is the cheaper rail,
+    // and this case is reached only when both wallets auto-reconnected without
+    // the user picking either — where the tie should fall to the chain we want
+    // people on, not to whichever one an extension happened to restore.
+    //
+    // The warm-up asymmetry matters too. wagmi has already settled by first
+    // paint, while the Kit plugin is still restoring a persisted wallet, so a
+    // user who last chose Solana would otherwise see their EVM wallet resolve
+    // first and the pill flash Base before flipping to Phantom. While Solana is
+    // still warming and Solana is what they chose, report "not connected yet"
+    // rather than the wrong chain — ConnectWallet holds its loading shell until
+    // isReady, so this window is never rendered as disconnected either.
+    const solanaPending = !solanaReady && preferred === "solana";
+    const chain: WalletChain | null = solanaPending
+      ? null
+      : evmConnected && solanaConnected
+        ? (preferred ?? "solana")
         : evmConnected
           ? "evm"
           : solanaConnected
