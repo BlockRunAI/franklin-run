@@ -64,7 +64,11 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
 
   const connected = auth.connected;
 
-  if (!mounted) {
+  // Hold the same shell through the Solana plugin's silent reconnect. Without
+  // it a returning Phantom user is shown "Connect wallet" for a beat before
+  // their wallet reappears — the control claims they are signed out at the one
+  // moment it cannot yet know.
+  if (!mounted || !auth.isReady) {
     return (
       <button className="btn-primary" disabled>
         <Wallet className="h-4 w-4" />
@@ -78,12 +82,16 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
   // the address ellipsis breaking, so we lay it out as two intentional rows.
   if (connected) {
     const isSolana = auth.connectedChain === "solana";
-    const onBase = isSolana || chainId === base.id;
+    // "Is this wallet on the network we can transact on." Solana has exactly
+    // one network here, so it is always true once connected; only the EVM side
+    // can be pointed at the wrong chain. Named for the question, not for Base —
+    // it governs the Solana pill too.
+    const onExpectedNetwork = isSolana || chainId === base.id;
     return (
       <div className="try-wallet">
         <div className="try-wallet-info">
           <div className="try-wallet-row1">
-            {onBase ? (
+            {onExpectedNetwork ? (
               <span className="try-wallet-net">
                 {isSolana ? t.solanaNetwork : t.baseNetwork}
               </span>
@@ -95,7 +103,7 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
                 {t.switchToBase}
               </button>
             )}
-            {onBase && balance !== undefined && (
+            {onExpectedNetwork && balance !== undefined && (
               <span className="try-wallet-bal">{fmtBal(balance)}</span>
             )}
           </div>
@@ -167,6 +175,13 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
       <div className="try-wallet-connect">
         <div className="try-wallet-picker">
           <span className="try-wallet-picker-label">{t.chooseNetwork}</span>
+          {/* Solana first: it is the cheaper rail ($0.001/call less, since Base
+              adds a transaction fee that Solana's facilitator absorbs) and the
+              one we are pushing. Order is the only nudge here — both options
+              stay one click away. */}
+          <button className="try-wallet-option" onClick={() => setPicker("solana")} disabled={busy}>
+            {t.networkSolana}
+          </button>
           <button
             className="try-wallet-option"
             onClick={() => {
@@ -176,9 +191,6 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
             disabled={busy}
           >
             {t.networkEthereum}
-          </button>
-          <button className="try-wallet-option" onClick={() => setPicker("solana")} disabled={busy}>
-            {t.networkSolana}
           </button>
         </div>
         {auth.error === "NO_WALLET" ? (

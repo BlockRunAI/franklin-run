@@ -93,7 +93,9 @@ export function useUsdcBalance() {
     refetch: isSolana ? solRefetch : evmRefetch,
     // Solana has one network here, so "on the right network" is always true
     // once connected; only the EVM path can be pointed at the wrong chain.
-    isOnBase: isSolana ? true : chainId === base.id,
+    // Not `isOnBase` — it is true for a connected Solana wallet, and a name
+    // that says Base invites exactly the chain mix-up it is reporting on.
+    isOnExpectedNetwork: isSolana ? true : chainId === base.id,
     isConnected,
     hasSufficientBalance,
   };
