@@ -78,12 +78,16 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
   // the address ellipsis breaking, so we lay it out as two intentional rows.
   if (connected) {
     const isSolana = auth.connectedChain === "solana";
-    const onBase = isSolana || chainId === base.id;
+    // "Is this wallet on the network we can transact on." Solana has exactly
+    // one network here, so it is always true once connected; only the EVM side
+    // can be pointed at the wrong chain. Named for the question, not for Base —
+    // it governs the Solana pill too.
+    const onExpectedNetwork = isSolana || chainId === base.id;
     return (
       <div className="try-wallet">
         <div className="try-wallet-info">
           <div className="try-wallet-row1">
-            {onBase ? (
+            {onExpectedNetwork ? (
               <span className="try-wallet-net">
                 {isSolana ? t.solanaNetwork : t.baseNetwork}
               </span>
@@ -95,7 +99,7 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
                 {t.switchToBase}
               </button>
             )}
-            {onBase && balance !== undefined && (
+            {onExpectedNetwork && balance !== undefined && (
               <span className="try-wallet-bal">{fmtBal(balance)}</span>
             )}
           </div>

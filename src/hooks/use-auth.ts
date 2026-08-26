@@ -64,6 +64,23 @@ export function useAuth() {
     setChain(data.chain);
   }, []);
 
+  const clearSession = useCallback(async () => {
+    await fetch("/api/try/auth/logout", { method: "POST" }).catch(() => {});
+    setAddress(null);
+    setChain(null);
+  }, []);
+
+  // Switching chains changes who the user IS, and sign-in is best-effort: if
+  // the new wallet's signature is declined or its wallet has no SIWS, the old
+  // session cookie would otherwise survive and keep serving the previous
+  // wallet's history next to the new wallet's address. Drop it up front.
+  const clearSessionIfSwitching = useCallback(
+    async (to: WalletChain) => {
+      if (wallet.chain && wallet.chain !== to) await clearSession();
+    },
+    [wallet.chain, clearSession],
+  );
+
   // SIWE: sign a nonce'd message, the backend verifies and sets a session
   // cookie. Throws on failure; callers decide whether that's fatal.
   const siwe = useCallback(
@@ -85,6 +102,7 @@ export function useAuth() {
     setError(null);
     setSigningIn(true);
     try {
+      await clearSessionIfSwitching("evm");
       const addr = await wallet.connectEvm();
       void siwe(addr).catch(() => {});
     } catch (e) {
@@ -92,7 +110,7 @@ export function useAuth() {
     } finally {
       setSigningIn(false);
     }
-  }, [wallet, siwe]);
+  }, [wallet, siwe, clearSessionIfSwitching]);
 
   // Solana: one prompt does both. The wallet builds the SIWS message around
   // our nonce, so connection and sign-in succeed or fail together — unlike the
@@ -103,6 +121,7 @@ export function useAuth() {
       setError(null);
       setSigningIn(true);
       try {
+        await clearSessionIfSwitching("solana");
         const nonce = await fetchNonce();
         const { address: addr, signIn } = await wallet.connectSolana(target, {
           domain: window.location.host,
@@ -126,7 +145,7 @@ export function useAuth() {
         setSigningIn(false);
       }
     },
-    [wallet, fetchNonce, postVerify],
+    [wallet, fetchNonce, postVerify, clearSessionIfSwitching],
   );
 
   // Explicit EVM sign-in (connect if needed, then sign). Surfaces errors.
@@ -144,10 +163,8 @@ export function useAuth() {
   }, [wallet, siwe]);
 
   const signOut = useCallback(async () => {
-    await fetch("/api/try/auth/logout", { method: "POST" });
-    setAddress(null);
-    setChain(null);
-  }, []);
+    await clearSession();
+  }, [clearSession]);
 
   return {
     address,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import {
   useConnect as useSolanaConnect,
@@ -23,6 +23,13 @@ import { solanaClient } from "@/lib/solana-config";
 //   canPay      — that wallet can settle an x402 invoice. See CAN_PAY_CHAINS.
 
 export type WalletChain = "evm" | "solana";
+
+// Which chain the user last deliberately connected on. Persisted because both
+// wallet stacks silently auto-reconnect on mount: wagmi reconnects a remembered
+// injected wallet, and the Kit plugin restores a persisted Solana one. Without
+// a recorded choice, "which of these two is the active wallet" gets decided by
+// a hardcoded tie-break rather than by anything the user did.
+const ACTIVE_CHAIN_KEY = "franklin-active-chain";
 
 /** A Wallet Standard wallet as surfaced by the Kit plugin (Phantom, Solflare, …). */
 export type SolanaWallet = ReturnType<typeof useWallets>[number];
@@ -95,6 +102,29 @@ export function useWallet(): WalletFacade {
   const { dispatchAsync: solanaSignIn } = useSolanaSignIn(solanaClient);
   const { dispatch: solanaDisconnect } = useSolanaDisconnect(solanaClient);
 
+  // Read in an effect rather than a lazy initializer: the server renders null,
+  // so hydration matches, and the value lands on the first client commit.
+  const [preferred, setPreferred] = useState<WalletChain | null>(null);
+  useEffect(() => {
+    try {
+      const v = localStorage.getItem(ACTIVE_CHAIN_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (v === "evm" || v === "solana") setPreferred(v);
+    } catch {
+      /* private mode / storage disabled — fall back to the connected chain */
+    }
+  }, []);
+
+  const rememberChain = useCallback((c: WalletChain | null) => {
+    setPreferred(c);
+    try {
+      if (c) localStorage.setItem(ACTIVE_CHAIN_KEY, c);
+      else localStorage.removeItem(ACTIVE_CHAIN_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   // Match the injected connector by `type` (more reliable than `id` under
   // EIP-6963 multi-provider discovery, and what BlockRun's app uses). Throws a
   // friendly NO_WALLET when there's no injected provider at all (desktop
@@ -111,11 +141,26 @@ export function useWallet(): WalletFacade {
     return c;
   }, [connectors]);
 
+  // Both connect paths take over as the single active wallet, but only AFTER
+  // the wallet actually says yes — a declined prompt must leave the previous
+  // wallet exactly as it was rather than logging the user out of it.
   const connectEvm = useCallback(async () => {
-    if (evmAddress) return evmAddress;
+    const takeOver = (addr: string) => {
+      if (solanaConnected) solanaDisconnect();
+      rememberChain("evm");
+      return addr;
+    };
+    if (evmAddress) return takeOver(evmAddress);
     const res = await connectAsync({ connector: resolveEvmConnector() });
-    return res.accounts[0];
-  }, [evmAddress, connectAsync, resolveEvmConnector]);
+    return takeOver(res.accounts[0]);
+  }, [
+    evmAddress,
+    connectAsync,
+    resolveEvmConnector,
+    solanaConnected,
+    solanaDisconnect,
+    rememberChain,
+  ]);
 
   const connectSolana = useCallback(
     async (wallet: SolanaWallet, input?: SolanaSignInInput) => {
@@ -123,8 +168,13 @@ export function useWallet(): WalletFacade {
       // single wallet prompt, so prefer it. Wallets that don't advertise
       // `solana:signIn` fall back to a plain connect — the user is then
       // connected but not signed in, exactly like a rejected SIWE signature.
+      const takeOver = () => {
+        if (evmConnected) evmDisconnect();
+        rememberChain("solana");
+      };
       try {
         const out = await solanaSignIn(wallet, input ?? {});
+        takeOver();
         return { address: out.account.address, signIn: out };
       } catch (e) {
         // A user-rejected prompt must not silently downgrade to a second
@@ -133,27 +183,40 @@ export function useWallet(): WalletFacade {
         const accounts = await solanaConnect(wallet);
         const address = accounts[0]?.address;
         if (!address) throw new Error("NO_WALLET");
+        takeOver();
         return { address, signIn: null };
       }
     },
-    [solanaSignIn, solanaConnect],
+    [solanaSignIn, solanaConnect, evmConnected, evmDisconnect, rememberChain],
   );
 
   const disconnect = useCallback(() => {
     if (evmConnected) evmDisconnect();
     if (solanaConnected) solanaDisconnect();
-  }, [evmConnected, evmDisconnect, solanaConnected, solanaDisconnect]);
+    rememberChain(null);
+  }, [evmConnected, evmDisconnect, solanaConnected, solanaDisconnect, rememberChain]);
 
   return useMemo(() => {
     // One active wallet at a time. The session is keyed to a single address,
     // history is namespaced per address and x402 settles from one payer, so a
     // simultaneous EVM + Solana connection would mean two identities and an
-    // ambiguous payer. EVM wins the tie because it is the payable chain.
-    const chain: WalletChain | null = evmConnected
-      ? "evm"
-      : solanaConnected
-        ? "solana"
-        : null;
+    // ambiguous payer.
+    //
+    // connectEvm/connectSolana disconnect each other, so both being connected
+    // should be transient — the tick between "Phantom said yes" and wagmi
+    // finishing its disconnect — or the result of the user re-authorizing a
+    // wallet from the extension itself. Either way the last chain the user
+    // deliberately connected on wins. Preferring one chain unconditionally is
+    // what made connecting Phantom look like it did nothing when an injected
+    // EVM wallet happened to be auto-reconnected.
+    const chain: WalletChain | null =
+      evmConnected && solanaConnected
+        ? (preferred ?? "evm")
+        : evmConnected
+          ? "evm"
+          : solanaConnected
+            ? "solana"
+            : null;
     const address = chain === "evm" ? (evmAddress ?? null) : (solanaConnected?.account.address ?? null);
 
     return {
@@ -171,6 +234,7 @@ export function useWallet(): WalletFacade {
       disconnect,
     };
   }, [
+    preferred,
     evmConnected,
     evmAddress,
     solanaConnected,
