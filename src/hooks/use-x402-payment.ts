@@ -7,6 +7,7 @@ import { getAddress } from "viem";
 import { wagmiConfig } from "@/lib/wagmi-config";
 import { useWallet, type WalletChain } from "./use-wallet";
 import { createSolanaPaymentPayload, SolanaPaymentError } from "@/lib/solana-x402";
+import { useUsdcBalance } from "./use-usdc-balance";
 
 const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 
@@ -80,6 +81,7 @@ export function selectRequirement(
 
 export function useX402Payment() {
   const { address, isConnected, canPay, chain, solanaSigner } = useWallet();
+  const { balance, hasSufficientBalance } = useUsdcBalance();
   const { switchChainAsync } = useSwitchChain();
   const [step, setStep] = useState<PaymentStep>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -124,6 +126,20 @@ export function useX402Payment() {
           setStep("error");
           return { payload: null, error: msg };
         }
+        // Check funds before opening the wallet. Phantom simulates what it is
+        // asked to sign, and a transfer the payer can't cover simulates as a
+        // failure — so without this the user meets a red "this transaction will
+        // likely fail" panel, approves it anyway, and gets back an opaque
+        // `insufficient_funds`. Skipped while the balance is still loading:
+        // a slow RPC read must not block a payment the user can afford.
+        const dueUsd = Number(requirements.amount) / 1_000_000;
+        if (balance !== undefined && !hasSufficientBalance(dueUsd)) {
+          const msg = `Not enough USDC on Solana — this costs $${dueUsd < 0.01 ? dueUsd.toFixed(4) : dueUsd.toFixed(2)}, your wallet has $${balance.toFixed(2)}.`;
+          setError(msg);
+          setStep("error");
+          return { payload: null, error: msg };
+        }
+
         try {
           const payload = await createSolanaPaymentPayload(
             solanaSigner,
@@ -265,7 +281,7 @@ export function useX402Payment() {
         return { payload: null, error: msg };
       }
     },
-    [address, isConnected, canPay, chain, solanaSigner, switchChainAsync],
+    [address, isConnected, canPay, chain, solanaSigner, balance, hasSufficientBalance, switchChainAsync],
   );
 
   const makePayment = useCallback(
