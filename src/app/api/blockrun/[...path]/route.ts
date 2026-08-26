@@ -1,16 +1,36 @@
 import { NextRequest } from "next/server";
 
-// Transparent proxy: franklin.run/api/blockrun/<path>  ->  https://blockrun.ai/api/<path>
+// Transparent proxy: franklin.run/api/blockrun/<path>  ->  <gateway>/api/<path>
 //
 // The /try playground is a browser-wallet client for BlockRun's existing
-// x402-paid API (chat / images / videos). Calling blockrun.ai cross-origin
+// x402-paid API (chat / images / videos). Calling the gateway cross-origin
 // from the browser would hit CORS and would not expose the 402 "payment-required"
 // header, so we forward through this same-origin proxy instead. It passes the
 // X-Payment header upstream and relays the payment-required header back to the
 // client verbatim — settlement still happens on BlockRun's side, paid to
 // BlockRun's configured wallet.
+//
+// Which gateway a request goes to is what selects the payment chain. The two
+// hosts are separate deployments, each hardcoded to one chain: blockrun.ai
+// issues an `eip155:8453` (Base USDC) x402 requirement, sol.blockrun.ai issues
+// a `solana:5eykt4Us…` one. There is no header or query param on either host
+// that switches this, and neither ever offers both in one `accepts` array —
+// so the choice has to be made here, per request, from the chain the client's
+// wallet is connected on.
 
-const UPSTREAM = process.env.BLOCKRUN_API_BASE || "https://blockrun.ai/api";
+const UPSTREAMS = {
+  evm: process.env.BLOCKRUN_API_BASE || "https://blockrun.ai/api",
+  solana: process.env.BLOCKRUN_SOLANA_API_BASE || "https://sol.blockrun.ai/api",
+} as const;
+
+// Set by the client from the connected wallet's chain (see chainHeaders() in
+// use-wallet.ts). Consumed here and deliberately NOT forwarded upstream — the
+// gateway has no use for it. Anything unrecognised (including a missing header
+// from a cached older bundle) falls back to Base, which is the behaviour every
+// client had before Solana support existed.
+function upstreamFor(req: NextRequest): string {
+  return req.headers.get("x-blockrun-chain") === "solana" ? UPSTREAMS.solana : UPSTREAMS.evm;
+}
 
 // Endpoint allowlist. The proxy is unauthenticated (free models need no wallet),
 // so we constrain it to the BlockRun API surface the /try client actually uses.
@@ -95,7 +115,7 @@ async function proxy(req: NextRequest, path: string[]) {
   }
 
   const search = req.nextUrl.search || "";
-  const target = `${UPSTREAM}/${path.join("/")}${search}`;
+  const target = `${upstreamFor(req)}/${path.join("/")}${search}`;
 
   const headers = new Headers();
   for (const h of FORWARD_REQ_HEADERS) {

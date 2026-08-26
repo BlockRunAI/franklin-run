@@ -27,7 +27,7 @@ export interface TryDict {
   solanaNetwork: string;
   noSolanaWallet: string;
   installSolanaWallet: string;
-  solanaCannotPay: string;
+  solanaHint: string;
   back: string;
   image: string;
   video: string;
@@ -82,7 +82,7 @@ export interface TryDict {
   galleryOpenPage: string;
   walletTitle: string;
   balance: string;
-  topUp: string;
+  topUp: (network: string) => string;
   costByModel: string;
   receipts: string;
   walletEmpty: string;
@@ -179,7 +179,7 @@ const en: TryDict = {
   solanaNetwork: "Solana",
   noSolanaWallet: "No Solana wallet found",
   installSolanaWallet: "Install Phantom, Solflare or Backpack.",
-  solanaCannotPay: "Solana keeps your history in sync. Paid requests need an Ethereum wallet for now.",
+  solanaHint: "Pay in USDC on Solana — no SOL needed for gas.",
   back: "Back",
   image: "Image",
   video: "Video",
@@ -234,7 +234,7 @@ const en: TryDict = {
   galleryOpenPage: "Open full page ↗",
   walletTitle: "Wallet",
   balance: "Balance",
-  topUp: "Send USDC on Base to your connected wallet to top up.",
+  topUp: (n) => `Send USDC on ${n} to your connected wallet to top up.`,
   costByModel: "Cost by model",
   receipts: "Receipts",
   walletEmpty: "Connect your wallet to see your balance and spend.",
@@ -332,7 +332,7 @@ const zh: TryDict = {
   solanaNetwork: "Solana",
   noSolanaWallet: "未检测到 Solana 钱包",
   installSolanaWallet: "请安装 Phantom、Solflare 或 Backpack。",
-  solanaCannotPay: "Solana 可用于同步历史记录。付费请求目前仍需以太坊钱包。",
+  solanaHint: "使用 Solana 上的 USDC 付款，无需 SOL 支付 gas。",
   back: "返回",
   image: "图像",
   video: "视频",
@@ -387,7 +387,7 @@ const zh: TryDict = {
   galleryOpenPage: "打开完整页面 ↗",
   walletTitle: "钱包",
   balance: "余额",
-  topUp: "在 Base 上把 USDC 转到你连接的钱包即可充值。",
+  topUp: (n) => `在 ${n} 上把 USDC 转到你连接的钱包即可充值。`,
   costByModel: "按模型花费",
   receipts: "账单",
   walletEmpty: "连接钱包以查看余额和花费。",
@@ -485,7 +485,7 @@ const es: TryDict = {
   solanaNetwork: "Solana",
   noSolanaWallet: "No se encontró billetera de Solana",
   installSolanaWallet: "Instala Phantom, Solflare o Backpack.",
-  solanaCannotPay: "Solana mantiene tu historial sincronizado. Las solicitudes de pago aún requieren una billetera de Ethereum.",
+  solanaHint: "Paga con USDC en Solana — no necesitas SOL para el gas.",
   back: "Atrás",
   image: "Imagen",
   video: "Video",
@@ -540,7 +540,7 @@ const es: TryDict = {
   galleryOpenPage: "Abrir página completa ↗",
   walletTitle: "Billetera",
   balance: "Saldo",
-  topUp: "Envía USDC en Base a tu billetera conectada para recargar.",
+  topUp: (n) => `Envía USDC en ${n} a tu billetera conectada para recargar.`,
   costByModel: "Costo por modelo",
   receipts: "Recibos",
   walletEmpty: "Conecta tu billetera para ver saldo y gastos.",

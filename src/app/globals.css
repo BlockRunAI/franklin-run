@@ -3477,6 +3477,14 @@ h2.dark-h,
 }
 .try-wallet-option:disabled { opacity: 0.5; cursor: default; }
 .try-wallet-option-icon { width: 18px; height: 18px; border-radius: 4px; }
+/* .try-wallet-hint is right-aligned because it normally sits under the
+   full-width connect button. Inside the picker it sits in a bordered box with
+   left-aligned options above it, where right-aligned text reads as a mistake. */
+.try-wallet-picker .try-wallet-hint {
+  text-align: left;
+  max-width: none;
+  padding: 2px 8px 4px;
+}
 /* Install-CLI panel */
 .try-cli-inner { max-width: 640px; }
 .try-cli-badge {

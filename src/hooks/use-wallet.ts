@@ -27,12 +27,23 @@ export type WalletChain = "evm" | "solana";
 /** A Wallet Standard wallet as surfaced by the Kit plugin (Phantom, Solflare, …). */
 export type SolanaWallet = ReturnType<typeof useWallets>[number];
 
-// Chains BlockRun's 402 actually issues requirements for. Its `accepts` array
-// currently holds a single eip155:8453 (Base USDC) entry, so a Solana wallet
-// can hold an identity and show a balance but cannot settle a paid call. When
-// upstream starts offering a `solana:` requirement, add "solana" here and the
-// paywall copy, the chat gate and the phone panel all follow automatically.
-const CAN_PAY_CHAINS: readonly WalletChain[] = ["evm"];
+/** The active Solana connection — `{ account, signer, wallet }`, or null. */
+type SolanaConnection = ReturnType<typeof useConnectedWallet>;
+
+// Chains BlockRun issues x402 requirements for. Both gateways are live —
+// blockrun.ai settles Base USDC via EIP-3009, sol.blockrun.ai settles Solana
+// USDC via a facilitator-paid SPL transfer — so every chain we can connect, we
+// can also pay from. Kept as a list rather than folded into `isConnected`
+// because a future read-only or unsupported chain would land here first.
+const CAN_PAY_CHAINS: readonly WalletChain[] = ["evm", "solana"];
+
+// The header the /api/blockrun proxy reads to pick a gateway, and therefore the
+// payment chain (see src/app/api/blockrun/[...path]/route.ts). Every paid
+// request must carry it; an unpaid one may, harmlessly. Returns a plain object
+// so call sites can spread it into an existing headers literal.
+export function chainHeaders(chain: WalletChain | null): Record<string, string> {
+  return chain === "solana" ? { "x-blockrun-chain": "solana" } : {};
+}
 
 export interface WalletFacade {
   /** The connected chain, or null when nothing is attached. */
@@ -50,6 +61,13 @@ export interface WalletFacade {
   isReady: boolean;
   /** Wallets discovered for Solana mainnet — the picker's contents. */
   solanaWallets: readonly SolanaWallet[];
+  /**
+   * The connected Solana wallet as a Kit signer, for building the x402
+   * transfer. Null on EVM, and also on a read-only Solana wallet — which is a
+   * real case (a watch-only account connects and shows a balance but cannot
+   * sign), so the payment path must check rather than assume.
+   */
+  solanaSigner: NonNullable<SolanaConnection>["signer"] | null;
   connectEvm: () => Promise<string>;
   /**
    * Connects and, where the wallet supports it, signs in (SIWS) in one prompt.
@@ -141,6 +159,7 @@ export function useWallet(): WalletFacade {
     return {
       chain,
       address,
+      solanaSigner: chain === "solana" ? (solanaConnected?.signer ?? null) : null,
       isConnected: chain !== null,
       canPay: chain !== null && CAN_PAY_CHAINS.includes(chain),
       // Only the Solana plugin has an async warm-up; wagmi's `isConnected` is

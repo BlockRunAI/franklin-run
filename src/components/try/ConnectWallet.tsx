@@ -156,7 +156,7 @@ export function ConnectWallet({ auth }: { auth: AuthState }) {
         {auth.solanaWallets.length === 0 && (
           <span className="try-wallet-hint">{t.installSolanaWallet}</span>
         )}
-        <span className="try-wallet-hint">{t.solanaCannotPay}</span>
+        <span className="try-wallet-hint">{t.solanaHint}</span>
       </div>
     );
   }

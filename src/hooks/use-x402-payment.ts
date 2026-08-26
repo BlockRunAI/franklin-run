@@ -6,6 +6,7 @@ import { getWalletClient } from "wagmi/actions";
 import { getAddress } from "viem";
 import { wagmiConfig } from "@/lib/wagmi-config";
 import { useWallet, type WalletChain } from "./use-wallet";
+import { createSolanaPaymentPayload, SolanaPaymentError } from "@/lib/solana-x402";
 
 const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 
@@ -29,7 +30,9 @@ interface PaymentRequirement {
   amount: string;
   payTo: string;
   maxTimeoutSeconds?: number;
-  extra?: { name?: string; version?: string };
+  // EVM carries the EIP-712 domain (`name` / `version`); Solana carries the
+  // facilitator fee payer and the finalized blockhash to build against.
+  extra?: Record<string, unknown> & { name?: string; version?: string };
 }
 
 interface ResourceInfo {
@@ -57,9 +60,11 @@ function createNonce(): `0x${string}` {
 }
 
 // A 402 may offer several ways to pay. Pick the one the connected wallet can
-// actually settle rather than assuming accepts[0] — BlockRun offers a single
-// eip155 entry today, but the moment a `solana:` entry appears alongside it,
-// index 0 becomes a coin toss.
+// actually settle rather than assuming accepts[0]. Each BlockRun gateway
+// currently answers with a single entry for its own chain, but the Base one
+// already emits two when `upto` billing is enabled — and index 0 is only
+// "exact" there by convention. Selecting by network is what keeps the label,
+// the signature and the retry all describing the same offer.
 const NETWORK_PREFIX: Record<WalletChain, string> = {
   evm: "eip155:",
   solana: "solana:",
@@ -74,7 +79,7 @@ export function selectRequirement(
 }
 
 export function useX402Payment() {
-  const { address, isConnected, canPay, chain } = useWallet();
+  const { address, isConnected, canPay, chain, solanaSigner } = useWallet();
   const { switchChainAsync } = useSwitchChain();
   const [step, setStep] = useState<PaymentStep>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -88,6 +93,9 @@ export function useX402Payment() {
     async (
       requirements: PaymentRequirement,
       resource?: ResourceInfo,
+      // Echoed verbatim into the Solana payload. The gateway puts its discovery
+      // (`bazaar`) block here and expects to see it come back unchanged.
+      extensions?: Record<string, unknown>,
     ): Promise<{ payload: string | null; error: string | null }> => {
       if (!address || !isConnected) {
         const msg = "Wallet not connected";
@@ -96,9 +104,9 @@ export function useX402Payment() {
         return { payload: null, error: msg };
       }
       // Connected on a chain this resource can't be paid from. Say so plainly
-      // instead of failing later inside the EIP-3009 signing path.
+      // instead of failing later inside a signing path built for another chain.
       if (!canPay) {
-        const msg = "Paid requests need an Ethereum wallet — Solana payments aren't live yet.";
+        const msg = "This wallet's network can't pay for this request.";
         setError(msg);
         setStep("error");
         return { payload: null, error: msg };
@@ -106,6 +114,43 @@ export function useX402Payment() {
 
       setStep("signing");
       setError(null);
+
+      // Solana settles a whole signed SPL transfer rather than an EIP-3009
+      // authorization, so it forks before any of the EVM machinery below.
+      if (chain === "solana") {
+        if (!solanaSigner) {
+          const msg = "This Solana wallet can't sign transactions — reconnect with a signing account.";
+          setError(msg);
+          setStep("error");
+          return { payload: null, error: msg };
+        }
+        try {
+          const payload = await createSolanaPaymentPayload(
+            solanaSigner,
+            requirements,
+            resource || {
+              url: "https://franklin.run/api/blockrun/v1/messages",
+              description: "Franklin web playground",
+              mimeType: "application/json",
+            },
+            extensions,
+          );
+          setStep("done");
+          return { payload, error: null };
+        } catch (e) {
+          // A SolanaPaymentError is already phrased for a human; anything else
+          // is a wallet rejection or an unexpected failure.
+          const msg =
+            e instanceof SolanaPaymentError
+              ? e.message
+              : e instanceof Error
+                ? e.message
+                : "Payment failed";
+          setError(msg);
+          setStep("error");
+          return { payload: null, error: msg };
+        }
+      }
 
       try {
         const requiredChainId = parseInt(
@@ -220,7 +265,7 @@ export function useX402Payment() {
         return { payload: null, error: msg };
       }
     },
-    [address, isConnected, canPay, switchChainAsync],
+    [address, isConnected, canPay, chain, solanaSigner, switchChainAsync],
   );
 
   const makePayment = useCallback(
@@ -236,7 +281,7 @@ export function useX402Payment() {
         setStep("error");
         return { payload: null, error: msg };
       }
-      return createPayment(paymentReq, requirements.resource);
+      return createPayment(paymentReq, requirements.resource, requirements.extensions);
     },
     [createPayment, chain],
   );

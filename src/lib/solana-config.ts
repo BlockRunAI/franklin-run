@@ -18,11 +18,22 @@ export const SOLANA_CAIP2 = "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp";
 // formatting/threshold logic downstream is shared.
 export const USDC_SOLANA_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 
-// The public endpoint is heavily rate limited and will not survive a polling
-// balance hook. Set NEXT_PUBLIC_SOLANA_RPC_URL to a real provider in anything
-// other than local dev.
+// Reads go through our own same-origin proxy, not straight to BlockRun's RPC.
+// That endpoint is free and keyless but serves no Access-Control-Allow-Origin,
+// and a JSON-RPC POST is always preflighted — so calling it from the browser is
+// blocked outright. /api/solana/rpc forwards to it (see that route for why it
+// is separate from /api/blockrun).
+//
+// Absolute rather than relative so the URL is valid wherever the client module
+// is evaluated. Nothing calls the RPC during SSR — the balance query is gated
+// on a connected wallet — but the server branch keeps a bad URL from ever being
+// constructed. NEXT_PUBLIC_SOLANA_RPC_URL overrides both if we ever want a
+// dedicated provider.
 export const SOLANA_RPC_URL =
-  process.env.NEXT_PUBLIC_SOLANA_RPC_URL || "https://api.mainnet-beta.solana.com";
+  process.env.NEXT_PUBLIC_SOLANA_RPC_URL ||
+  (typeof window !== "undefined"
+    ? `${window.location.origin}/api/solana/rpc`
+    : "https://sol.blockrun.ai/api/v1/solana/rpc");
 
 // One client = one chain (the wallet plugin's rule). Built once at module scope
 // so the reference stays stable across renders, as ClientProvider requires.

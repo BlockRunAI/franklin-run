@@ -3,6 +3,7 @@
 import { Wallet, ArrowDownToLine } from "lucide-react";
 import type { Usage } from "@/hooks/use-usage-stats";
 import { useUsdcBalance } from "@/hooks/use-usdc-balance";
+import { useWallet } from "@/hooks/use-wallet";
 import { useTryLang } from "@/lib/try-i18n";
 
 function fmtUsd(n: number): string {
@@ -19,6 +20,10 @@ function shortModel(id: string): string {
 export function WalletPanel({ usage }: { usage: Usage }) {
   const { t } = useTryLang();
   const { balance } = useUsdcBalance();
+  // Name the network the user would actually be topping up on — telling a
+  // Phantom user to send USDC on Base is how funds get lost.
+  const { chain } = useWallet();
+  const network = chain === "solana" ? t.solanaNetwork : t.baseNetwork;
   const byModel = Object.entries(usage.byModel).sort((a, b) => b[1].usd - a[1].usd);
   const maxUsd = byModel[0]?.[1].usd || 1;
 
@@ -43,7 +48,7 @@ export function WalletPanel({ usage }: { usage: Usage }) {
 
         <p className="try-wallet-topup">
           <ArrowDownToLine className="h-3.5 w-3.5" />
-          {t.topUp}
+          {t.topUp(network)}
         </p>
 
         {byModel.length > 0 && (

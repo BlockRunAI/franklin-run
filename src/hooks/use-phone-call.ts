@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { useWallet } from "./use-wallet";
+import { useWallet, chainHeaders } from "./use-wallet";
 import { useX402Payment, parseX402FromResponse } from "./use-x402-payment";
 
 // Phone number management (dashboard-style) + AI voice calls, all via BlockRun's
@@ -30,7 +30,7 @@ export interface PhoneCall {
 
 export function usePhoneCall() {
   // Phone numbers are a paid resource — gate on payability, not connection.
-  const { canPay } = useWallet();
+  const { canPay, chain } = useWallet();
   const { makePayment } = useX402Payment();
   const [numbers, setNumbers] = useState<PhoneNumber[]>([]);
   const [numbersError, setNumbersError] = useState<string | null>(null);
@@ -43,7 +43,10 @@ export function usePhoneCall() {
   const paidPost = useCallback(
     async (url: string, payload: Record<string, unknown>, signal?: AbortSignal) => {
       const body = JSON.stringify(payload);
-      let res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body, signal });
+      // On the probe as well as the retry — the header is what decides which
+      // gateway answers, and so which chain's 402 comes back.
+      const headers = { "Content-Type": "application/json", ...chainHeaders(chain) };
+      let res = await fetch(url, { method: "POST", headers, body, signal });
       if (res.status === 402) {
         const reqs = parseX402FromResponse(res);
         if (!reqs) throw new Error("Could not read payment requirements.");
@@ -51,7 +54,7 @@ export function usePhoneCall() {
         if (!pay) throw new Error(error || "Wallet signature failed.");
         res = await fetch(url, {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-Payment": pay },
+          headers: { ...headers, "X-Payment": pay },
           body,
           signal,
         });
@@ -62,7 +65,7 @@ export function usePhoneCall() {
       }
       return res.json();
     },
-    [makePayment],
+    [makePayment, chain],
   );
 
   const parseNumbers = (j: Record<string, unknown>): PhoneNumber[] => {
@@ -146,7 +149,12 @@ export function usePhoneCall() {
         while (Date.now() - start < 300_000) {
           if (signal.aborted) return;
           await new Promise((r) => setTimeout(r, 6000));
-          const s = await fetch(`${CALL_ENDPOINT}/${id}`, { signal });
+          // Unpaid, but still gateway-bound: the call was placed on one host
+          // and only that host knows the id.
+          const s = await fetch(`${CALL_ENDPOINT}/${id}`, {
+            headers: chainHeaders(chain),
+            signal,
+          });
           if (!s.ok) continue;
           const sj = await s.json();
           if (sj.status === "completed" || sj.completed || sj.transcript) {
@@ -160,7 +168,7 @@ export function usePhoneCall() {
         if (!aborted) setCall({ to, task, status: "error", error: e instanceof Error ? e.message : "Error" });
       }
     },
-    [paidPost],
+    [paidPost, chain],
   );
 
   const resetCall = useCallback(() => {
