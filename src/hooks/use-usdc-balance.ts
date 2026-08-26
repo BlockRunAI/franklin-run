@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useChainId, useReadContract } from "wagmi";
 import { base } from "wagmi/chains";
@@ -80,10 +81,16 @@ export function useUsdcBalance() {
   const rawBalance = isSolana ? solRaw : evmRaw;
   const balance = rawBalance !== undefined ? Number(rawBalance) / 1_000_000 : undefined;
 
-  const hasSufficientBalance = (amountUsd: number): boolean => {
-    if (balance === undefined) return false;
-    return balance >= amountUsd;
-  };
+  // Memoized: the payment hook lists this in a dependency array, and an
+  // identity that changed every render would rebuild the whole paidFetch
+  // callback chain in use-franklin-chat on each one.
+  const hasSufficientBalance = useCallback(
+    (amountUsd: number): boolean => {
+      if (balance === undefined) return false;
+      return balance >= amountUsd;
+    },
+    [balance],
+  );
 
   return {
     balance,
