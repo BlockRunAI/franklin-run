@@ -21,6 +21,14 @@ export interface TryDict {
   switchToBase: string;
   noWalletFound: string;
   openInWalletApp: string;
+  chooseNetwork: string;
+  networkEthereum: string;
+  networkSolana: string;
+  solanaNetwork: string;
+  noSolanaWallet: string;
+  installSolanaWallet: string;
+  solanaHint: string;
+  back: string;
   image: string;
   video: string;
   music: string;
@@ -74,7 +82,7 @@ export interface TryDict {
   galleryOpenPage: string;
   walletTitle: string;
   balance: string;
-  topUp: string;
+  topUp: (network: string) => string;
   costByModel: string;
   receipts: string;
   walletEmpty: string;
@@ -165,6 +173,14 @@ const en: TryDict = {
   switchToBase: "Switch to Base",
   noWalletFound: "No wallet found",
   openInWalletApp: "Open in the MetaMask or Coinbase Wallet app browser.",
+  chooseNetwork: "Choose a network",
+  networkEthereum: "Ethereum",
+  networkSolana: "Solana",
+  solanaNetwork: "Solana",
+  noSolanaWallet: "No Solana wallet found",
+  installSolanaWallet: "Install Phantom, Solflare or Backpack.",
+  solanaHint: "Pay in USDC on Solana — no SOL needed for gas.",
+  back: "Back",
   image: "Image",
   video: "Video",
   music: "Music",
@@ -218,7 +234,7 @@ const en: TryDict = {
   galleryOpenPage: "Open full page ↗",
   walletTitle: "Wallet",
   balance: "Balance",
-  topUp: "Send USDC on Base to your connected wallet to top up.",
+  topUp: (n) => `Send USDC on ${n} to your connected wallet to top up.`,
   costByModel: "Cost by model",
   receipts: "Receipts",
   walletEmpty: "Connect your wallet to see your balance and spend.",
@@ -310,6 +326,14 @@ const zh: TryDict = {
   switchToBase: "切换到 Base",
   noWalletFound: "未检测到钱包",
   openInWalletApp: "请在 MetaMask 或 Coinbase Wallet 应用的内置浏览器中打开。",
+  chooseNetwork: "选择网络",
+  networkEthereum: "以太坊",
+  networkSolana: "Solana",
+  solanaNetwork: "Solana",
+  noSolanaWallet: "未检测到 Solana 钱包",
+  installSolanaWallet: "请安装 Phantom、Solflare 或 Backpack。",
+  solanaHint: "使用 Solana 上的 USDC 付款，无需 SOL 支付 gas。",
+  back: "返回",
   image: "图像",
   video: "视频",
   music: "音乐",
@@ -363,7 +387,7 @@ const zh: TryDict = {
   galleryOpenPage: "打开完整页面 ↗",
   walletTitle: "钱包",
   balance: "余额",
-  topUp: "在 Base 上把 USDC 转到你连接的钱包即可充值。",
+  topUp: (n) => `在 ${n} 上把 USDC 转到你连接的钱包即可充值。`,
   costByModel: "按模型花费",
   receipts: "账单",
   walletEmpty: "连接钱包以查看余额和花费。",
@@ -455,6 +479,14 @@ const es: TryDict = {
   switchToBase: "Cambiar a Base",
   noWalletFound: "No se encontró billetera",
   openInWalletApp: "Ábrelo en el navegador de la app MetaMask o Coinbase Wallet.",
+  chooseNetwork: "Elige una red",
+  networkEthereum: "Ethereum",
+  networkSolana: "Solana",
+  solanaNetwork: "Solana",
+  noSolanaWallet: "No se encontró billetera de Solana",
+  installSolanaWallet: "Instala Phantom, Solflare o Backpack.",
+  solanaHint: "Paga con USDC en Solana — no necesitas SOL para el gas.",
+  back: "Atrás",
   image: "Imagen",
   video: "Video",
   music: "Música",
@@ -508,7 +540,7 @@ const es: TryDict = {
   galleryOpenPage: "Abrir página completa ↗",
   walletTitle: "Billetera",
   balance: "Saldo",
-  topUp: "Envía USDC en Base a tu billetera conectada para recargar.",
+  topUp: (n) => `Envía USDC en ${n} a tu billetera conectada para recargar.`,
   costByModel: "Costo por modelo",
   receipts: "Recibos",
   walletEmpty: "Conecta tu billetera para ver saldo y gastos.",

@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useAccount } from "wagmi";
-import { useX402Payment, parseX402FromResponse } from "./use-x402-payment";
+import { useWallet, chainHeaders, type WalletChain } from "./use-wallet";
+import { useX402Payment, parseX402FromResponse, selectRequirement } from "./use-x402-payment";
 import { FRANKLIN_SYSTEM_PROMPT, FRANKLIN_TOOLS_PROMPT, systemPromptDateLine } from "@/lib/franklin-system-prompt";
 
 // Browser's IANA timezone (e.g. "Asia/Shanghai") — passed to systemPromptDateLine
@@ -503,7 +503,12 @@ export function useFranklinChat(
   onSpend?: (model: string, usd: number) => void,
   prefill?: { mode?: ChatMode; imageModel?: string; videoModel?: string },
 ) {
-  const { isConnected } = useAccount();
+  // Paid features gate on `canPay` rather than "a wallet is attached" — the
+  // two are the same today (both chains can settle) but the distinction is what
+  // keeps a future read-only or unpayable chain from reaching the signer.
+  // `chain` rides along on every paid request so the proxy picks the gateway
+  // that issues a requirement this wallet can actually sign (see use-wallet).
+  const { canPay, chain } = useWallet();
   const { makePayment } = useX402Payment();
   const onSpendRef = useRef(onSpend);
   // A generation is pinned to the conversation it started in: all writes target
@@ -555,10 +560,16 @@ export function useFranklinChat(
   const [mediaJobs, setMediaJobs] = useState<Record<string, MediaJob>>({});
   const mediaAbortRef = useRef<Record<string, AbortController>>({});
   // Freshest connection state for async flows (send's closure can be stale).
-  const isConnectedRef = useRef(isConnected);
+  const canPayRef = useRef(canPay);
   useEffect(() => {
-    isConnectedRef.current = isConnected;
-  }, [isConnected]);
+    canPayRef.current = canPay;
+  }, [canPay]);
+  // Same reason: a generation can outlive the render that started it, and the
+  // gateway a retry goes to must match the wallet signing for it.
+  const chainRef = useRef(chain);
+  useEffect(() => {
+    chainRef.current = chain;
+  }, [chain]);
   const [error, setError] = useState<string | null>(null);
   const inFlight = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -602,16 +613,33 @@ export function useFranklinChat(
       extraHeaders?: Record<string, string>,
     ): Promise<Response> => {
       const sig = () => abortRef.current?.signal;
+      // The chain header must be on the *probe* too, not just the paid retry:
+      // it is what decides which gateway answers, and therefore whether the 402
+      // we get back is one this wallet can sign at all.
       const init = (extra?: Record<string, string>): RequestInit =>
         method === "GET"
-          ? { method, headers: { ...extraHeaders, ...extra }, signal: sig() }
-          : { method, headers: { "Content-Type": "application/json", ...extraHeaders, ...extra }, body, signal: sig() };
+          ? { method, headers: { ...chainHeaders(chainRef.current), ...extraHeaders, ...extra }, signal: sig() }
+          : {
+              method,
+              headers: {
+                "Content-Type": "application/json",
+                ...chainHeaders(chainRef.current),
+                ...extraHeaders,
+                ...extra,
+              },
+              body,
+              signal: sig(),
+            };
       let res = await fetch(url, init());
       if (res.status === 402) {
         const reqs = parseX402FromResponse(res);
         if (!reqs) throw new Error("Could not read payment requirements from the server.");
         setStatus("signing");
-        const usd = Number(reqs.accepts?.[0]?.amount || 0) / 1_000_000;
+        // Price the offer we will actually sign, not accepts[0] — the same
+        // selection makePayment() performs, so the label can never quote one
+        // requirement while the wallet signs another.
+        const offer = selectRequirement(reqs.accepts ?? [], chainRef.current);
+        const usd = Number(offer?.amount || 0) / 1_000_000;
         const usdStr = usd ? (usd < 0.01 ? usd.toFixed(4) : usd.toFixed(2)) : null;
         // Show the signature as its own step alongside the running tool, so the
         // user sees *what* they're paying for, not just a bare "sign" prompt.
@@ -825,7 +853,12 @@ export function useFranklinChat(
         while (Date.now() - start < 180_000) {
           if (signal()?.aborted) break;
           await new Promise((r) => setTimeout(r, 6000));
-          const s = await fetch(`/api/blockrun/v1/voice/call/${callId}`, { signal: abortRef.current?.signal });
+          // Unpaid status poll, but still gateway-bound: the call was placed on
+          // one host and only that host knows the id.
+          const s = await fetch(`/api/blockrun/v1/voice/call/${callId}`, {
+            headers: chainHeaders(chainRef.current),
+            signal: abortRef.current?.signal,
+          });
           if (!s.ok) continue;
           const sj = await s.json();
           if (sj.status === "completed" || sj.completed || sj.transcript) {
@@ -1017,7 +1050,7 @@ export function useFranklinChat(
 
           // A real (paid) tool. If there's no wallet, stop and prompt rather
           // than failing on the signature step.
-          if (!isConnectedRef.current) {
+          if (!canPayRef.current) {
             setSteps([]);
             setNeedsToolWallet(true);
             setStatus("idle");
@@ -1085,7 +1118,7 @@ export function useFranklinChat(
     // a wallet-less visitor would replace their answer with a connect-wallet
     // prompt. Without a wallet the model routes normally (and can still ask).
     const implied =
-      !forceTool && isConnectedRef.current ? impliedToolForPrompt(lastPrompt) : undefined;
+      !forceTool && canPayRef.current ? impliedToolForPrompt(lastPrompt) : undefined;
     await runChatWithTools(history, effectiveModel, forceTool ?? implied, Boolean(implied));
   }
 
@@ -1181,23 +1214,30 @@ export function useFranklinChat(
     }
 
     try {
+      // Pin the chain for the whole job. A media generation outlives many
+      // renders — submit, then poll for up to five minutes — and every one of
+      // those requests has to reach the same gateway that issued the 402 the
+      // user signed. Reading chainRef per request would let a mid-flight wallet
+      // switch send the poll somewhere the job doesn't exist.
+      const jobChain = chainRef.current;
+      const chainHdr = chainHeaders(jobChain);
       let res = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...chainHdr },
         body,
         signal: abort.signal,
       });
       if (res.status === 402) {
         const reqs = parseX402FromResponse(res);
         if (!reqs) throw new Error("Could not read payment requirements from the server.");
-        const usd = Number(reqs.accepts?.[0]?.amount || 0) / 1_000_000;
+        const usd = Number(selectRequirement(reqs.accepts ?? [], jobChain)?.amount || 0) / 1_000_000;
         setPhase("signing");
         const { payload, error: signErr } = await makePayment(reqs);
         if (!payload) throw new Error(signErr || "Wallet signature failed.");
         setPhase("generating");
         res = await fetch(endpoint, {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-Payment": payload },
+          headers: { "Content-Type": "application/json", ...chainHdr, "X-Payment": payload },
           body,
           signal: abort.signal,
         });
@@ -1208,7 +1248,7 @@ export function useFranklinChat(
 
       let url: string | undefined;
       if (res.status === 202) {
-        url = await pollMediaJob(convId, kind, res, abort.signal, model);
+        url = await pollMediaJob(convId, kind, res, abort.signal, model, jobChain);
       } else {
         if (!res.ok) throw new Error(await errMsg(res));
         url = extractMediaUrl(await res.json(), kind);
@@ -1247,13 +1287,20 @@ export function useFranklinChat(
     submitRes: Response,
     signal: AbortSignal,
     model: string,
+    chain: WalletChain | null,
   ): Promise<string | undefined> {
     const submit = await submitRes.json();
     const pollPath: string | undefined = submit.poll_url;
     if (!pollPath) return extractMediaUrl(submit, kind);
+    // The gateway returns an absolute poll URL on its own host. Strip back to
+    // the path and re-home it on our proxy — the browser can't call either
+    // gateway directly (CORS, and the 402 header wouldn't survive). Which of
+    // the two hosts the proxy then forwards to is carried by the chain header
+    // below, not by this URL, so dropping the host here is intentional.
     const proxied = pollPath.startsWith("/api/blockrun")
       ? pollPath
       : `/api/blockrun${pollPath.replace(/^.*\/api/, "")}`;
+    const chainHdr = chainHeaders(chain);
     const setPhase = (phase: MediaJob["phase"]) => setMediaJobs((p) => ({ ...p, [convId]: { kind, phase } }));
 
     let sig: string | null = null;
@@ -1262,7 +1309,7 @@ export function useFranklinChat(
     const maxMs = kind === "image" ? 180_000 : 300_000;
     while (Date.now() - start < maxMs) {
       if (signal.aborted) throw new DOMException("Aborted", "AbortError");
-      const headers: Record<string, string> = {};
+      const headers: Record<string, string> = { ...chainHdr };
       if (sig) headers["X-Payment"] = sig;
       const r = await fetch(proxied, { headers, signal });
       if (r.status === 402 && !sig) {
@@ -1271,7 +1318,7 @@ export function useFranklinChat(
         setPhase("signing");
         const { payload, error: e } = await makePayment(reqs);
         if (!payload) throw new Error(e || "Wallet signature failed.");
-        const usd = Number(reqs.accepts?.[0]?.amount || 0) / 1_000_000;
+        const usd = Number(selectRequirement(reqs.accepts ?? [], chain)?.amount || 0) / 1_000_000;
         if (usd) onSpendRef.current?.(model, usd);
         sig = payload;
         setPhase("generating");
@@ -1295,15 +1342,21 @@ export function useFranklinChat(
     const submit = await submitRes.json();
     const pollPath: string | undefined = submit.poll_url;
     if (!pollPath) return extractMediaUrl(submit, kind);
+    // See pollMediaJob: the host is stripped on purpose — the chain header
+    // below is what routes this back to the gateway that owns the job.
     const proxied = pollPath.startsWith("/api/blockrun")
       ? pollPath
       : `/api/blockrun${pollPath.replace(/^.*\/api/, "")}`;
+    // Read once and hold it for the run, so a wallet switch mid-render can't
+    // point a later poll at a gateway that never saw this job.
+    const chain = chainRef.current;
+    const chainHdr = chainHeaders(chain);
 
     let sig: string | null = null;
     const start = Date.now();
     while (Date.now() - start < maxMs) {
       if (signal()?.aborted) throw new DOMException("Aborted", "AbortError");
-      const headers: Record<string, string> = {};
+      const headers: Record<string, string> = { ...chainHdr };
       if (sig) headers["X-Payment"] = sig;
       const r = await fetch(proxied, { headers, signal: abortRef.current?.signal });
       if (r.status === 402 && !sig) {
@@ -1312,7 +1365,7 @@ export function useFranklinChat(
         setStatus("signing");
         const { payload, error: e } = await makePayment(reqs);
         if (!payload) throw new Error(e || "Wallet signature failed.");
-        const usd = Number(reqs.accepts?.[0]?.amount || 0) / 1_000_000;
+        const usd = Number(selectRequirement(reqs.accepts ?? [], chain)?.amount || 0) / 1_000_000;
         if (usd) onSpendRef.current?.(modelRef.current, usd);
         sig = payload;
         setStatus("generating");
@@ -1342,7 +1395,7 @@ export function useFranklinChat(
   const videoResolutions = VIDEO_MODEL_RESOLUTIONS[videoModel] ?? [];
 
   return {
-    isConnected,
+    canPay,
     mode,
     setMode,
     model,

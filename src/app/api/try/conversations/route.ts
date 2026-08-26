@@ -16,8 +16,11 @@ import { jsonPrivate, notSignedIn, storeError } from "@/lib/api-response";
 // the response size. Pagination fields stay top-level (never nested under
 // `meta`, which is a stable boolean discriminator).
 export async function GET(req: NextRequest) {
-  const wallet = verifySessionToken(req.cookies.get(SESSION_COOKIE)?.value);
-  if (!wallet) return notSignedIn();
+  const session = verifySessionToken(req.cookies.get(SESSION_COOKIE)?.value);
+  if (!session) return notSignedIn();
+  // storageKey, not the raw address — it is the per-chain, collision-free
+  // namespace for this wallet's history (see session.ts).
+  const wallet = session.storageKey;
 
   const metaFlag = req.nextUrl.searchParams.get("meta");
   const meta = metaFlag === "1" || metaFlag === "true";

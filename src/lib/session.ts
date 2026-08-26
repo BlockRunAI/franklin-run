@@ -1,8 +1,9 @@
 import crypto from "node:crypto";
+import bs58 from "bs58";
 
 // Stateless session token for the /try wallet login. A compact HMAC-signed
 // token (no DB needed): base64url(payload).base64url(hmac). Carries the
-// verified wallet address + expiry. Mirrors a JWT but dependency-free.
+// verified wallet address + chain + expiry. Mirrors a JWT but dependency-free.
 
 const DEV_SECRET = "dev-insecure-secret-change-me";
 const TTL_SECONDS = 30 * 24 * 60 * 60; // 30 days
@@ -27,12 +28,33 @@ export const NONCE_COOKIE = "franklin_try_nonce";
 // SESSION_SECRET can't be replayed here. Legacy tokens (no `aud`) are still
 // accepted so existing sessions don't get logged out on deploy.
 const AUDIENCE = "franklin-try";
+
+export type WalletChain = "evm" | "solana";
+
 const EVM_ADDRESS = /^0x[0-9a-f]{40}$/;
+// Base58, case-significant. Validated here rather than imported from
+// solana-config.ts so this module stays free of client-side Kit imports.
+const SOLANA_ADDRESS = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+export interface Session {
+  chain: WalletChain;
+  address: string;
+  /**
+   * Collision-free, lowercase-safe key for the conversation store. Pass this —
+   * never the raw address — to franklin-store, whose safeWallet() lowercases
+   * and strips to [a-z0-9]. That transform is injective for EVM hex but NOT for
+   * base58, where two addresses differing only in case are different accounts
+   * that would otherwise share a namespace.
+   */
+  storageKey: string;
+}
 
 interface Payload {
   address: string;
   exp: number;
   aud?: string;
+  /** Absent on tokens minted before multi-chain login — those are EVM. */
+  chain?: WalletChain;
 }
 
 function b64url(buf: Buffer | string): string {
@@ -43,19 +65,48 @@ function sign(data: string): string {
   return crypto.createHmac("sha256", getSecret()).update(data).digest("base64url");
 }
 
-export function createSessionToken(address: string): string {
-  const addr = address.toLowerCase();
-  // Only mint for a well-formed EVM address. safeWallet() in franklin-store
-  // assumes this shape (lowercase hex is collision-free under its char strip);
-  // a future multi-chain login must not silently share a storage namespace.
-  if (!EVM_ADDRESS.test(addr)) throw new Error("Invalid EVM address for session token");
-  const payload: Payload = { address: addr, exp: Math.floor(Date.now() / 1000) + TTL_SECONDS, aud: AUDIENCE };
+// EVM keeps its historical key (the lowercase address itself) so existing
+// stored conversations stay reachable. Solana hex-encodes the 32-byte public
+// key: lowercase, alphanumeric, and injective, so case survives the trip
+// through safeWallet(). The "sol" prefix cannot collide with an EVM key, which
+// always starts "0x".
+function storageKeyFor(chain: WalletChain, address: string): string {
+  if (chain === "evm") return address.toLowerCase();
+  return `sol${Buffer.from(bs58.decode(address)).toString("hex")}`;
+}
+
+function normalize(chain: WalletChain, address: string): string | null {
+  if (chain === "evm") {
+    const addr = address.toLowerCase();
+    return EVM_ADDRESS.test(addr) ? addr : null;
+  }
+  // No case folding — base58 is case-significant.
+  if (!SOLANA_ADDRESS.test(address)) return null;
+  try {
+    // Reject anything that isn't a real 32-byte public key; storageKeyFor
+    // decodes it again and must not throw at storage time.
+    if (bs58.decode(address).length !== 32) return null;
+  } catch {
+    return null;
+  }
+  return address;
+}
+
+export function createSessionToken(chain: WalletChain, address: string): string {
+  const addr = normalize(chain, address);
+  if (!addr) throw new Error(`Invalid ${chain} address for session token`);
+  const payload: Payload = {
+    address: addr,
+    chain,
+    exp: Math.floor(Date.now() / 1000) + TTL_SECONDS,
+    aud: AUDIENCE,
+  };
   const body = b64url(JSON.stringify(payload));
   return `${body}.${sign(body)}`;
 }
 
-// Returns the verified address or null. Uses a constant-time signature compare.
-export function verifySessionToken(token: string | undefined): string | null {
+// Returns the verified session or null. Uses a constant-time signature compare.
+export function verifySessionToken(token: string | undefined): Session | null {
   if (!token) return null;
   const [body, mac] = token.split(".");
   if (!body || !mac) return null;
@@ -70,8 +121,12 @@ export function verifySessionToken(token: string | undefined): string | null {
     if (typeof payload.exp !== "number" || !Number.isFinite(payload.exp)) return null;
     if (payload.exp < Math.floor(Date.now() / 1000)) return null;
     if (payload.aud !== undefined && payload.aud !== AUDIENCE) return null;
-    if (typeof payload.address !== "string" || !EVM_ADDRESS.test(payload.address)) return null;
-    return payload.address;
+    if (typeof payload.address !== "string") return null;
+    const chain: WalletChain = payload.chain ?? "evm";
+    if (chain !== "evm" && chain !== "solana") return null;
+    const address = normalize(chain, payload.address);
+    if (!address) return null;
+    return { chain, address, storageKey: storageKeyFor(chain, address) };
   } catch {
     return null;
   }
