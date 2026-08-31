@@ -34,9 +34,17 @@ const IMAGE_EDIT_ENDPOINT = "/api/blockrun/v1/images/image2image";
 const VIDEO_ENDPOINT = "/api/blockrun/v1/videos/generations";
 const MUSIC_ENDPOINT = "/api/blockrun/v1/audio/generations";
 
-// Only OpenAI's edit endpoint accepts a reference image (mirrors Franklin CLI's
-// EDIT_SUPPORTED_MODELS). When a reference is attached we force gpt-image-2.
-const EDIT_SUPPORTED_IMAGE_MODELS = new Set(["openai/gpt-image-1", "openai/gpt-image-2"]);
+// Models whose edit route accepts a reference image — mirrors
+// EDIT_SUPPORTED_MODELS in `blockrun/src/app/api/v1/images/image2image/route.ts`
+// (OpenAI plus the whole Nano Banana family). When a reference is attached to
+// any other model we force gpt-image-2, the only one that also takes a mask.
+const EDIT_SUPPORTED_IMAGE_MODELS = new Set([
+  "openai/gpt-image-1",
+  "openai/gpt-image-2",
+  "google/nano-banana",
+  "google/nano-banana-2",
+  "google/nano-banana-pro",
+]);
 
 // Per-provider multi-image fusion cap for image2image. Mirrors the gateway's
 // MAX_IMAGES_BY_PREFIX in `blockrun/src/app/api/v1/images/image2image/route.ts`
@@ -76,6 +84,7 @@ const VIDEO_IMAGE_INPUT_MODELS = new Set([
   "xai/grok-imagine-video",
   "bytedance/seedance-2.0-fast",
   "bytedance/seedance-2.0",
+  "bytedance/seedance-2.5",
   "bytedance/seedance-1.5-pro",
 ]);
 const DEFAULT_I2V_MODEL = "bytedance/seedance-2.0-fast";
@@ -90,33 +99,44 @@ export interface ChatModel {
 }
 
 // Mirrors Franklin's curated /model picker (src/ui/model-picker.ts in the
-// Franklin repo) so the web preview offers the same lineup. The free default
-// (DeepSeek V4 Flash) leads so anyone can try with no wallet.
+// Franklin repo) and the live BlockRun catalog on both chains (blockrun.ai and
+// sol.blockrun.ai carry the same ids). Refreshed 2026-08-31 against
+// GET /api/v1/models after the gateway's free-tier rebuild (base #448 /
+// sol #231) and paid-catalog refresh (base #449 / sol #230).
 export const CHAT_MODELS: ChatModel[] = [
   // Auto (smart routing) is hidden for now — kept in resolveAuto for later.
-  // Free (no USDC needed)
-  { id: "nvidia/deepseek-v4-flash", label: "DeepSeek V4 Flash", free: true, group: "Free" },
-  { id: "nvidia/qwen3-coder-480b", label: "Qwen3 Coder 480B", free: true, group: "Free" },
-  { id: "nvidia/llama-4-maverick", label: "Llama 4 Maverick", free: true, group: "Free" },
+  // Free (no USDC needed). NVIDIA killed the old free lineup (DeepSeek V4
+  // Flash, Qwen3 Coder 480B, Llama 4 Maverick all 410'd), so these are the
+  // rebuilt ones — each probe-verified on /v1/messages, and each serves
+  // ITSELF rather than falling back (Nemotron 3 Ultra 550B, Cohere North
+  // Mini Code and Poolside Laguna XS are free in the catalog but currently
+  // answer through nemotron-3-nano-30b, so they are not listed). Nano 30B
+  // leads: 0.7s to first response, the fastest free model in the catalog.
+  { id: "nvidia/nemotron-3-nano-30b", label: "Nemotron 3 Nano 30B", free: true, group: "Free" },
+  { id: "nvidia/nemotron-3.5-lightning", label: "Nemotron 3.5 Lightning", free: true, group: "Free" },
+  { id: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", label: "Nemotron 3 Nano Omni", free: true, group: "Free" },
+  { id: "nvidia/llama-3.2-11b-vision", label: "Llama 3.2 11B Vision", free: true, group: "Free" },
   // Premium frontier
-  { id: "anthropic/claude-opus-4.8", label: "Claude Opus 4.8", group: "Premium frontier" },
-  { id: "anthropic/claude-opus-4.7", label: "Claude Opus 4.7", group: "Premium frontier" },
-  { id: "anthropic/claude-sonnet-4.6", label: "Claude Sonnet 4.6", group: "Premium frontier" },
-  { id: "openai/gpt-5.5", label: "GPT-5.5", group: "Premium frontier" },
+  { id: "anthropic/claude-opus-5", label: "Claude Opus 5", group: "Premium frontier" },
+  { id: "anthropic/claude-sonnet-5", label: "Claude Sonnet 5", group: "Premium frontier" },
+  { id: "openai/gpt-5.6-sol", label: "GPT-5.6 Sol", group: "Premium frontier" },
   { id: "google/gemini-3.1-pro", label: "Gemini 3.1 Pro", group: "Premium frontier" },
-  { id: "xai/grok-4-0709", label: "Grok 4", group: "Premium frontier" },
+  { id: "xai/grok-4.5", label: "Grok 4.5", group: "Premium frontier" },
+  { id: "moonshot/kimi-k3", label: "Kimi K3", group: "Premium frontier" },
   // Reasoning
-  { id: "openai/o3", label: "OpenAI O3", group: "Reasoning" },
+  { id: "openai/o3", label: "o3", group: "Reasoning" },
   { id: "openai/gpt-5.3-codex", label: "GPT-5.3 Codex", group: "Reasoning" },
   { id: "deepseek/deepseek-v4-pro", label: "DeepSeek V4 Pro", group: "Reasoning" },
-  { id: "xai/grok-4-1-fast-reasoning", label: "Grok 4.1 Fast", group: "Reasoning" },
-  { id: "google/gemini-3.5-flash", label: "Gemini 3.5 Flash", group: "Reasoning" },
+  { id: "qwen/qwen3.7-max", label: "Qwen3.7 Max", group: "Reasoning" },
+  { id: "zai/glm-5.3", label: "GLM-5.3", group: "Reasoning" },
+  { id: "google/gemini-3.6-flash", label: "Gemini 3.6 Flash", group: "Reasoning" },
   // Budget
-  { id: "anthropic/claude-haiku-4.5-20251001", label: "Claude Haiku 4.5", group: "Budget" },
-  { id: "openai/gpt-5-mini", label: "GPT-5 Mini", group: "Budget" },
+  { id: "anthropic/claude-haiku-4.5", label: "Claude Haiku 4.5", group: "Budget" },
+  { id: "openai/gpt-5.6-luna", label: "GPT-5.6 Luna", group: "Budget" },
   { id: "google/gemini-2.5-flash", label: "Gemini 2.5 Flash", group: "Budget" },
   { id: "deepseek/deepseek-chat", label: "DeepSeek V4 Flash Chat", group: "Budget" },
-  { id: "moonshot/kimi-k2.6", label: "Kimi K2.6", group: "Budget" },
+  { id: "qwen/qwen3.8-flash", label: "Qwen3.8 Flash", group: "Budget" },
+  { id: "xiaomi/mimo-v2.5", label: "MiMo V2.5", group: "Budget" },
 ];
 
 // Image-model aspect-ratio whitelist — mirrors each model's `sizes` in
@@ -136,7 +156,16 @@ export const IMAGE_MODEL_SIZES: Record<string, { ratio: string; size: string }[]
     { ratio: "3:2", size: "1536x1024" },
     { ratio: "2:3", size: "1024x1536" },
   ],
+  "bytedance/seedream-5-pro": [
+    { ratio: "1:1", size: "1024x1024" },
+    { ratio: "16:9", size: "1280x720" },
+    { ratio: "9:16", size: "1600x2848" },
+    { ratio: "4:3", size: "2304x1728" },
+    { ratio: "3:4", size: "1728x2304" },
+    { ratio: "2:1", size: "2048x1024" },
+  ],
   "google/nano-banana": [{ ratio: "1:1", size: "1024x1024" }],
+  "google/nano-banana-2": [{ ratio: "1:1", size: "1024x1024" }],
   "google/nano-banana-pro": [{ ratio: "1:1", size: "1024x1024" }],
   "xai/grok-imagine-image": [{ ratio: "1:1", size: "1024x1024" }],
 };
@@ -145,12 +174,14 @@ function defaultSizeFor(modelId: string): string {
 }
 
 // Typical image models (all paid — image generation always needs a wallet).
-// GPT Image 2 leads — it's the only one in this lineup that supports
-// non-square aspect ratios (3:2 / 2:3), so it lines up with the "比例"
-// picker the rest of the UX is built around.
+// GPT Image 2 leads: it takes a mask as well as a reference, so it is the one
+// the composer falls back to for edits. Seedream 5.0 Pro is the widest ratio
+// range in the catalog (1:1 through 9:16 up to 4K-class).
 export const IMAGE_MODELS: ChatModel[] = [
   { id: "openai/gpt-image-2", label: "GPT Image 2" },
+  { id: "bytedance/seedream-5-pro", label: "Seedream 5.0 Pro" },
   { id: "google/nano-banana-pro", label: "Nano Banana Pro" },
+  { id: "google/nano-banana-2", label: "Nano Banana 2" },
   { id: "google/nano-banana", label: "Nano Banana" },
   { id: "xai/grok-imagine-image", label: "Grok Imagine" },
 ];
@@ -159,6 +190,7 @@ export const IMAGE_MODELS: ChatModel[] = [
 export const VIDEO_MODELS: ChatModel[] = [
   { id: "bytedance/seedance-2.0-fast", label: "Seedance 2.0 Fast" },
   { id: "bytedance/seedance-2.0", label: "Seedance 2.0 Pro" },
+  { id: "bytedance/seedance-2.5", label: "Seedance 2.5" },
   { id: "xai/grok-imagine-video", label: "Grok Imagine Video" },
   { id: "azure/sora-2", label: "Sora 2" },
 ];
@@ -172,6 +204,7 @@ export const VIDEO_MODELS: ChatModel[] = [
 export const VIDEO_MODEL_RATIOS: Record<string, string[]> = {
   "bytedance/seedance-2.0-fast": ["16:9", "9:16", "1:1", "4:3", "3:4"],
   "bytedance/seedance-2.0": ["16:9", "9:16", "1:1", "4:3", "3:4"],
+  "bytedance/seedance-2.5": ["16:9", "9:16", "1:1", "4:3", "3:4"],
   "bytedance/seedance-1.5-pro": ["16:9", "9:16", "1:1", "4:3", "3:4"],
 };
 function defaultVideoRatioFor(modelId: string): string {
@@ -187,6 +220,9 @@ function defaultVideoRatioFor(modelId: string): string {
 export const VIDEO_MODEL_RESOLUTIONS: Record<string, string[]> = {
   "bytedance/seedance-2.0-fast": ["480p", "720p", "1080p"],
   "bytedance/seedance-2.0": ["480p", "720p", "1080p"],
+  // Seedance 2.5 is the long-form (up to 30s) 720p tier with synced audio —
+  // 1080p and 4K live on 2.0 Pro — so the single entry hides the picker.
+  "bytedance/seedance-2.5": ["720p"],
   "bytedance/seedance-1.5-pro": ["480p", "720p", "1080p"],
 };
 function defaultVideoResolutionFor(modelId: string): string {
@@ -237,19 +273,20 @@ function userImages(m: ChatMessage): string[] {
 // Vision-capable chat models (mirrors Franklin's src/router/vision.ts). Used to
 // auto-swap to a vision model when the user attaches an image to a text-only one.
 const VISION_MODELS = new Set<string>([
-  "anthropic/claude-opus-4.8",
-  "anthropic/claude-opus-4.7",
-  "anthropic/claude-sonnet-4.6",
-  "anthropic/claude-haiku-4.5-20251001",
-  "openai/gpt-5.5",
-  "openai/gpt-5-mini",
-  "openai/o3",
+  "anthropic/claude-opus-5",
+  "anthropic/claude-sonnet-5",
+  "anthropic/claude-haiku-4.5",
+  "openai/gpt-5.6-sol",
+  "openai/gpt-5.6-luna",
   "google/gemini-3.1-pro",
-  "google/gemini-3.5-flash",
+  "google/gemini-3.6-flash",
   "google/gemini-2.5-flash",
-  "xai/grok-4-0709",
-  "moonshot/kimi-k2.6",
-  "nvidia/llama-4-maverick",
+  "xai/grok-4.5",
+  "moonshot/kimi-k3",
+  "qwen/qwen3.8-flash",
+  "xiaomi/mimo-v2.5",
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+  "nvidia/llama-3.2-11b-vision",
 ]);
 
 function isVisionModel(id: string): boolean {
@@ -260,7 +297,7 @@ function isVisionModel(id: string): boolean {
 // accept the blockrun/auto alias — Franklin routes client-side too). Sends
 // simple prompts to a fast model and complex ones to a frontier model.
 const AUTO_SIMPLE = "google/gemini-2.5-flash";
-const AUTO_COMPLEX = "anthropic/claude-opus-4.8";
+const AUTO_COMPLEX = "anthropic/claude-opus-5";
 function resolveAuto(prompt: string): string {
   const complex =
     prompt.length > 400 ||
@@ -277,7 +314,7 @@ function pickVisionSibling(id: string): string {
     const sibling = [...VISION_MODELS].find((m) => m.startsWith(`${family}/`));
     if (sibling) return sibling;
   }
-  return "anthropic/claude-sonnet-4.6";
+  return "anthropic/claude-sonnet-5";
 }
 
 // ─── Agent tools (function calling) ────────────────────────────────────────

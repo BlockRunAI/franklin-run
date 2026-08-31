@@ -28,7 +28,7 @@ function WalletBill() {
       </div>
       <div className="bill-txs">
         <div className="bill-tx">
-          <span className="lbl">▸ claude-sonnet-4.6 · refactor auth.ts</span>
+          <span className="lbl">▸ claude-sonnet-5 · refactor auth.ts</span>
           <span className="cost">−$0.041</span>
         </div>
         <div className="bill-tx">
@@ -44,7 +44,7 @@ function WalletBill() {
           <span className="cost">−$0.012</span>
         </div>
         <div className="bill-tx">
-          <span className="lbl">▸ kimi-k2.6 · context compaction</span>
+          <span className="lbl">▸ kimi-k3 · context compaction</span>
           <span className="cost">−$0.004</span>
         </div>
       </div>
@@ -119,7 +119,7 @@ function SignalCard() {
         </p>
       </div>
       <div className="signal-foot">
-        <span>Authored · Franklin / Opus 4.8</span>
+        <span>Authored · Franklin / Opus 5</span>
         <span>Cost · $0.031 USDC</span>
       </div>
     </div>
@@ -145,21 +145,21 @@ const ROUTE_EXAMPLES: RouteExample[] = [
   {
     prompt: "refactor src/auth.ts to use the jwt helper",
     cat: "CODING",
-    model: "kimi-k2.6",
+    model: "kimi-k3",
     cost: "$0.0023",
     save: 84,
   },
   {
     prompt: "what's the BTC outlook for the week?",
     cat: "TRADING",
-    model: "grok-4-fast",
+    model: "grok-4.5",
     cost: "$0.0008",
     save: 95,
   },
   {
     prompt: "prove this algorithm is O(n log n)",
     cat: "REASONING",
-    model: "sonnet-4.6",
+    model: "sonnet-5",
     cost: "$0.0312",
     save: 41,
   },
@@ -258,21 +258,21 @@ function RoutingLedger() {
     {
       req: "refactor src/auth.ts to use the new jwt helper",
       cat: "CODING",
-      model: "kimi-k2.6",
+      model: "kimi-k3",
       cost: "$0.0023",
       save: "↓ 84%",
     },
     {
       req: "what's the BTC outlook for the week?",
       cat: "TRADING",
-      model: "grok-4-1-fast",
+      model: "grok-4.5",
       cost: "$0.0008",
       save: "↓ 95%",
     },
     {
       req: "prove this algorithm is O(n log n)",
       cat: "REASONING",
-      model: "claude-sonnet-4.6",
+      model: "claude-sonnet-5",
       cost: "$0.0312",
       save: "priced",
       saveClass: "none",
@@ -342,7 +342,7 @@ function PreferenceStack() {
     },
     {
       k: "Preferred Coder",
-      v: "kimi-k2.6 over sonnet for refactors",
+      v: "kimi-k3 over sonnet for refactors",
       meta: "confirmed · 19 sess",
       conf: [true, true, true, true, false],
     },

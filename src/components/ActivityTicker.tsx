@@ -13,16 +13,16 @@
 type TickerItem = { kind: "ok" | "settle" | "route"; text: string; cost?: string };
 
 const ITEMS: TickerItem[] = [
-  { kind: "ok", text: "classify TRADING → grok-4-fast", cost: "$0.0004" },
+  { kind: "ok", text: "classify TRADING → grok-4.5", cost: "$0.0004" },
   { kind: "settle", text: "x402 settle · Base mainnet" },
   { kind: "ok", text: "search X · 12 results", cost: "$0.0003" },
   { kind: "ok", text: "image · gpt-image-2 · 1024²", cost: "$0.040" },
-  { kind: "route", text: "route CODING → kimi-k2.6" },
+  { kind: "route", text: "route CODING → kimi-k3" },
   { kind: "ok", text: "refactor auth.ts · −24 +31", cost: "$0.008" },
-  { kind: "ok", text: "reason · sonnet-4.6 · O(n log n) proof", cost: "$0.031" },
+  { kind: "ok", text: "reason · sonnet-5 · O(n log n) proof", cost: "$0.031" },
   { kind: "settle", text: "x402 settle · Solana" },
   { kind: "ok", text: "exa · neural web search (4)", cost: "$0.012" },
-  { kind: "ok", text: "compact context · kimi-k2.6", cost: "$0.004" },
+  { kind: "ok", text: "compact context · kimi-k3", cost: "$0.004" },
   { kind: "route", text: "route RESEARCH → gemini-2.5-flash" },
   { kind: "ok", text: "BTC/USD signal · coingecko", cost: "$0.002" },
 ];

@@ -39,15 +39,17 @@ export default function PricingPage() {
 
         <h2>Free Tier</h2>
         <p>
-          Franklin always includes free access to NVIDIA-hosted models with
-          unlimited usage:
+          Franklin always includes a free tier with unlimited usage &mdash;
+          seven models, no wallet:
         </p>
         <ul>
-          <li>DeepSeek V4 Flash (NVIDIA, 1M context)</li>
+          <li>Nemotron 3 Nano 30B (NVIDIA &mdash; the fastest free model)</li>
+          <li>Nemotron 3.5 Lightning (NVIDIA, 1M context)</li>
           <li>Nemotron 3 Nano Omni (NVIDIA, vision)</li>
-          <li>Qwen3 Coder 480B &amp; Qwen3-Next 80B (NVIDIA)</li>
-          <li>Llama 4 Maverick (NVIDIA)</li>
-          <li>Mistral Small 4 119B (NVIDIA)</li>
+          <li>Nemotron 3 Ultra 550B (NVIDIA, 1M context)</li>
+          <li>Llama 3.2 11B Vision (NVIDIA)</li>
+          <li>Cohere North Mini Code (256K context, coding)</li>
+          <li>Poolside Laguna XS 2.1 (coding)</li>
         </ul>
 
         <Callout type="tip" title="Zero setup required">

@@ -50,7 +50,7 @@ export default function FirstSessionPage() {
         <ul>
           <li>
             <strong>Current model</strong> &mdash; the model handling your
-            current prompt (e.g., <code>kimi-k2.6</code>, <code>grok</code>,{" "}
+            current prompt (e.g., <code>kimi-k3</code>, <code>grok</code>,{" "}
             <code>claude-sonnet</code>)
           </li>
           <li>
@@ -88,7 +88,7 @@ export default function FirstSessionPage() {
         </p>
         <ul>
           <li>
-            <strong>CODING</strong> tasks &rarr; <code>kimi-k2.6</code>{" "}
+            <strong>CODING</strong> tasks &rarr; <code>kimi-k3</code>{" "}
             &mdash; fast, accurate code generation
           </li>
           <li>
@@ -117,7 +117,7 @@ export default function FirstSessionPage() {
           {`> /cost
 
 Session cost breakdown:
-  kimi-k2.6      $0.0012  (3 calls)
+  kimi-k3        $0.0012  (3 calls)
   grok           $0.0008  (1 call)
   claude-sonnet  $0.0045  (2 calls)
   ─────────────────────────

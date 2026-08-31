@@ -92,8 +92,8 @@ export default function SmartRouterPage() {
 
         <Callout type="tip" title="Profile vs. specific model">
           You can also bypass the router entirely by setting a specific model
-          with <code>/model claude-sonnet-4.6</code> or{" "}
-          <code>/model gpt-5</code>. The router is only active when a profile
+          with <code>/model claude-sonnet-5</code> or{" "}
+          <code>/model gpt-5.6-sol</code>. The router is only active when a profile
           is selected.
         </Callout>
 

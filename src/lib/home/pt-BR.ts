@@ -40,7 +40,7 @@ export const ptBR: HomeDict = {
   trustBar: {
     builtOn: "Construído sobre",
     routesPrefix: "roteia por",
-    routesModels: "60+ modelos frontier",
+    routesModels: "70+ modelos frontier",
     providersPrefix: "de",
   },
 
@@ -73,7 +73,7 @@ export const ptBR: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "60+ modelos. Ele escolhe. Você economiza.",
+        title: "70+ modelos. Ele escolhe. Você economiza.",
         desc: "Nenhum modelo é o melhor em tudo. O router classifica cada requisição e roteia em menos de um milissegundo. Treinado em 2M+ requisições reais, pontuado por Elo continuamente, adapta-se aos seus overrides. Até 89% de economia vs. always-Opus.",
       },
       {
@@ -101,7 +101,7 @@ export const ptBR: HomeDict = {
       },
       {
         title: "Rode grátis",
-        body: "NVIDIA Nemotron e DeepSeek V4 Flash gratuitos de fábrica. Sem carteira.",
+        body: "NVIDIA Nemotron 3 e Llama 3.2 Vision gratuitos de fábrica. Sem carteira.",
       },
       {
         title: "Carregue ($5 já basta)",
@@ -171,7 +171,7 @@ export const ptBR: HomeDict = {
         label: "Escolha de modelo",
         saas: "Fornecedor único",
         ppc: "Você malabaria 12 chaves",
-        franklin: "60+ modelos por uma carteira · o router decide.",
+        franklin: "70+ modelos por uma carteira · o router decide.",
       },
       {
         label: "Queda do provider",
@@ -201,7 +201,7 @@ export const ptBR: HomeDict = {
     labels: [
       { k: "Seus dados", v: "~/.blockrun/" },
       { k: "Sua carteira", v: "Chaves privadas · locais" },
-      { k: "Seus modelos", v: "60+ · troca em 1 cmd" },
+      { k: "Seus modelos", v: "70+ · troca em 1 cmd" },
       { k: "Sua licença", v: "Apache 2.0" },
       { k: "Seu uptime", v: "Forke. Self-host." },
     ],
@@ -240,7 +240,7 @@ export const ptBR: HomeDict = {
       },
       {
         q: "Em que Franklin pode gastar?",
-        a: "60+ modelos de IA (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, etc.), geração de imagem (GPT Image, Nano Banana, Grok Imagine), geração de vídeo, busca web neural Exa, dados de prediction markets (Polymarket, Kalshi), inteligência X/Twitter, geração de música. O Smart Router escolhe o melhor modelo por tarefa — até 89% de economia vs always-Opus.",
+        a: "70+ modelos de IA (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, etc.), geração de imagem (GPT Image, Nano Banana, Grok Imagine), geração de vídeo, busca web neural Exa, dados de prediction markets (Polymarket, Kalshi), inteligência X/Twitter, geração de música. O Smart Router escolhe o melhor modelo por tarefa — até 89% de economia vs always-Opus.",
       },
       {
         q: "Quanto custa?",
@@ -256,7 +256,7 @@ export const ptBR: HomeDict = {
       },
       {
         q: "Posso usar de graça?",
-        a: "Pode. Os modelos NVIDIA gratuitos (Nemotron, DeepSeek V4 Flash) funcionam sem carteira, sem USDC, sem cadastro. Carregue a carteira só quando quiser Sonnet, Opus, GPT, Gemini, Grok ou ferramentas pagas.",
+        a: "Pode. Os modelos NVIDIA gratuitos (Nemotron 3, Llama 3.2 Vision) funcionam sem carteira, sem USDC, sem cadastro. Carregue a carteira só quando quiser Sonnet, Opus, GPT, Gemini, Grok ou ferramentas pagas.",
       },
       {
         q: "Por que Base e Solana?",
@@ -303,12 +303,12 @@ export const ptBR: HomeDict = {
   meta: {
     title: "Franklin — O Agente de IA com Carteira",
     description:
-      "O agente de IA com carteira. Guarda seu USDC e gasta por você — 60+ modelos, dados de trading, geração de imagem, geração de vídeo, busca web. Uma carteira, sem API keys. Open source.",
+      "O agente de IA com carteira. Guarda seu USDC e gasta por você — 70+ modelos, dados de trading, geração de imagem, geração de vídeo, busca web. Uma carteira, sem API keys. Open source.",
     ogTitle: "Franklin — O Agente de IA com Carteira",
     ogDescription:
-      "Outros agentes escrevem código. Franklin escreve código e gasta dinheiro para entregar. 60+ modelos, dados de trading, geração de imagem, busca web — uma carteira USDC. Open source.",
+      "Outros agentes escrevem código. Franklin escreve código e gasta dinheiro para entregar. 70+ modelos, dados de trading, geração de imagem, busca web — uma carteira USDC. Open source.",
     twitterTitle: "Franklin — O Agente de IA com Carteira",
     twitterDescription:
-      "O agente de IA com carteira. 60+ modelos, dados de trading, geração de imagem — guarda seu USDC e gasta por você. Open source.",
+      "O agente de IA com carteira. 70+ modelos, dados de trading, geração de imagem — guarda seu USDC e gasta por você. Open source.",
   },
 };

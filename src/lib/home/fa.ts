@@ -103,7 +103,7 @@ export const fa: HomeDict = {
       },
       {
         title: "اجرای رایگان",
-        body: "NVIDIA Nemotron و DeepSeek V4 Flash رایگان از همان ابتدا. بدون نیاز به کیف پول.",
+        body: "NVIDIA Nemotron 3 و Llama 3.2 Vision رایگان از همان ابتدا. بدون نیاز به کیف پول.",
       },
       {
         title: "شارژ (۵ دلار کافی است)",
@@ -258,7 +258,7 @@ export const fa: HomeDict = {
       },
       {
         q: "آیا می‌توانم رایگان استفاده کنم؟",
-        a: "بله. مدل‌های NVIDIA رایگان (Nemotron، DeepSeek V4 Flash) بدون کیف پول، بدون USDC و بدون ثبت‌نام کار می‌کنند. کیف پول را فقط زمانی شارژ کنید که Sonnet، Opus، GPT، Gemini، Grok یا ابزارهای پولی بخواهید.",
+        a: "بله. مدل‌های NVIDIA رایگان (Nemotron 3، Llama 3.2 Vision) بدون کیف پول، بدون USDC و بدون ثبت‌نام کار می‌کنند. کیف پول را فقط زمانی شارژ کنید که Sonnet، Opus، GPT، Gemini، Grok یا ابزارهای پولی بخواهید.",
       },
       {
         q: "چرا Base و Solana؟",

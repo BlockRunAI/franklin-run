@@ -34,7 +34,7 @@ export const hi: HomeDict = {
   trustBar: {
     builtOn: "बना है",
     routesPrefix: "रूट करता है",
-    routesModels: "60+ frontier models",
+    routesModels: "70+ frontier models",
     providersPrefix: "इनसे:",
   },
 
@@ -67,7 +67,7 @@ export const hi: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "60+ models। वो चुनता है। आप बचाते हैं।",
+        title: "70+ models। वो चुनता है। आप बचाते हैं।",
         desc: "कोई एक model हर चीज़ में सबसे अच्छा नहीं होता। Router हर request को classify करता है और एक millisecond से कम में route करता है। 2M+ असली requests पर trained, Elo से लगातार scored, आपके overrides के साथ adapt होता है। हमेशा-Opus के मुक़ाबले 89% तक बचत।",
       },
       {
@@ -95,7 +95,7 @@ export const hi: HomeDict = {
       },
       {
         title: "मुफ़्त में चलाएँ",
-        body: "बिना कुछ किए free NVIDIA Nemotron और DeepSeek V4 Flash। Wallet की ज़रूरत नहीं।",
+        body: "बिना कुछ किए free NVIDIA Nemotron 3 और Llama 3.2 Vision। Wallet की ज़रूरत नहीं।",
       },
       {
         title: "Fund करें ($5 काफ़ी है)",
@@ -165,7 +165,7 @@ export const hi: HomeDict = {
         label: "Model choice",
         saas: "एक ही vendor",
         ppc: "12 keys आप संभालिए",
-        franklin: "एक wallet से 60+ models · router तय करता है।",
+        franklin: "एक wallet से 70+ models · router तय करता है।",
       },
       {
         label: "Provider outage",
@@ -195,7 +195,7 @@ export const hi: HomeDict = {
     labels: [
       { k: "आपका data", v: "~/.blockrun/" },
       { k: "आपका wallet", v: "Private keys · local" },
-      { k: "आपके models", v: "60+ · 1 cmd में switch" },
+      { k: "आपके models", v: "70+ · 1 cmd में switch" },
       { k: "आपका license", v: "Apache 2.0" },
       { k: "आपका uptime", v: "Fork करो। Self-host।" },
     ],
@@ -234,7 +234,7 @@ export const hi: HomeDict = {
       },
       {
         q: "Franklin किन चीज़ों पर खर्च कर सकता है?",
-        a: "60+ AI models (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, वग़ैरह), image gen (GPT Image, Nano Banana, Grok Imagine), video gen, Exa neural web search, prediction-market data (Polymarket, Kalshi), X/Twitter intelligence, music gen। Smart Router हर task के लिए सबसे अच्छा model चुनता है — हमेशा-Opus के मुक़ाबले 89% तक बचत।",
+        a: "70+ AI models (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, वग़ैरह), image gen (GPT Image, Nano Banana, Grok Imagine), video gen, Exa neural web search, prediction-market data (Polymarket, Kalshi), X/Twitter intelligence, music gen। Smart Router हर task के लिए सबसे अच्छा model चुनता है — हमेशा-Opus के मुक़ाबले 89% तक बचत।",
       },
       {
         q: "खर्च कितना आता है?",
@@ -250,7 +250,7 @@ export const hi: HomeDict = {
       },
       {
         q: "क्या मैं इसे मुफ़्त में इस्तेमाल कर सकता हूँ?",
-        a: "हाँ। Free NVIDIA models (Nemotron, DeepSeek V4 Flash) बिना wallet, बिना USDC, बिना signup के चलते हैं। Wallet सिर्फ़ तब fund कीजिए जब Sonnet, Opus, GPT, Gemini, Grok, या paid tools चाहिए हों।",
+        a: "हाँ। Free NVIDIA models (Nemotron 3, Llama 3.2 Vision) बिना wallet, बिना USDC, बिना signup के चलते हैं। Wallet सिर्फ़ तब fund कीजिए जब Sonnet, Opus, GPT, Gemini, Grok, या paid tools चाहिए हों।",
       },
       {
         q: "Base और Solana ही क्यों?",
@@ -297,12 +297,12 @@ export const hi: HomeDict = {
   meta: {
     title: "Franklin — वो AI एजेंट जिसके पास Wallet है",
     description:
-      "वो AI एजेंट जिसके पास wallet है। आपकी USDC रखता है और आपके लिए खर्च करता है — 60+ models, trading data, image generation, video generation, web search। एक wallet, कोई API keys नहीं। Open source।",
+      "वो AI एजेंट जिसके पास wallet है। आपकी USDC रखता है और आपके लिए खर्च करता है — 70+ models, trading data, image generation, video generation, web search। एक wallet, कोई API keys नहीं। Open source।",
     ogTitle: "Franklin — वो AI एजेंट जिसके पास Wallet है",
     ogDescription:
-      "दूसरे एजेंट code लिखते हैं। Franklin code लिखता है और काम पूरा करने के लिए पैसे खर्च करता है। 60+ models, trading data, image gen, web search — एक USDC wallet। Open source।",
+      "दूसरे एजेंट code लिखते हैं। Franklin code लिखता है और काम पूरा करने के लिए पैसे खर्च करता है। 70+ models, trading data, image gen, web search — एक USDC wallet। Open source।",
     twitterTitle: "Franklin — वो AI एजेंट जिसके पास Wallet है",
     twitterDescription:
-      "वो AI एजेंट जिसके पास wallet है। 60+ models, trading data, image gen — आपकी USDC रखता है और आपके लिए खर्च करता है। Open source।",
+      "वो AI एजेंट जिसके पास wallet है। 70+ models, trading data, image gen — आपकी USDC रखता है और आपके लिए खर्च करता है। Open source।",
   },
 };
