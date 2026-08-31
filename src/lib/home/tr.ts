@@ -41,7 +41,7 @@ export const tr: HomeDict = {
   trustBar: {
     builtOn: "Üzerine kurulu:",
     routesPrefix: "şunlara yönlendirir:",
-    routesModels: "60+ frontier model",
+    routesModels: "70+ frontier model",
     providersPrefix: "sağlayıcılar:",
   },
 
@@ -74,7 +74,7 @@ export const tr: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "60+ model. O seçer. Siz kazanırsınız.",
+        title: "70+ model. O seçer. Siz kazanırsınız.",
         desc: "Tek bir model her şeyde en iyi değildir. Router, her isteği milisaniyenin altında sınıflandırır ve yönlendirir. 2M+ gerçek istekte eğitildi, sürekli Elo ile puanlanır, sizin override'larınıza uyum sağlar. Hep-Opus'a karşı %89'a varan tasarruf.",
       },
       {
@@ -102,7 +102,7 @@ export const tr: HomeDict = {
       },
       {
         title: "Ücretsiz çalıştır",
-        body: "Kutudan ücretsiz NVIDIA Nemotron ve DeepSeek V4 Flash. Cüzdan gerekmez.",
+        body: "Kutudan ücretsiz NVIDIA Nemotron 3 ve Llama 3.2 Vision. Cüzdan gerekmez.",
       },
       {
         title: "Yükle (5$ fazlasıyla yeter)",
@@ -172,7 +172,7 @@ export const tr: HomeDict = {
         label: "Model seçimi",
         saas: "Tek sağlayıcı",
         ppc: "12 anahtarı siz yönetirsiniz",
-        franklin: "Tek cüzdanla 60+ model · router karar verir.",
+        franklin: "Tek cüzdanla 70+ model · router karar verir.",
       },
       {
         label: "Sağlayıcı kesintisi",
@@ -202,7 +202,7 @@ export const tr: HomeDict = {
     labels: [
       { k: "Veriniz", v: "~/.blockrun/" },
       { k: "Cüzdanınız", v: "Özel anahtarlar · yerel" },
-      { k: "Modelleriniz", v: "60+ · 1 komutla geçiş" },
+      { k: "Modelleriniz", v: "70+ · 1 komutla geçiş" },
       { k: "Lisansınız", v: "Apache 2.0" },
       { k: "Uptime'ınız", v: "Fork'la. Self-host et." },
     ],
@@ -241,7 +241,7 @@ export const tr: HomeDict = {
       },
       {
         q: "Franklin neye harcayabilir?",
-        a: "60+ AI modeli (Claude, GPT, Gemini, Grok, DeepSeek, Kimi vb.), görsel üretimi (GPT Image, Nano Banana, Grok Imagine), video üretimi, Exa nöral web araması, prediction-market verisi (Polymarket, Kalshi), X / Twitter zekâsı, müzik üretimi. Smart Router her görev için en iyi modeli seçer — hep-Opus'a karşı %89'a varan tasarruf.",
+        a: "70+ AI modeli (Claude, GPT, Gemini, Grok, DeepSeek, Kimi vb.), görsel üretimi (GPT Image, Nano Banana, Grok Imagine), video üretimi, Exa nöral web araması, prediction-market verisi (Polymarket, Kalshi), X / Twitter zekâsı, müzik üretimi. Smart Router her görev için en iyi modeli seçer — hep-Opus'a karşı %89'a varan tasarruf.",
       },
       {
         q: "Fiyatı ne?",
@@ -257,7 +257,7 @@ export const tr: HomeDict = {
       },
       {
         q: "Ücretsiz kullanabilir miyim?",
-        a: "Evet. Ücretsiz NVIDIA modelleri (Nemotron, DeepSeek V4 Flash) cüzdansız, USDC'siz, kayıt olmadan çalışır. Sonnet, Opus, GPT, Gemini, Grok ya da ücretli araçlar isterseniz cüzdanı yüklersiniz.",
+        a: "Evet. Ücretsiz NVIDIA modelleri (Nemotron 3, Llama 3.2 Vision) cüzdansız, USDC'siz, kayıt olmadan çalışır. Sonnet, Opus, GPT, Gemini, Grok ya da ücretli araçlar isterseniz cüzdanı yüklersiniz.",
       },
       {
         q: "Neden Base ve Solana?",
@@ -304,12 +304,12 @@ export const tr: HomeDict = {
   meta: {
     title: "Franklin — Cüzdanı Olan AI Ajanı",
     description:
-      "Cüzdanı olan AI ajanı. USDC'nizi tutar ve sizin için harcar — 60+ model, trading verisi, görsel üretimi, video üretimi, web araması. Tek cüzdan, API anahtarı yok. Açık kaynak.",
+      "Cüzdanı olan AI ajanı. USDC'nizi tutar ve sizin için harcar — 70+ model, trading verisi, görsel üretimi, video üretimi, web araması. Tek cüzdan, API anahtarı yok. Açık kaynak.",
     ogTitle: "Franklin — Cüzdanı Olan AI Ajanı",
     ogDescription:
-      "Diğer ajanlar kod yazar. Franklin kod yazar ve işi bitirmek için para harcar. 60+ model, trading verisi, görsel üretimi, web araması — tek USDC cüzdanı. Açık kaynak.",
+      "Diğer ajanlar kod yazar. Franklin kod yazar ve işi bitirmek için para harcar. 70+ model, trading verisi, görsel üretimi, web araması — tek USDC cüzdanı. Açık kaynak.",
     twitterTitle: "Franklin — Cüzdanı Olan AI Ajanı",
     twitterDescription:
-      "Cüzdanı olan AI ajanı. 60+ model, trading verisi, görsel üretimi — USDC'nizi tutar ve sizin için harcar. Açık kaynak.",
+      "Cüzdanı olan AI ajanı. 70+ model, trading verisi, görsel üretimi — USDC'nizi tutar ve sizin için harcar. Açık kaynak.",
   },
 };

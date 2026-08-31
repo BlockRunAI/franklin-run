@@ -41,7 +41,7 @@ export default function UserGuidePage() {
           </li>
           <li>
             <Link href="/docs/user-guide/models">Models</Link>
-            &nbsp;&mdash; 60+ models from 12+ providers, including a free tier
+            &nbsp;&mdash; 70+ models from 15+ providers, including a free tier
           </li>
           <li>
             <Link href="/docs/user-guide/tools">Tools</Link>

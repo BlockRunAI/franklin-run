@@ -34,7 +34,7 @@ export const zhCN: HomeDict = {
   trustBar: {
     builtOn: "构建于",
     routesPrefix: "可路由到",
-    routesModels: "60+ 前沿模型",
+    routesModels: "70+ 前沿模型",
     providersPrefix: "来自",
   },
 
@@ -67,7 +67,7 @@ export const zhCN: HomeDict = {
       },
       {
         label: "智能路由",
-        title: "60+ 模型，它挑，你省。",
+        title: "70+ 模型，它挑，你省。",
         desc: "没有任何模型样样最强。路由器把每个请求分类，毫秒级出选择。基于 200 万次真实请求训练，Elo 持续打分，按你的偏好微调。相比无脑用 Opus，最高省 89%。",
       },
       {
@@ -95,7 +95,7 @@ export const zhCN: HomeDict = {
       },
       {
         title: "免费跑",
-        body: "开箱即用的免费 NVIDIA Nemotron 与 DeepSeek V4 Flash。无需钱包。",
+        body: "开箱即用的免费 NVIDIA Nemotron 3 与 Llama 3.2 Vision。无需钱包。",
       },
       {
         title: "充值（5 美元就够)",
@@ -165,7 +165,7 @@ export const zhCN: HomeDict = {
         label: "模型选择",
         saas: "单一厂商",
         ppc: "你自己倒腾 12 把 key",
-        franklin: "60+ 模型，一个钱包 · 路由器决定。",
+        franklin: "70+ 模型，一个钱包 · 路由器决定。",
       },
       {
         label: "厂商宕机",
@@ -195,7 +195,7 @@ export const zhCN: HomeDict = {
     labels: [
       { k: "你的数据", v: "~/.blockrun/" },
       { k: "你的钱包", v: "私钥 · 本地" },
-      { k: "你的模型", v: "60+ · 一行命令切换" },
+      { k: "你的模型", v: "70+ · 一行命令切换" },
       { k: "你的许可证", v: "Apache 2.0" },
       { k: "你的可用性", v: "Fork 它，自托管。" },
     ],
@@ -234,7 +234,7 @@ export const zhCN: HomeDict = {
       },
       {
         q: "Franklin 能花钱买什么？",
-        a: "60+ AI 模型（Claude、GPT、Gemini、Grok、DeepSeek、Kimi 等等）、图像生成（GPT Image、Nano Banana、Grok Imagine）、视频生成、Exa 神经网络搜索、预测市场数据（Polymarket、Kalshi）、X / Twitter 情报、音乐生成。智能路由按任务挑最合适的模型——相比无脑用 Opus，最高省 89%。",
+        a: "70+ AI 模型（Claude、GPT、Gemini、Grok、DeepSeek、Kimi 等等）、图像生成（GPT Image、Nano Banana、Grok Imagine）、视频生成、Exa 神经网络搜索、预测市场数据（Polymarket、Kalshi）、X / Twitter 情报、音乐生成。智能路由按任务挑最合适的模型——相比无脑用 Opus，最高省 89%。",
       },
       {
         q: "多少钱？",
@@ -250,7 +250,7 @@ export const zhCN: HomeDict = {
       },
       {
         q: "可以免费用吗？",
-        a: "可以。免费 NVIDIA 模型（Nemotron、DeepSeek V4 Flash）开箱即用，不要钱包、不要 USDC、不要注册。只有想用 Sonnet、Opus、GPT、Gemini、Grok 或付费工具时，才需要给钱包充值。",
+        a: "可以。免费 NVIDIA 模型（Nemotron 3、Llama 3.2 Vision）开箱即用，不要钱包、不要 USDC、不要注册。只有想用 Sonnet、Opus、GPT、Gemini、Grok 或付费工具时，才需要给钱包充值。",
       },
       {
         q: "为什么是 Base 和 Solana？",
@@ -297,12 +297,12 @@ export const zhCN: HomeDict = {
   meta: {
     title: "Franklin — 带钱包的 AI 智能体",
     description:
-      "带钱包的 AI 智能体。Franklin 替你持有 USDC，并替你花掉它——60+ 模型、行情数据、图像生成、视频生成、网络搜索。一个钱包，免 API key。开源。",
+      "带钱包的 AI 智能体。Franklin 替你持有 USDC，并替你花掉它——70+ 模型、行情数据、图像生成、视频生成、网络搜索。一个钱包，免 API key。开源。",
     ogTitle: "Franklin — 带钱包的 AI 智能体",
     ogDescription:
-      "别的智能体只会写代码。Franklin 写代码，还会自己花钱把活干完。60+ 模型、行情数据、图像生成、网络搜索——一个 USDC 钱包搞定。开源。",
+      "别的智能体只会写代码。Franklin 写代码，还会自己花钱把活干完。70+ 模型、行情数据、图像生成、网络搜索——一个 USDC 钱包搞定。开源。",
     twitterTitle: "Franklin — 带钱包的 AI 智能体",
     twitterDescription:
-      "带钱包的 AI 智能体。60+ 模型、行情数据、图像生成——它替你持有 USDC，并替你花掉。开源。",
+      "带钱包的 AI 智能体。70+ 模型、行情数据、图像生成——它替你持有 USDC，并替你花掉。开源。",
   },
 };

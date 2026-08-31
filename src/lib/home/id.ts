@@ -41,7 +41,7 @@ export const id: HomeDict = {
   trustBar: {
     builtOn: "Dibangun di atas",
     routesPrefix: "merutekan ke",
-    routesModels: "60+ model frontier",
+    routesModels: "70+ model frontier",
     providersPrefix: "dari",
   },
 
@@ -74,7 +74,7 @@ export const id: HomeDict = {
       },
       {
         label: "Smart Router",
-        title: "60+ model. Dia pilih. Kamu hemat.",
+        title: "70+ model. Dia pilih. Kamu hemat.",
         desc: "Tidak ada satu model yang terbaik untuk semua hal. Router mengklasifikasi setiap request dan rute dalam kurang dari satu milidetik. Dilatih dari 2 juta+ request asli, di-skor terus dengan Elo, beradaptasi dengan override-mu. Hemat hingga 89% vs selalu pakai Opus.",
       },
       {
@@ -102,7 +102,7 @@ export const id: HomeDict = {
       },
       {
         title: "Jalan gratis",
-        body: "NVIDIA Nemotron & DeepSeek V4 Flash gratis langsung pakai. Tanpa dompet.",
+        body: "NVIDIA Nemotron 3 & Llama 3.2 Vision gratis langsung pakai. Tanpa dompet.",
       },
       {
         title: "Isi saldo ($5 sudah cukup)",
@@ -172,7 +172,7 @@ export const id: HomeDict = {
         label: "Pilihan model",
         saas: "Satu vendor",
         ppc: "Kamu juggling 12 key",
-        franklin: "60+ model lewat satu dompet · router yang putuskan.",
+        franklin: "70+ model lewat satu dompet · router yang putuskan.",
       },
       {
         label: "Provider down",
@@ -202,7 +202,7 @@ export const id: HomeDict = {
     labels: [
       { k: "Datamu", v: "~/.blockrun/" },
       { k: "Dompetmu", v: "Private key · lokal" },
-      { k: "Modelmu", v: "60+ · ganti dengan 1 cmd" },
+      { k: "Modelmu", v: "70+ · ganti dengan 1 cmd" },
       { k: "Lisensimu", v: "Apache 2.0" },
       { k: "Uptime-mu", v: "Fork. Self-host." },
     ],
@@ -241,7 +241,7 @@ export const id: HomeDict = {
       },
       {
         q: "Franklin bisa belanja apa saja?",
-        a: "60+ model AI (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, dll.), generasi gambar (GPT Image, Nano Banana, Grok Imagine), generasi video, Exa neural web search, data prediction-market (Polymarket, Kalshi), intelijen X/Twitter, generasi musik. Smart Router pilih model terbaik per tugas — hemat hingga 89% vs selalu pakai Opus.",
+        a: "70+ model AI (Claude, GPT, Gemini, Grok, DeepSeek, Kimi, dll.), generasi gambar (GPT Image, Nano Banana, Grok Imagine), generasi video, Exa neural web search, data prediction-market (Polymarket, Kalshi), intelijen X/Twitter, generasi musik. Smart Router pilih model terbaik per tugas — hemat hingga 89% vs selalu pakai Opus.",
       },
       {
         q: "Berapa biayanya?",
@@ -257,7 +257,7 @@ export const id: HomeDict = {
       },
       {
         q: "Bisa pakai gratis?",
-        a: "Bisa. Model NVIDIA gratis (Nemotron, DeepSeek V4 Flash) jalan tanpa dompet, tanpa USDC, tanpa daftar. Isi dompet hanya saat ingin Sonnet, Opus, GPT, Gemini, Grok, atau tool berbayar.",
+        a: "Bisa. Model NVIDIA gratis (Nemotron 3, Llama 3.2 Vision) jalan tanpa dompet, tanpa USDC, tanpa daftar. Isi dompet hanya saat ingin Sonnet, Opus, GPT, Gemini, Grok, atau tool berbayar.",
       },
       {
         q: "Kenapa Base dan Solana?",
@@ -304,12 +304,12 @@ export const id: HomeDict = {
   meta: {
     title: "Franklin — AI Agent dengan Dompet",
     description:
-      "AI agent dengan dompet. Memegang USDC-mu dan membelanjakannya untukmu — 60+ model, data trading, generasi gambar, generasi video, web search. Satu dompet, tanpa API key. Open source.",
+      "AI agent dengan dompet. Memegang USDC-mu dan membelanjakannya untukmu — 70+ model, data trading, generasi gambar, generasi video, web search. Satu dompet, tanpa API key. Open source.",
     ogTitle: "Franklin — AI Agent dengan Dompet",
     ogDescription:
-      "Agent lain menulis kode. Franklin menulis kode dan membelanjakan uang untuk menyelesaikannya. 60+ model, data trading, generasi gambar, web search — satu dompet USDC. Open source.",
+      "Agent lain menulis kode. Franklin menulis kode dan membelanjakan uang untuk menyelesaikannya. 70+ model, data trading, generasi gambar, web search — satu dompet USDC. Open source.",
     twitterTitle: "Franklin — AI Agent dengan Dompet",
     twitterDescription:
-      "AI agent dengan dompet. 60+ model, data trading, generasi gambar — memegang USDC-mu dan membelanjakannya untukmu. Open source.",
+      "AI agent dengan dompet. 70+ model, data trading, generasi gambar — memegang USDC-mu dan membelanjakannya untukmu. Open source.",
   },
 };

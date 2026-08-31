@@ -38,16 +38,16 @@ const GROUPS: Group[] = [
     cards: [
       {
         icon: <MessageSquare />, name: "Chat", price: "Free models + pay-per-message",
-        desc: "41+ frontier models — Claude, GPT, Gemini, DeepSeek and more.",
+        desc: "70+ frontier models — Claude, GPT, Gemini, DeepSeek and more.",
         poweredBy: "BlockRun Router",
-        detail: "One endpoint, 41+ frontier models. The router picks the right model per request and you pay per message in USDC — free models cost nothing.",
+        detail: "One endpoint, 70+ frontier models. The router picks the right model per request and you pay per message in USDC — free models cost nothing.",
         examples: ["Explain x402 like I'm five", "Draft a launch tweet for Franklin"],
         action: { mode: "chat" },
       },
       {
         icon: <ImageIcon />, name: "Image", price: "~$0.04 / image",
-        desc: "Generate images — Nano Banana, GPT Image, Grok Imagine, CogView.",
-        poweredBy: "Nano Banana · GPT Image · Grok Imagine",
+        desc: "Generate images — GPT Image, Nano Banana, Seedream, Grok Imagine, CogView.",
+        poweredBy: "GPT Image · Nano Banana · Seedream · Grok Imagine",
         detail: "Text-to-image across the best diffusion and multimodal models. Pay per image, no subscription.",
         examples: ["A cozy reading nook, warm light, film grain", "Minimal logo for a coffee robot"],
         action: { mode: "image" },
@@ -63,7 +63,7 @@ const GROUPS: Group[] = [
       {
         icon: <Music />, name: "Music", price: "pay-per-track", auto: true,
         desc: "Compose music and songs from a prompt.",
-        poweredBy: "MusicGen",
+        poweredBy: "MiniMax Music 2.5+",
         detail: "Generate original music and songs from a text description — genre, mood, lyrics. Franklin calls this automatically when you ask for a track.",
         examples: ["Compose a lo-fi beat for studying", "Write an upbeat synth-pop hook about the weekend"],
         action: { mode: "chat", model: TOOL_MODEL, template: "Compose a song about " },

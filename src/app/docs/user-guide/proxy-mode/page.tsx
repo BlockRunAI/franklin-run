@@ -30,7 +30,7 @@ export default function ProxyModePage() {
         <p>
           Proxy mode starts a local API server that is compatible with the
           Anthropic API format. Any tool that can talk to Claude&apos;s API can
-          be pointed at Franklin instead, giving it access to all 60+ models
+          be pointed at Franklin instead, giving it access to all 70+ models
           through a single endpoint.
         </p>
 
@@ -62,7 +62,7 @@ claude`}
 
         <Callout type="tip" title="All models, one endpoint">
           With proxy mode, Claude Code can access not just Anthropic models but
-          any of Franklin&apos;s 60+ models. Use model aliases in your requests
+          any of Franklin&apos;s 70+ models. Use model aliases in your requests
           and Franklin resolves them automatically.
         </Callout>
 
@@ -73,9 +73,9 @@ claude`}
         </p>
         <CodeBlock language="bash">
           {`# These all work as model names in API requests:
-claude-sonnet   → anthropic/claude-sonnet-4.6
-gpt-5           → openai/gpt-5
-gemini-pro      → google/gemini-2.5-pro`}
+claude-sonnet   → anthropic/claude-sonnet-5
+gpt             → openai/gpt-5.6-sol
+gemini-pro      → google/gemini-3.1-pro`}
         </CodeBlock>
         <p>
           If a model is unavailable, the proxy automatically falls back to the

@@ -64,7 +64,7 @@ export function TerminalSection({ dict = defaultDict }: TerminalSectionProps) {
             </div>
           </div>
           <div className="term-statusbar">
-            <span className="model">claude-opus-4.6</span>
+            <span className="model">claude-opus-5</span>
             <span>·</span>
             <span className="cost">$4.80 USDC</span>
             <span>·</span>

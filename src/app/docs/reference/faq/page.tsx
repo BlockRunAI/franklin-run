@@ -28,12 +28,12 @@ export default function FaqPage() {
       >
         <h2>What models does Franklin support?</h2>
         <p>
-          Franklin supports <strong>60+ models</strong> from 12+ providers,
-          including OpenAI (GPT-5.5, GPT-5.4, GPT-5.3 Codex, o3), Anthropic
-          (Claude Opus 4.8, Sonnet 4.6), Google (Gemini 3.1 Pro, Gemini 3.5
-          Flash), DeepSeek (V4 Pro, V4 Flash), Moonshot (Kimi K2.6), MiniMax
-          (M2.7), Z.AI (GLM-5.1), xAI (Grok Imagine), and free NVIDIA-hosted
-          models. Run{" "}
+          Franklin supports <strong>70+ models</strong> from 15+ providers,
+          including OpenAI (GPT-5.6 Sol, GPT-5.5, GPT-5.3 Codex, o3), Anthropic
+          (Claude Opus 5, Sonnet 5, Haiku 4.5), Google (Gemini 3.1 Pro, Gemini
+          3.6 Flash), xAI (Grok 4.5, Grok Imagine), DeepSeek (V4 Pro, V4
+          Flash), Moonshot (Kimi K3), Qwen (Qwen3.7 Max), MiniMax (M3), Z.AI
+          (GLM-5.3), and a free tier hosted by NVIDIA, Cohere and Poolside. Run{" "}
           <code>franklin models</code> to see the full list with pricing.
         </p>
 
@@ -69,14 +69,15 @@ franklin balance`}
 
         <h2>Can I use it for free?</h2>
         <p>
-          Yes. Franklin includes free access to <strong>NVIDIA-hosted
-          models</strong> (DeepSeek V4 Flash, Nemotron, Llama 4, Qwen3,
-          Mistral Small 4) with unlimited usage and zero setup. No wallet, no
-          USDC, no API keys required. Just install and run <code>franklin</code>.
+          Yes. Franklin includes a <strong>free tier of seven models</strong>
+          (Nemotron 3 Nano 30B, Nemotron 3.5 Lightning, Nemotron 3 Nano Omni,
+          Nemotron 3 Ultra 550B, Llama 3.2 11B Vision, Cohere North Mini Code,
+          Poolside Laguna XS 2.1) with unlimited usage and zero setup. No wallet,
+          no USDC, no API keys required. Just install and run <code>franklin</code>.
         </p>
         <p>
           Fund your wallet only when you want to unlock premium models like
-          Claude Opus 4.8, GPT-5.5, Gemini 3.1 Pro, and DeepSeek V4 Pro.
+          Claude Opus 5, GPT-5.6 Sol, Gemini 3.1 Pro, and DeepSeek V4 Pro.
         </p>
 
         <h2>How is this different from Claude Code?</h2>
@@ -87,7 +88,7 @@ franklin balance`}
         </p>
         <ul>
           <li>
-            Routes across <strong>60+ models</strong> from 12+ providers &mdash;
+            Routes across <strong>70+ models</strong> from 15+ providers &mdash;
             picks the best model for each task, saving up to 89% vs always
             using Opus
           </li>

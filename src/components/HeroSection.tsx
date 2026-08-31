@@ -52,7 +52,7 @@ const DEMOS: Demo[] = [
   {
     prompt: "refactor src/auth.ts to use the new jwt helper",
     response: [
-      { text: "Router: CODING → kimi-k2.6", color: "rgba(255,255,255,.5)" },
+      { text: "Router: CODING → kimi-k3", color: "rgba(255,255,255,.5)" },
       { text: "✓ Read   src/auth.ts                    $0.002", color: "#10b981" },
       { text: "✓ Read   src/lib/jwt.ts                 $0.001", color: "#10b981" },
       { text: "✓ Edit   src/auth.ts (-24 +31 lines)    $0.008", color: "#10b981" },
@@ -84,7 +84,7 @@ const DEMOS: Demo[] = [
   {
     prompt: "research Nvidia earnings and draft a 300-word brief",
     response: [
-      { text: "Router: RESEARCH → gemini-2.5-pro", color: "rgba(255,255,255,.5)" },
+      { text: "Router: RESEARCH → gemini-3.1-pro", color: "rgba(255,255,255,.5)" },
       { text: "✓ WebSearch  nvidia q4 2025 earnings", color: "#10b981" },
       { text: "✓ WebFetch   4 sources + 1 filing", color: "#10b981" },
       { text: "✓ Write      notes/nvda-brief.md (312w)", color: "#10b981" },
@@ -258,7 +258,7 @@ function HeroLivePanel() {
         <div className="hero-route-line">
           <span className="hero-route-cat">CODING</span>
           <span className="hero-route-arrow">→</span>
-          <span className="hero-route-model">kimi-k2.6</span>
+          <span className="hero-route-model">kimi-k3</span>
         </div>
         <div className="hero-route-meter">
           <div className="hero-route-bar">

@@ -41,7 +41,7 @@ homeLanguages["x-default"] = `${SITE_URL}${homeUrl("en")}`;
 export const metadata: Metadata = {
   title: "Franklin Agent — The AI agent with a wallet",
   description:
-    "Franklin Agent writes code and spends money to get things done. Open-source. Runs anywhere. Pays per call via USDC and x402 — 60+ models, trading data, image gen, web search. One wallet, no API keys.",
+    "Franklin Agent writes code and spends money to get things done. Open-source. Runs anywhere. Pays per call via USDC and x402 — 70+ models, trading data, image gen, web search. One wallet, no API keys.",
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/", languages: homeLanguages },
   keywords: [
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     url: SITE_URL,
     title: "Franklin Agent — The AI agent with a wallet",
     description:
-      "Other agents write code. Franklin Agent writes code and spends money to get things done. 60+ models, trading data, image gen, web search — one USDC wallet. Open source.",
+      "Other agents write code. Franklin Agent writes code and spends money to get things done. 70+ models, trading data, image gen, web search — one USDC wallet. Open source.",
     siteName: "Franklin Agent",
     images: [
       {
@@ -85,7 +85,7 @@ export const metadata: Metadata = {
     creator: "@BlockRunAI",
     title: "Franklin Agent — The AI agent with a wallet",
     description:
-      "The AI agent with a wallet. 60+ models, trading data, image gen — it holds your USDC and spends it for you. Open source.",
+      "The AI agent with a wallet. 70+ models, trading data, image gen — it holds your USDC and spends it for you. Open source.",
     images: [cdnUrl("/images/og-image.png")],
   },
   robots: {
@@ -139,7 +139,7 @@ export default function RootLayout({
               name: "Franklin",
               alternateName: "@blockrun/franklin",
               description:
-                "Open-source AI agent with a USDC wallet. Routes across 60+ frontier models (Claude, GPT, Gemini, DeepSeek, Kimi, GLM) and pays per call via the x402 micropayment protocol. No subscriptions, no API keys.",
+                "Open-source AI agent with a USDC wallet. Routes across 70+ frontier models (Claude, GPT, Gemini, DeepSeek, Kimi, GLM) and pays per call via the x402 micropayment protocol. No subscriptions, no API keys.",
               url: SITE_URL,
               applicationCategory: "DeveloperApplication",
               applicationSubCategory: "AI Agent",

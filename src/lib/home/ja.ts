@@ -34,7 +34,7 @@ export const ja: HomeDict = {
   trustBar: {
     builtOn: "基盤は",
     routesPrefix: "ルーティング先は",
-    routesModels: "60+ のフロンティアモデル",
+    routesModels: "70+ のフロンティアモデル",
     providersPrefix: "提供元は",
   },
 
@@ -95,7 +95,7 @@ export const ja: HomeDict = {
       },
       {
         title: "無料で動かす",
-        body: "NVIDIA Nemotron と DeepSeek V4 Flash を最初から無料で。ウォレット不要。",
+        body: "NVIDIA Nemotron 3 と Llama 3.2 Vision を最初から無料で。ウォレット不要。",
       },
       {
         title: "入金（5 ドルで十分）",
@@ -165,7 +165,7 @@ export const ja: HomeDict = {
         label: "モデル選択",
         saas: "単一ベンダー",
         ppc: "12 個の鍵を捌く羽目に",
-        franklin: "ウォレット一つで 60+ モデル · ルーターが決定。",
+        franklin: "ウォレット一つで 70+ モデル · ルーターが決定。",
       },
       {
         label: "プロバイダ障害",
@@ -195,7 +195,7 @@ export const ja: HomeDict = {
     labels: [
       { k: "あなたのデータ", v: "~/.blockrun/" },
       { k: "あなたのウォレット", v: "秘密鍵 · ローカル" },
-      { k: "あなたのモデル", v: "60+ · 1 コマンドで切替" },
+      { k: "あなたのモデル", v: "70+ · 1 コマンドで切替" },
       { k: "あなたのライセンス", v: "Apache 2.0" },
       { k: "あなたの稼働率", v: "フォークしてセルフホスト。" },
     ],
@@ -249,7 +249,7 @@ export const ja: HomeDict = {
       },
       {
         q: "無料で使えるのか？",
-        a: "使える。NVIDIA の無料モデル（Nemotron、DeepSeek V4 Flash）はウォレットも USDC もサインアップも不要で動く。ウォレットに入金するのは、Sonnet、Opus、GPT、Gemini、Grok、有料ツールを使いたいときだけ。",
+        a: "使える。NVIDIA の無料モデル（Nemotron 3、Llama 3.2 Vision）はウォレットも USDC もサインアップも不要で動く。ウォレットに入金するのは、Sonnet、Opus、GPT、Gemini、Grok、有料ツールを使いたいときだけ。",
       },
       {
         q: "なぜ Base と Solana なのか？",

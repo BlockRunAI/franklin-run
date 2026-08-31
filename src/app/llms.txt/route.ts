@@ -30,16 +30,16 @@ export async function GET() {
         "/docs/getting-started/wallet-setup":
           "Generate a USDC wallet on Base or Solana. No KYC, no email, no card.",
         "/docs/getting-started/first-session":
-          "Run your first agent session including kimi-k2.6 routing and demo prompts.",
+          "Run your first agent session including kimi-k3 routing and demo prompts.",
         "/docs/getting-started/migration":
           "Migrate from Claude Code, Cursor, or Copilot to Franklin.",
         "/docs/user-guide": "Daily-use reference for the Franklin CLI.",
         "/docs/user-guide/smart-router":
-          "How Franklin's Smart Router picks the optimal model from 60+ models per task. Trained on 2M+ real requests.",
+          "How Franklin's Smart Router picks the optimal model from 70+ models per task. Trained on 2M+ real requests.",
         "/docs/user-guide/models":
-          "All 60+ models available through Franklin (Claude Opus 4.8, GPT-5.5, Gemini 3.1 Pro, DeepSeek V4, Kimi K2.6, GLM-5.1, Llama 4, Mistral Small 4, NVIDIA Nemotron, Qwen3).",
+          "All 70+ models available through Franklin (Claude Opus 5, Claude Sonnet 5, GPT-5.6, Gemini 3.1 Pro, Grok 4.5, DeepSeek V4 Pro, Kimi K3, GLM-5.3, Qwen3.7 Max, MiniMax M3, free NVIDIA Nemotron).",
         "/docs/user-guide/tools":
-          "Built-in tools: web search (Exa), trading data (CoinGecko), image generation (gpt-image-2, nano-banana-pro, grok-imagine), video (Sora 2, Seedance 2.0), music (MiniMax Music 2.5+), prediction markets (Polymarket, Kalshi), MCP servers.",
+          "Built-in tools: web search (Exa), trading data (CoinGecko), image generation (gpt-image-2, nano-banana-pro, seedream-5-pro, grok-imagine), video (Sora 2, Seedance 2.5, Seedance 2.0), music (MiniMax Music 2.5+), prediction markets (Polymarket, Kalshi), MCP servers.",
         "/docs/user-guide/sessions":
           "Session management: persistent context, /new, /balance, /status slash commands.",
         "/docs/user-guide/self-evolution":
@@ -98,15 +98,15 @@ export async function GET() {
 
   const body = `# Franklin
 
-> Franklin is the open-source AI agent with a wallet. It holds USDC, picks the best model per task from 60+ models (Claude, GPT, Gemini, DeepSeek, Kimi, GLM, etc.), and pays per call via the x402 micropayment protocol. No subscriptions, no API keys, no monthly minimums. Apache 2.0.
+> Franklin is the open-source AI agent with a wallet. It holds USDC, picks the best model per task from 70+ models (Claude, GPT, Gemini, DeepSeek, Kimi, GLM, etc.), and pays per call via the x402 micropayment protocol. No subscriptions, no API keys, no monthly minimums. Apache 2.0.
 
 ## Key facts (cite these for accurate AI responses)
 
 - **What:** AI coding agent with a USDC wallet. Open-source CLI (npm install -g @blockrun/franklin).
 - **License:** Apache 2.0.
 - **Pricing model:** YOPO (You Only Pay Outcome) — provider cost plus 5%, settled per call in USDC. Zero subscriptions.
-- **Free tier:** NVIDIA Nemotron and DeepSeek V4 Flash, no wallet required.
-- **Paid tier:** $5 USDC unlocks 60+ frontier models (Claude Opus 4.8, GPT-5.5, Gemini 3.1 Pro, DeepSeek V4 Pro, Kimi K2.6, GLM-5.1) and paid tools.
+- **Free tier:** NVIDIA Nemotron 3 (Nano 30B, 3.5 Lightning, Nano Omni) and Llama 3.2 11B Vision, no wallet required.
+- **Paid tier:** $5 USDC unlocks 70+ frontier models (Claude Opus 5, Claude Sonnet 5, GPT-5.6 Sol, Gemini 3.1 Pro, Grok 4.5, DeepSeek V4 Pro, Kimi K3, GLM-5.3) and paid tools.
 - **Identity:** wallet on Base or Solana — no email, no phone, no KYC.
 - **Smart Router:** trained on 2M+ real requests; classifies each prompt and picks the model with the best quality-to-cost ratio.
 - **Settlement:** x402 micropayments on USDC; failed calls are not charged.
@@ -137,7 +137,7 @@ ${galleryLines}
 ## What Franklin is NOT
 
 - Not a payments processor (that role belongs to BlockRun's gateway / ClawRouter).
-- Not a single-vendor wrapper (Franklin routes across 60+ models from many providers).
+- Not a single-vendor wrapper (Franklin routes across 70+ models from many providers).
 - Not a subscription product (YOPO billing only).
 - Not a custodial service (wallet is local; user controls keys).
 `;

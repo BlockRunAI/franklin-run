@@ -34,7 +34,7 @@ export const ko: HomeDict = {
   trustBar: {
     builtOn: "기반:",
     routesPrefix: "라우팅 대상",
-    routesModels: "60+ 프런티어 모델",
+    routesModels: "70+ 프런티어 모델",
     providersPrefix: "제공사:",
   },
 
@@ -95,7 +95,7 @@ export const ko: HomeDict = {
       },
       {
         title: "무료 실행",
-        body: "NVIDIA Nemotron과 DeepSeek V4 Flash를 별도 설정 없이 무료로. 지갑 불필요.",
+        body: "NVIDIA Nemotron 3과 Llama 3.2 Vision를 별도 설정 없이 무료로. 지갑 불필요.",
       },
       {
         title: "충전 ($5면 충분)",
@@ -195,7 +195,7 @@ export const ko: HomeDict = {
     labels: [
       { k: "당신의 데이터", v: "~/.blockrun/" },
       { k: "당신의 지갑", v: "프라이빗 키 · 로컬" },
-      { k: "당신의 모델", v: "60+ · 명령 한 줄로 전환" },
+      { k: "당신의 모델", v: "70+ · 명령 한 줄로 전환" },
       { k: "당신의 라이선스", v: "Apache 2.0" },
       { k: "당신의 가동률", v: "포크해서 직접 호스팅." },
     ],
@@ -250,7 +250,7 @@ export const ko: HomeDict = {
       },
       {
         q: "무료로 사용할 수 있나?",
-        a: "그렇다. 무료 NVIDIA 모델 (Nemotron, DeepSeek V4 Flash)은 지갑도, USDC도, 가입도 없이 작동한다. Sonnet, Opus, GPT, Gemini, Grok, 또는 유료 도구를 원할 때만 지갑을 충전하라.",
+        a: "그렇다. 무료 NVIDIA 모델 (Nemotron 3, Llama 3.2 Vision)은 지갑도, USDC도, 가입도 없이 작동한다. Sonnet, Opus, GPT, Gemini, Grok, 또는 유료 도구를 원할 때만 지갑을 충전하라.",
       },
       {
         q: "왜 Base와 Solana인가?",
