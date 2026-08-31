@@ -16,6 +16,7 @@ export const fa: HomeDict = {
     gallery: "گالری",
     docs: "مستندات",
     tryFranklin: "امتحان Franklin",
+    downloadDesktop: "دانلود نسخه دسکتاپ",
     github: "GitHub",
     getStarted: "شروع کنید",
   },

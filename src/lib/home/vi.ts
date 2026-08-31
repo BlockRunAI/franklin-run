@@ -8,6 +8,7 @@ export const vi: HomeDict = {
     gallery: "Thư viện",
     docs: "Tài liệu",
     tryFranklin: "Dùng thử Franklin",
+    downloadDesktop: "Tải bản Desktop",
     github: "GitHub",
     getStarted: "Bắt đầu",
   },

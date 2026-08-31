@@ -15,6 +15,7 @@ export const en: HomeDict = {
     gallery: "Gallery",
     docs: "Docs",
     tryFranklin: "Try Franklin",
+    downloadDesktop: "Download Desktop",
     github: "GitHub",
     getStarted: "Get Started",
   },

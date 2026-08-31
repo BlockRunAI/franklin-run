@@ -8,6 +8,7 @@ export const ko: HomeDict = {
     gallery: "갤러리",
     docs: "문서",
     tryFranklin: "Franklin 체험하기",
+    downloadDesktop: "데스크톱 다운로드",
     github: "GitHub",
     getStarted: "시작하기",
   },

@@ -8,6 +8,7 @@ export const zhCN: HomeDict = {
     gallery: "作品库",
     docs: "文档",
     tryFranklin: "体验 Franklin",
+    downloadDesktop: "下载桌面版",
     github: "GitHub",
     getStarted: "开始使用",
   },
