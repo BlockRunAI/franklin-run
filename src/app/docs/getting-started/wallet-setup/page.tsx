@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { CodeBlock } from "@/components/docs/CodeBlock";
@@ -9,7 +10,7 @@ import { getBreadcrumbs, getPageNavigation } from "@/lib/docs-navigation";
 export const metadata: Metadata = {
   alternates: { canonical: "/docs/getting-started/wallet-setup" },
   title: "Wallet Setup",
-  description: "Fund your wallet with USDC on Base or Solana.",
+  description: "Fund your wallet with USDC on Solana or Base.",
 };
 
 const PAGE_PATH = "/docs/getting-started/wallet-setup";
@@ -24,25 +25,30 @@ export default function WalletSetupPage() {
 
       <DocsContent
         title="Wallet Setup"
-        description="Fund your wallet with USDC on Base or Solana."
+        description="Fund your wallet with USDC on Solana or Base."
       >
+        <p>
+          Use a BlockRun API key for account billing: <Link href="/docs/getting-started/account-api">account setup guide</Link>.
+          Register at <a href="https://user.blockrun.ai">user.blockrun.ai</a>, create a key and add credits.
+          Account mode needs no payment wallet; wallet billing supports Solana first, then Base.
+        </p>
+
         <h2>Choose Your Chain</h2>
         <p>
-          Franklin supports two chains for payments: <strong>Base</strong> and{" "}
-          <strong>Solana</strong>. Pick one and run the setup command:
+          Franklin supports two chains for payments: <strong>Solana</strong> and{" "}
+          <strong>Base</strong>. Pick one and run the setup command:
         </p>
         <CodeBlock language="bash">
-          {`# Base (recommended — lower fees)
-franklin setup base
+          {`# Solana (recommended for new wallets)
+franklin setup solana
 
-# Solana
-franklin setup solana`}
+# Base (also supported)
+franklin setup base`}
         </CodeBlock>
 
-        <Callout type="tip" title="Base is recommended">
-          Base has significantly lower transaction fees than Solana for
-          micropayments. Unless you already hold USDC on Solana, start with
-          Base.
+        <Callout type="tip" title="Solana first for new wallets">
+          Existing chain selections and Base wallets remain supported. Account API users
+          can skip wallet setup. Unset BLOCKRUN_API_KEY to return to wallet billing.
         </Callout>
 
         <h2>Check Your Balance</h2>

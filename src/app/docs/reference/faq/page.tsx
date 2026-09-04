@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { CodeBlock } from "@/components/docs/CodeBlock";
@@ -26,6 +27,12 @@ export default function FaqPage() {
         title="FAQ"
         description="Frequently asked questions about models, payments, privacy, and more."
       >
+        <p>
+          Use a BlockRun API key for account billing: <Link href="/docs/getting-started/account-api">account setup guide</Link>.
+          Register at <a href="https://user.blockrun.ai">user.blockrun.ai</a>, create a key and add credits.
+          Account mode needs no payment wallet; wallet billing supports Solana first, then Base.
+        </p>
+
         <h2>What models does Franklin support?</h2>
         <p>
           Franklin supports <strong>70+ models</strong> from 15+ providers,
@@ -39,15 +46,13 @@ export default function FaqPage() {
 
         <h2>How does payment work?</h2>
         <p>
-          Franklin uses the <strong>x402 protocol</strong> for micropayments.
-          Each API call is settled instantly in USDC on Base or Solana. You
-          pay provider cost + 5%, settled via EIP-712 signatures. No
-          subscriptions, no invoices, no billing cycles &mdash; you pay only
-          for what you use.
+          Account API calls use BlockRun account credits. Wallet calls use x402
+          on Solana or Base. The account dashboard is authoritative for account
+          usage; local cost totals and budget limits are estimates.
         </p>
         <CodeBlock language="bash">
           {`# Set up a wallet
-franklin setup base
+franklin setup solana
 
 # Check your balance
 franklin balance`}
@@ -76,7 +81,7 @@ franklin balance`}
           no USDC, no API keys required. Just install and run <code>franklin</code>.
         </p>
         <p>
-          Fund your wallet only when you want to unlock premium models like
+          Add account credits or fund a wallet when you want to unlock premium models like
           Claude Opus 5, GPT-5.6 Sol, Gemini 3.1 Pro, and DeepSeek V4 Pro.
         </p>
 

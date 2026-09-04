@@ -58,7 +58,7 @@ export const vi: HomeDict = {
       {
         label: "Chiếc ví",
         title: "Phần mềm biết tiêu tiền.",
-        desc: "Franklin giữ USDC trên Base hoặc Solana. Khi cần một model, một nguồn dữ liệu, hay một bức ảnh — nó ký giao dịch và thanh toán. Non-custodial. Khóa của bạn nằm trên máy bạn. Bạn đặt hạn mức; Franklin tuân thủ.",
+        desc: "Franklin giữ USDC trên Solana hoặc Base. Khi cần một model, một nguồn dữ liệu, hay một bức ảnh — nó ký giao dịch và thanh toán. Non-custodial. Khóa của bạn nằm trên máy bạn. Bạn đặt hạn mức; Franklin tuân thủ.",
       },
       {
         label: "Trading",
@@ -78,6 +78,14 @@ export const vi: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "Sử dụng API key",
+    "body": "Đăng ký tại user.blockrun.ai, tạo khóa và nạp tín dụng. Đặt BLOCKRUN_API_KEY trong môi trường rồi chạy franklin start. Thanh toán qua tài khoản không cần ví. Nếu dùng ví, ưu tiên Solana; Base cũng được hỗ trợ.",
+    "register": "Đăng ký",
+    "keys": "API key",
+    "credits": "Tín dụng",
+    "guide": "Hướng dẫn"
+},
   getStarted: {
     eyebrow: "Giá · Cài đặt · Nạp",
     titlePre: "Trả cho",
@@ -99,7 +107,7 @@ export const vi: HomeDict = {
       },
       {
         title: "Nạp ($5 là đủ)",
-        body: "Tạo ví Base hoặc Solana. Gửi USDC. Mở khóa mọi frontier model.",
+        body: "Tạo ví Solana hoặc Base. Gửi USDC. Mở khóa mọi frontier model.",
       },
       {
         title: "Nêu một kết quả",
@@ -230,7 +238,7 @@ export const vi: HomeDict = {
       },
       {
         q: "“Một agent có ví” thực sự nghĩa là gì?",
-        a: "Franklin giữ USDC trên Base hoặc Solana. Khi cần một model, một nguồn dữ liệu hay một dịch vụ, nó ký một micropayment EIP-712 và trả tiền. Bạn đặt ngân sách; Franklin tuân thủ. Mọi cent được theo dõi real-time. Không subscription, không API key, không cổng thanh toán.",
+        a: "Đăng ký tại user.blockrun.ai, tạo khóa và nạp tín dụng. Đặt BLOCKRUN_API_KEY trong môi trường rồi chạy franklin start. Thanh toán qua tài khoản không cần ví. Nếu dùng ví, ưu tiên Solana; Base cũng được hỗ trợ.",
       },
       {
         q: "Franklin có thể tiêu vào những gì?",
@@ -253,7 +261,7 @@ export const vi: HomeDict = {
         a: "Có. NVIDIA models miễn phí (Nemotron 3, Llama 3.2 Vision) chạy không cần ví, không USDC, không đăng ký. Chỉ nạp ví khi bạn muốn Sonnet, Opus, GPT, Gemini, Grok, hoặc các tool trả phí.",
       },
       {
-        q: "Vì sao lại Base và Solana?",
+        q: "Vì sao lại Solana và Base?",
         a: "Finality nhanh, phí gần như bằng không, hỗ trợ USDC trưởng thành, và một hệ sinh thái x402 thực sự trên cả hai. Bạn chọn lúc setup và đổi lúc nào cũng được. Cùng UX ví, cùng models, khác đường ray.",
       },
     ],

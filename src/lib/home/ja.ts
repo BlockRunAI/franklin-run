@@ -58,7 +58,7 @@ export const ja: HomeDict = {
       {
         label: "ウォレット",
         title: "お金を使えるソフトウェア。",
-        desc: "Franklin は USDC を Base または Solana 上で保持する。モデル、データフィード、画像が必要になれば、自ら署名して支払う。ノンカストディアル。鍵はあなたの端末に残る。上限はあなたが設定し、Franklin がそれを守る。",
+        desc: "Franklin は USDC を Solana または Base 上で保持する。モデル、データフィード、画像が必要になれば、自ら署名して支払う。ノンカストディアル。鍵はあなたの端末に残る。上限はあなたが設定し、Franklin がそれを守る。",
       },
       {
         label: "トレーディング",
@@ -78,6 +78,14 @@ export const ja: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "API キーで利用",
+    "body": "user.blockrun.ai で登録し、キーを作成してクレジットを追加します。環境変数 BLOCKRUN_API_KEY を設定して franklin start を実行します。アカウント決済にウォレットは不要です。ウォレット決済は Solana を推奨し、Base にも対応します。",
+    "register": "登録",
+    "keys": "API キー",
+    "credits": "クレジット",
+    "guide": "設定ガイド"
+},
   getStarted: {
     eyebrow: "料金 · インストール · 入金",
     titlePre: "支払うのは",
@@ -99,7 +107,7 @@ export const ja: HomeDict = {
       },
       {
         title: "入金（5 ドルで十分）",
-        body: "Base または Solana のウォレットを生成。USDC を送金。すべてのフロンティアモデルを解放。",
+        body: "Solana または Base のウォレットを生成。USDC を送金。すべてのフロンティアモデルを解放。",
       },
       {
         title: "成果を宣言する",
@@ -229,7 +237,7 @@ export const ja: HomeDict = {
       },
       {
         q: "「ウォレット付きエージェント」とは具体的に何を意味するのか？",
-        a: "Franklin は USDC を Base または Solana 上で保持する。モデル、データフィード、サービスが必要になれば、EIP-712 マイクロペイメントに署名して支払う。予算はあなたが決め、Franklin が守る。一セントまでリアルタイムで追跡される。サブスクなし、API キーなし、請求ポータルなし。",
+        a: "user.blockrun.ai で登録し、キーを作成してクレジットを追加します。環境変数 BLOCKRUN_API_KEY を設定して franklin start を実行します。アカウント決済にウォレットは不要です。ウォレット決済は Solana を推奨し、Base にも対応します。",
       },
       {
         q: "Franklin は何に支払えるのか？",
@@ -252,7 +260,7 @@ export const ja: HomeDict = {
         a: "使える。NVIDIA の無料モデル（Nemotron 3、Llama 3.2 Vision）はウォレットも USDC もサインアップも不要で動く。ウォレットに入金するのは、Sonnet、Opus、GPT、Gemini、Grok、有料ツールを使いたいときだけ。",
       },
       {
-        q: "なぜ Base と Solana なのか？",
+        q: "なぜ Solana と Base なのか？",
         a: "高速なファイナリティ、無視できる手数料、成熟した USDC サポート、そして両方に本物の x402 エコシステムがあるから。セットアップ時に選び、いつでも切り替え可能。同じウォレット UX、同じモデル、異なるレール。",
       },
     ],
