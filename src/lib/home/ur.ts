@@ -3,7 +3,7 @@ import type { HomeDict } from "./types";
 /**
  * Urdu (ur) — translated from en.ts. Layout handles dir="rtl"; copy is
  * written naturally without manual reversal. Brand and protocol terms
- * (Franklin, BlockRun, USDC, Base, Solana, x402, YOPO, model names, etc.)
+ * (Franklin, BlockRun, USDC, Solana, Base, x402, YOPO, model names, etc.)
  * stay verbatim, as do code literals like ~/.blockrun/ and /learnings.
  */
 export const ur: HomeDict = {
@@ -64,7 +64,7 @@ export const ur: HomeDict = {
       {
         label: "والیٹ",
         title: "وہ سافٹ ویئر جو پیسے خرچ کر سکے۔",
-        desc: "Franklin USDC رکھتا ہے، Base یا Solana پر۔ جب اسے ماڈل، ڈیٹا فیڈ، یا تصویر چاہیے ہو — وہ ادائیگی پر دستخط کرتا ہے اور خرید لیتا ہے۔ Non-custodial۔ آپ کی keys آپ کی مشین پر رہتی ہیں۔ آپ حد لگائیں، وہ اسے نافذ کرتا ہے۔",
+        desc: "Franklin USDC رکھتا ہے، Solana یا Base پر۔ جب اسے ماڈل، ڈیٹا فیڈ، یا تصویر چاہیے ہو — وہ ادائیگی پر دستخط کرتا ہے اور خرید لیتا ہے۔ Non-custodial۔ آپ کی keys آپ کی مشین پر رہتی ہیں۔ آپ حد لگائیں، وہ اسے نافذ کرتا ہے۔",
       },
       {
         label: "ٹریڈنگ",
@@ -84,6 +84,14 @@ export const ur: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "API key استعمال کریں",
+    "body": "user.blockrun.ai پر رجسٹر کریں، key بنائیں اور کریڈٹ شامل کریں۔ ماحول میں BLOCKRUN_API_KEY سیٹ کر کے franklin start چلائیں۔ اکاؤنٹ سے ادائیگی کے لیے والٹ درکار نہیں۔ والٹ ادائیگی کے لیے پہلے Solana منتخب کریں؛ Base بھی دستیاب ہے۔",
+    "register": "رجسٹر کریں",
+    "keys": "API keys",
+    "credits": "کریڈٹ",
+    "guide": "سیٹ اپ گائیڈ"
+},
   getStarted: {
     eyebrow: "قیمت · انسٹال · فنڈ",
     titlePre: "بل صرف",
@@ -105,7 +113,7 @@ export const ur: HomeDict = {
       },
       {
         title: "فنڈ کریں ($5 کافی ہیں)",
-        body: "Base یا Solana والیٹ بنائیں۔ USDC بھیجیں۔ ہر frontier ماڈل کھول لیں۔",
+        body: "Solana یا Base والیٹ بنائیں۔ USDC بھیجیں۔ ہر frontier ماڈل کھول لیں۔",
       },
       {
         title: "نتیجہ بتائیں",
@@ -236,7 +244,7 @@ export const ur: HomeDict = {
       },
       {
         q: "”والیٹ والا ایجنٹ“ کا اصل میں مطلب کیا ہے؟",
-        a: "Franklin USDC رکھتا ہے، Base یا Solana پر۔ جب اسے ماڈل، ڈیٹا فیڈ، یا کوئی سروس چاہیے ہو، وہ EIP-712 micropayment پر دستخط کرتا ہے اور ادا کر دیتا ہے۔ بجٹ آپ طے کرتے ہیں؛ Franklin اسے نافذ کرتا ہے۔ ہر پیسہ real-time میں ٹریک ہوتا ہے۔ نہ subscriptions، نہ API keys، نہ billing portals۔",
+        a: "user.blockrun.ai پر رجسٹر کریں، key بنائیں اور کریڈٹ شامل کریں۔ ماحول میں BLOCKRUN_API_KEY سیٹ کر کے franklin start چلائیں۔ اکاؤنٹ سے ادائیگی کے لیے والٹ درکار نہیں۔ والٹ ادائیگی کے لیے پہلے Solana منتخب کریں؛ Base بھی دستیاب ہے۔",
       },
       {
         q: "Franklin کن چیزوں پر خرچ کر سکتا ہے؟",
@@ -259,7 +267,7 @@ export const ur: HomeDict = {
         a: "ہاں۔ مفت NVIDIA ماڈلز (Nemotron 3، Llama 3.2 Vision) بغیر والیٹ، بغیر USDC، بغیر سائن اپ کے کام کرتے ہیں۔ والیٹ صرف تب فنڈ کریں جب Sonnet، Opus، GPT، Gemini، Grok، یا paid tools چاہیں۔",
       },
       {
-        q: "Base اور Solana ہی کیوں؟",
+        q: "Solana اور Base ہی کیوں؟",
         a: "تیز finality، نہ ہونے کے برابر فیس، پختہ USDC سپورٹ، اور دونوں پر حقیقی x402 ایکو سسٹم۔ سیٹ اپ پر چن لیں اور کسی بھی وقت سوئچ کر لیں۔ ایک ہی والیٹ UX، ایک ہی ماڈلز، مختلف rails۔",
       },
     ],

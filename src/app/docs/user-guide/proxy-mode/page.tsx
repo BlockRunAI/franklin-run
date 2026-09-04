@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { CodeBlock } from "@/components/docs/CodeBlock";
@@ -26,6 +27,12 @@ export default function ProxyModePage() {
         title="Proxy Mode"
         description="Use Franklin as a local API server for other tools."
       >
+        <p>
+          Use a BlockRun API key for account billing: <Link href="/docs/getting-started/account-api">account setup guide</Link>.
+          Register at <a href="https://user.blockrun.ai">user.blockrun.ai</a>, create a key and add credits.
+          Account mode needs no payment wallet; wallet billing supports Solana first, then Base.
+        </p>
+
         <h2>What Is Proxy Mode?</h2>
         <p>
           Proxy mode starts a local API server that is compatible with the

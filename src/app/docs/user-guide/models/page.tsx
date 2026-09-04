@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { CodeBlock } from "@/components/docs/CodeBlock";
@@ -26,6 +27,12 @@ export default function ModelsPage() {
         title="Models"
         description="70+ models from 15+ providers, including a free tier."
       >
+        <p>
+          Use a BlockRun API key for account billing: <Link href="/docs/getting-started/account-api">account setup guide</Link>.
+          Register at <a href="https://user.blockrun.ai">user.blockrun.ai</a>, create a key and add credits.
+          Account mode needs no payment wallet; wallet billing supports Solana first, then Base.
+        </p>
+
         <h2>Available Providers</h2>
         <p>
           Franklin gives you access to 70+ models from 15+ providers through a

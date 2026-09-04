@@ -58,7 +58,7 @@ export const zhCN: HomeDict = {
       {
         label: "钱包",
         title: "会花钱的软件。",
-        desc: "Franklin 在 Base 或 Solana 上持有 USDC。需要模型、数据源或图像时，它直接签名付款拿走。非托管，私钥留在你机器上。你设上限，它自己执行。",
+        desc: "Franklin 在 Solana 或 Base 上持有 USDC。需要模型、数据源或图像时，它直接签名付款拿走。非托管，私钥留在你机器上。你设上限，它自己执行。",
       },
       {
         label: "交易",
@@ -78,6 +78,14 @@ export const zhCN: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "使用 API key",
+    "body": "在 user.blockrun.ai 注册、创建密钥并充值。将 BLOCKRUN_API_KEY 设置到环境变量后运行 franklin start。账户计费无需钱包；钱包支付优先选择 Solana，也支持 Base。",
+    "register": "注册账户",
+    "keys": "API 密钥",
+    "credits": "账户充值",
+    "guide": "设置指南"
+},
   getStarted: {
     eyebrow: "定价 · 安装 · 充值",
     titlePre: "只为",
@@ -99,7 +107,7 @@ export const zhCN: HomeDict = {
       },
       {
         title: "充值（5 美元就够)",
-        body: "生成 Base 或 Solana 钱包，转入 USDC，解锁所有前沿模型。",
+        body: "生成 Solana 或 Base 钱包，转入 USDC，解锁所有前沿模型。",
       },
       {
         title: "说一个结果",
@@ -230,7 +238,7 @@ export const zhCN: HomeDict = {
       },
       {
         q: "「带钱包的智能体」到底是什么意思？",
-        a: "Franklin 在 Base 或 Solana 上持有 USDC。需要模型、数据源或服务时，它签一笔 EIP-712 微支付直接付。你定预算，Franklin 自己执行。每一分钱实时记账。没有订阅、没有 API key、没有计费后台。",
+        a: "在 user.blockrun.ai 注册、创建密钥并充值。将 BLOCKRUN_API_KEY 设置到环境变量后运行 franklin start。账户计费无需钱包；钱包支付优先选择 Solana，也支持 Base。",
       },
       {
         q: "Franklin 能花钱买什么？",
@@ -253,7 +261,7 @@ export const zhCN: HomeDict = {
         a: "可以。免费 NVIDIA 模型（Nemotron 3、Llama 3.2 Vision）开箱即用，不要钱包、不要 USDC、不要注册。只有想用 Sonnet、Opus、GPT、Gemini、Grok 或付费工具时，才需要给钱包充值。",
       },
       {
-        q: "为什么是 Base 和 Solana？",
+        q: "为什么是 Solana 和 Base？",
         a: "终局速度快、手续费可忽略、USDC 支持成熟，且两条链上都有真正可用的 x402 生态。安装时挑一条，随时切换。同样的钱包体验，同样的模型，只是底层轨道不同。",
       },
     ],

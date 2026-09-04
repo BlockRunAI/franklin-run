@@ -15,6 +15,7 @@ export const docsNavigation: DocSection[] = [
     href: "/docs/getting-started",
     pages: [
       { title: "Installation", href: "/docs/getting-started/installation" },
+      { title: "Account API", href: "/docs/getting-started/account-api" },
       { title: "Wallet Setup", href: "/docs/getting-started/wallet-setup" },
       { title: "First Session", href: "/docs/getting-started/first-session" },
       { title: "Migration", href: "/docs/getting-started/migration" },
