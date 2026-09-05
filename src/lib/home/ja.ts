@@ -8,6 +8,7 @@ export const ja: HomeDict = {
     gallery: "ギャラリー",
     docs: "ドキュメント",
     tryFranklin: "Franklin を試す",
+    downloadDesktop: "デスクトップ版をダウンロード",
     github: "GitHub",
     getStarted: "はじめる",
   },

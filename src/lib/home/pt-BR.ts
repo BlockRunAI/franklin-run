@@ -14,6 +14,7 @@ export const ptBR: HomeDict = {
     gallery: "Galeria",
     docs: "Docs",
     tryFranklin: "Testar Franklin",
+    downloadDesktop: "Baixar Desktop",
     github: "GitHub",
     getStarted: "Começar",
   },

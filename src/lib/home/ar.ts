@@ -15,6 +15,7 @@ export const ar: HomeDict = {
     gallery: "المعرض",
     docs: "الوثائق",
     tryFranklin: "جرّب Franklin",
+    downloadDesktop: "تنزيل تطبيق سطح المكتب",
     github: "GitHub",
     getStarted: "ابدأ الآن",
   },

@@ -7,6 +7,12 @@ import { en as defaultDict } from "@/lib/home/en";
 import type { HomeDict } from "@/lib/home/types";
 import { homeUrl, type Locale } from "@/lib/locales";
 
+// Desktop now ships from the public Franklin monorepo. Do not use
+// `/releases/latest`: CLI and Desktop releases share the repository, so a
+// newer CLI release could otherwise make this button point at the wrong app.
+const DESKTOP_RELEASES_URL =
+  "https://github.com/BlockRunAI/Franklin/releases";
+
 interface HeaderProps {
   variant?: "ink" | "paper";
   dict?: HomeDict;
@@ -64,6 +70,14 @@ export function Header({
           <Link className="nav-link nav-link-try" href="/chat">
             {dict.nav.tryFranklin}
           </Link>
+          <a
+            className="nav-link nav-link-desktop"
+            href={DESKTOP_RELEASES_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {dict.nav.downloadDesktop}
+          </a>
           <a className="nav-link" href="https://blockrun.ai" target="_blank" rel="noreferrer">
             BlockRun
           </a>
@@ -122,6 +136,14 @@ export function Header({
           <Link href="/chat" onClick={() => setMenuOpen(false)}>
             {dict.nav.tryFranklin}
           </Link>
+          <a
+            href={DESKTOP_RELEASES_URL}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => setMenuOpen(false)}
+          >
+            {dict.nav.downloadDesktop}
+          </a>
           <a href="https://blockrun.ai" target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>
             BlockRun
           </a>

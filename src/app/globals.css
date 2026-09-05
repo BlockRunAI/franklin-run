@@ -260,6 +260,15 @@ img {
   color: var(--fg);
 }
 
+.nav-link-desktop {
+  color: var(--gold-dim) !important;
+  font-weight: 500;
+}
+
+.nav-link-desktop:hover {
+  color: var(--accent) !important;
+}
+
 /* Buttons — Echelon-clean: solid navy primary, outlined secondary */
 .btn-primary,
 .site-header-paper .btn-primary,

@@ -15,6 +15,7 @@ export const tr: HomeDict = {
     gallery: "Galeri",
     docs: "Dokümanlar",
     tryFranklin: "Franklin'i Dene",
+    downloadDesktop: "Masaüstünü İndir",
     github: "GitHub",
     getStarted: "Başla",
   },

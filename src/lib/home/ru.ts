@@ -15,6 +15,7 @@ export const ru: HomeDict = {
     gallery: "Галерея",
     docs: "Документация",
     tryFranklin: "Попробовать",
+    downloadDesktop: "Скачать приложение",
     github: "GitHub",
     getStarted: "Начать",
   },
