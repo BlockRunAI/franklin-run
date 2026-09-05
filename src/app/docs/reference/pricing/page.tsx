@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { DocsContent } from "@/components/docs/DocsContent";
 import { CodeBlock } from "@/components/docs/CodeBlock";
@@ -26,15 +27,21 @@ export default function PricingPage() {
         title="Pricing"
         description="Pay-per-action micropayments, free tier, and cost tracking."
       >
+        <p>
+          Use a BlockRun API key for account billing: <Link href="/docs/getting-started/account-api">account setup guide</Link>.
+          Register at <a href="https://user.blockrun.ai">user.blockrun.ai</a>, create a key and add credits.
+          Account mode needs no payment wallet; wallet billing supports Solana first, then Base.
+        </p>
+
         <h2>Pay-Per-Action</h2>
         <p>
-          Franklin uses <strong>micropayments</strong> &mdash; you pay per API
-          call, settled instantly in USDC on Base or Solana via the x402
-          protocol. There are no subscriptions, monthly fees, or rate limits.
+          Pay for model and tool usage with account credits or wallet USDC through
+          x402 on Solana or Base. Check the model catalog and account dashboard for
+          current prices and limits.
         </p>
         <p>
-          Your cost = provider cost + 5%. That&apos;s it. Each model call costs
-          fractions of a cent, proportional to the tokens consumed.
+          In account mode, local cost totals and max-spend limits use estimates.
+          The account dashboard is authoritative for billed usage and remaining credits.
         </p>
 
         <h2>Free Tier</h2>

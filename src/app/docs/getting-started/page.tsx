@@ -27,6 +27,12 @@ export default function GettingStartedPage() {
         title="Getting Started"
         description="Up and running with Franklin in 60 seconds."
       >
+        <p>
+          Use a BlockRun API key for account billing: <Link href="/docs/getting-started/account-api">account setup guide</Link>.
+          Register at <a href="https://user.blockrun.ai">user.blockrun.ai</a>, create a key and add credits.
+          Account mode needs no payment wallet; wallet billing supports Solana first, then Base.
+        </p>
+
         <h2>Install</h2>
         <p>
           Franklin is distributed as a single npm package. Install it globally:
@@ -48,22 +54,22 @@ export default function GettingStartedPage() {
         <Callout type="tip" title="No funding required">
           Franklin works without any funding. The free tier (NVIDIA Nemotron 3,
           Llama 3.2 Vision, Cohere North Mini Code, Poolside Laguna XS) is
-          always available. Fund your wallet only when you want to unlock
+          always available. Add account credits or fund a wallet when you want to unlock
           premium models like Claude, GPT, Gemini, and Grok.
         </Callout>
 
         <h2>Fund (optional)</h2>
         <p>
           To unlock 70+ premium models (Claude, GPT, Gemini, Grok, and more), set up
-          a wallet and send USDC. Franklin uses micropayments &mdash; you pay
-          fractions of a cent per action, with no subscriptions or rate limits.
+          an account API key or a wallet with USDC. Franklin uses micropayments &mdash; you pay
+          fractions of a cent per action, with usage-based billing.
         </p>
         <CodeBlock language="bash">
-          {`franklin setup base`}
+          {`franklin setup solana`}
         </CodeBlock>
         <p>
-          This creates (or imports) a Base wallet and displays your deposit
-          address. Send any amount of USDC on Base to get started &mdash; even $1
+          This creates (or imports) a Solana wallet and displays your deposit
+          address. Send USDC on Solana to get started &mdash; even $1
           is enough for hundreds of actions.
         </p>
 
@@ -75,7 +81,7 @@ export default function GettingStartedPage() {
           </li>
           <li>
             <Link href="/docs/getting-started/wallet-setup">Wallet setup</Link>
-            &nbsp;&mdash; funding your wallet with USDC on Base or Solana
+            &nbsp;&mdash; funding your wallet with USDC on Solana or Base
           </li>
           <li>
             <Link href="/docs/getting-started/first-session">First session</Link>

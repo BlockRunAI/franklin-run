@@ -15,6 +15,14 @@
  * can keep the typographic structure intact.
  */
 export interface HomeDict {
+  account: {
+    title: string;
+    body: string;
+    register: string;
+    keys: string;
+    credits: string;
+    guide: string;
+  };
   nav: {
     features: string;
     compare: string;

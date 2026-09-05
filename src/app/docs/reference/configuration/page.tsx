@@ -27,6 +27,12 @@ export default function ConfigurationPage() {
         title="Configuration"
         description="The ~/.blockrun/ directory structure and key configuration files."
       >
+        <p>
+          Use a BlockRun API key for account billing: <Link href="/docs/getting-started/account-api">account setup guide</Link>.
+          Register at <a href="https://user.blockrun.ai">user.blockrun.ai</a>, create a key and add credits.
+          Account mode needs no payment wallet; wallet billing supports Solana first, then Base.
+        </p>
+
         <h2>Directory Structure</h2>
         <p>
           All of Franklin&apos;s persistent state lives in{" "}

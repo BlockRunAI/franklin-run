@@ -3,7 +3,7 @@ import type { HomeDict } from "./types";
 /**
  * Arabic — translated from en.ts.
  *
- * Brand and protocol terms (Franklin, BlockRun, USDC, Base, Solana, x402,
+ * Brand and protocol terms (Franklin, BlockRun, USDC, Solana, Base, x402,
  * YOPO, model names, etc.) stay verbatim in English.
  * The layout sets dir="rtl" automatically.
  */
@@ -65,7 +65,7 @@ export const ar: HomeDict = {
       {
         label: "المحفظة",
         title: "برنامج يستطيع صرف المال.",
-        desc: "يحتفظ Franklin بـ USDC على Base أو Solana. حين يحتاج إلى نموذج أو تدفّق بيانات أو صورة — يوقّع دفعة ويأخذها. غير حضاني. مفاتيحك تبقى على جهازك. أنت تضع سقفًا، وهو يلتزم به.",
+        desc: "يحتفظ Franklin بـ USDC على Solana أو Base. حين يحتاج إلى نموذج أو تدفّق بيانات أو صورة — يوقّع دفعة ويأخذها. غير حضاني. مفاتيحك تبقى على جهازك. أنت تضع سقفًا، وهو يلتزم به.",
       },
       {
         label: "التداول",
@@ -85,6 +85,14 @@ export const ar: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "استخدم مفتاح API",
+    "body": "سجّل في user.blockrun.ai وأنشئ مفتاحًا وأضف رصيدًا. اضبط BLOCKRUN_API_KEY في البيئة ثم شغّل franklin start. الدفع من الحساب لا يحتاج إلى محفظة. للدفع بالمحفظة نوصي أولًا بـ Solana، مع دعم Base أيضًا.",
+    "register": "التسجيل",
+    "keys": "مفاتيح API",
+    "credits": "الرصيد",
+    "guide": "دليل الإعداد"
+},
   getStarted: {
     eyebrow: "التسعير · التثبيت · التمويل",
     titlePre: "ادفع مقابل",
@@ -106,7 +114,7 @@ export const ar: HomeDict = {
       },
       {
         title: "موّل ($5 تكفي)",
-        body: "أنشئ محفظة Base أو Solana. أرسل USDC. افتح كل نماذج الجبهة الأمامية.",
+        body: "أنشئ محفظة Solana أو Base. أرسل USDC. افتح كل نماذج الجبهة الأمامية.",
       },
       {
         title: "حدّد نتيجة",
@@ -237,7 +245,7 @@ export const ar: HomeDict = {
       },
       {
         q: "ماذا يعني فعلًا «وكيل بمحفظة»؟",
-        a: "يحتفظ Franklin بـ USDC على Base أو Solana. حين يحتاج إلى نموذج أو تدفّق بيانات أو خدمة، يوقّع دفعة EIP-712 مصغّرة ويسدّد. أنت تحدّد الميزانية؛ وهو يلتزم بها. كل سنت يُتتبَّع لحظيًا. لا اشتراكات، لا مفاتيح API، لا بوّابات فوترة.",
+        a: "سجّل في user.blockrun.ai وأنشئ مفتاحًا وأضف رصيدًا. اضبط BLOCKRUN_API_KEY في البيئة ثم شغّل franklin start. الدفع من الحساب لا يحتاج إلى محفظة. للدفع بالمحفظة نوصي أولًا بـ Solana، مع دعم Base أيضًا.",
       },
       {
         q: "على ماذا يستطيع Franklin أن ينفق؟",
@@ -260,7 +268,7 @@ export const ar: HomeDict = {
         a: "نعم. نماذج NVIDIA المجانية (Nemotron 3، Llama 3.2 Vision) تعمل بدون محفظة، بدون USDC، بدون تسجيل. موّل المحفظة فقط حين تريد Sonnet أو Opus أو GPT أو Gemini أو Grok أو الأدوات المدفوعة.",
       },
       {
-        q: "لماذا Base و Solana؟",
+        q: "لماذا Solana و Base؟",
         a: "حسم سريع، رسوم ضئيلة، دعم ناضج لـ USDC، ومنظومة x402 حقيقية على كليهما. تختار عند الإعداد ويمكنك التبديل في أي وقت. نفس تجربة المحفظة، نفس النماذج، سكك مختلفة.",
       },
     ],

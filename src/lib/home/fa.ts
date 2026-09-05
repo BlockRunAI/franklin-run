@@ -4,7 +4,7 @@ import type { HomeDict } from "./types";
  * Persian / Farsi (fa) — translation of the homepage marketing copy.
  *
  * Layout handles dir="rtl". Brand and protocol terms (Franklin, BlockRun,
- * USDC, Base, Solana, x402, YOPO, model names, etc.) stay verbatim per
+ * USDC, Solana, Base, x402, YOPO, model names, etc.) stay verbatim per
  * project rules. ZWNJ (نیم‌فاصله) is used where standard Persian typography
  * requires it.
  */
@@ -66,7 +66,7 @@ export const fa: HomeDict = {
       {
         label: "کیف پول",
         title: "نرم‌افزاری که می‌تواند پول خرج کند.",
-        desc: "Franklin روی Base یا Solana نگه‌دارنده USDC است. وقتی به یک مدل، یک فید داده یا یک تصویر نیاز دارد — پرداخت را امضا می‌کند و برمی‌دارد. غیرحضانتی. کلیدها روی دستگاه شما می‌مانند. سقف می‌گذارید؛ اعمالش می‌کند.",
+        desc: "Franklin روی Solana یا Base نگه‌دارنده USDC است. وقتی به یک مدل، یک فید داده یا یک تصویر نیاز دارد — پرداخت را امضا می‌کند و برمی‌دارد. غیرحضانتی. کلیدها روی دستگاه شما می‌مانند. سقف می‌گذارید؛ اعمالش می‌کند.",
       },
       {
         label: "معامله‌گری",
@@ -86,6 +86,14 @@ export const fa: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "از کلید API استفاده کنید",
+    "body": "در user.blockrun.ai ثبت‌نام کنید، کلید بسازید و اعتبار اضافه کنید. BLOCKRUN_API_KEY را در محیط تنظیم کرده و franklin start را اجرا کنید. پرداخت حساب به کیف پول نیاز ندارد. برای پرداخت با کیف پول، ابتدا Solana پیشنهاد می‌شود؛ Base نیز پشتیبانی می‌شود.",
+    "register": "ثبت‌نام",
+    "keys": "کلیدهای API",
+    "credits": "اعتبار",
+    "guide": "راهنمای راه‌اندازی"
+},
   getStarted: {
     eyebrow: "قیمت‌گذاری · نصب · شارژ",
     titlePre: "برای",
@@ -107,7 +115,7 @@ export const fa: HomeDict = {
       },
       {
         title: "شارژ (۵ دلار کافی است)",
-        body: "یک کیف پول Base یا Solana بسازید. USDC بفرستید. هر مدل پیشرفته را باز کنید.",
+        body: "یک کیف پول Solana یا Base بسازید. USDC بفرستید. هر مدل پیشرفته را باز کنید.",
       },
       {
         title: "یک نتیجه را اعلام کن",
@@ -238,7 +246,7 @@ export const fa: HomeDict = {
       },
       {
         q: "«عامل با کیف پول» در عمل یعنی چه؟",
-        a: "Franklin روی Base یا Solana نگه‌دارنده USDC است. وقتی به یک مدل، یک فید داده یا یک سرویس نیاز دارد، یک میکروپرداخت EIP-712 امضا می‌کند و می‌پردازد. شما بودجه را تعیین می‌کنید؛ Franklin اعمالش می‌کند. هر سنت در زمان واقعی ردیابی می‌شود. نه اشتراک، نه کلید API، نه پورتال صورت‌حساب.",
+        a: "در user.blockrun.ai ثبت‌نام کنید، کلید بسازید و اعتبار اضافه کنید. BLOCKRUN_API_KEY را در محیط تنظیم کرده و franklin start را اجرا کنید. پرداخت حساب به کیف پول نیاز ندارد. برای پرداخت با کیف پول، ابتدا Solana پیشنهاد می‌شود؛ Base نیز پشتیبانی می‌شود.",
       },
       {
         q: "Franklin می‌تواند روی چه چیزی خرج کند؟",
@@ -261,7 +269,7 @@ export const fa: HomeDict = {
         a: "بله. مدل‌های NVIDIA رایگان (Nemotron 3، Llama 3.2 Vision) بدون کیف پول، بدون USDC و بدون ثبت‌نام کار می‌کنند. کیف پول را فقط زمانی شارژ کنید که Sonnet، Opus، GPT، Gemini، Grok یا ابزارهای پولی بخواهید.",
       },
       {
-        q: "چرا Base و Solana؟",
+        q: "چرا Solana و Base؟",
         a: "نهایی‌سازی سریع، کارمزد ناچیز، پشتیبانی بالغ از USDC و یک اکوسیستم x402 واقعی روی هر دو. هنگام راه‌اندازی انتخاب می‌کنید و هر زمان می‌توانید جابه‌جا شوید. همان تجربه کیف پول، همان مدل‌ها، ریل‌های متفاوت.",
       },
     ],

@@ -3,7 +3,7 @@ import type { HomeDict } from "./types";
 /**
  * Bahasa Indonesia (id) — translated from en.ts.
  *
- * Brand and protocol terms (Franklin, BlockRun, USDC, Base, Solana, x402,
+ * Brand and protocol terms (Franklin, BlockRun, USDC, Solana, Base, x402,
  * YOPO, kimi-k2.6, model names, etc.) stay verbatim. Code snippets and
  * slash commands are universal.
  */
@@ -65,7 +65,7 @@ export const id: HomeDict = {
       {
         label: "Dompet",
         title: "Software yang bisa belanja.",
-        desc: "Franklin memegang USDC di Base atau Solana. Saat butuh model, data feed, atau gambar — dia tanda tangani pembayaran dan ambil. Non-custodial. Kunci tetap di mesinmu. Kamu set batas; dia patuhi.",
+        desc: "Franklin memegang USDC di Solana atau Base. Saat butuh model, data feed, atau gambar — dia tanda tangani pembayaran dan ambil. Non-custodial. Kunci tetap di mesinmu. Kamu set batas; dia patuhi.",
       },
       {
         label: "Trading",
@@ -85,6 +85,14 @@ export const id: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "Gunakan API key",
+    "body": "Daftar di user.blockrun.ai, buat kunci, dan isi kredit. Atur BLOCKRUN_API_KEY di lingkungan lalu jalankan franklin start. Pembayaran akun tidak memerlukan dompet. Untuk pembayaran dompet, utamakan Solana; Base juga didukung.",
+    "register": "Daftar",
+    "keys": "API key",
+    "credits": "Kredit",
+    "guide": "Panduan"
+},
   getStarted: {
     eyebrow: "Harga · Install · Isi Saldo",
     titlePre: "Bayar untuk",
@@ -106,7 +114,7 @@ export const id: HomeDict = {
       },
       {
         title: "Isi saldo ($5 sudah cukup)",
-        body: "Generate dompet Base atau Solana. Kirim USDC. Buka semua model frontier.",
+        body: "Generate dompet Solana atau Base. Kirim USDC. Buka semua model frontier.",
       },
       {
         title: "Sebutkan hasilnya",
@@ -237,7 +245,7 @@ export const id: HomeDict = {
       },
       {
         q: "Apa arti sebenarnya “agent dengan dompet”?",
-        a: "Franklin memegang USDC di Base atau Solana. Saat butuh model, data feed, atau service, dia tanda tangani micropayment EIP-712 lalu bayar. Kamu set anggaran; Franklin patuhi. Setiap sen dilacak real-time. Tanpa langganan, tanpa API key, tanpa portal billing.",
+        a: "Daftar di user.blockrun.ai, buat kunci, dan isi kredit. Atur BLOCKRUN_API_KEY di lingkungan lalu jalankan franklin start. Pembayaran akun tidak memerlukan dompet. Untuk pembayaran dompet, utamakan Solana; Base juga didukung.",
       },
       {
         q: "Franklin bisa belanja apa saja?",
@@ -260,7 +268,7 @@ export const id: HomeDict = {
         a: "Bisa. Model NVIDIA gratis (Nemotron 3, Llama 3.2 Vision) jalan tanpa dompet, tanpa USDC, tanpa daftar. Isi dompet hanya saat ingin Sonnet, Opus, GPT, Gemini, Grok, atau tool berbayar.",
       },
       {
-        q: "Kenapa Base dan Solana?",
+        q: "Kenapa Solana dan Base?",
         a: "Finalitas cepat, biaya nyaris nol, dukungan USDC matang, dan ekosistem x402 nyata di keduanya. Pilih saat setup dan bisa ganti kapan saja. UX dompet sama, model sama, rel berbeda.",
       },
     ],

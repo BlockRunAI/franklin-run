@@ -2,7 +2,7 @@ import type { HomeDict } from "./types";
 
 /**
  * Brazilian Portuguese (pt-BR) translation of the franklin.run homepage.
- * Brand and protocol terms (Franklin, BlockRun, USDC, Base, Solana, x402,
+ * Brand and protocol terms (Franklin, BlockRun, USDC, Solana, Base, x402,
  * YOPO, kimi-k2.6, etc.) stay verbatim. Code snippets and slash commands
  * are universal — not in this dict.
  */
@@ -64,7 +64,7 @@ export const ptBR: HomeDict = {
       {
         label: "A Carteira",
         title: "Software que pode gastar dinheiro.",
-        desc: "Franklin guarda USDC em Base ou Solana. Quando precisa de um modelo, um feed de dados ou uma imagem — ele assina o pagamento e leva. Não-custodial. Suas chaves ficam na sua máquina. Você define um teto; ele respeita.",
+        desc: "Franklin guarda USDC em Solana ou Base. Quando precisa de um modelo, um feed de dados ou uma imagem — ele assina o pagamento e leva. Não-custodial. Suas chaves ficam na sua máquina. Você define um teto; ele respeita.",
       },
       {
         label: "Trading",
@@ -84,6 +84,14 @@ export const ptBR: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "Use uma API key",
+    "body": "Cadastre-se em user.blockrun.ai, crie uma chave e adicione créditos. Defina BLOCKRUN_API_KEY no ambiente e execute franklin start. A cobrança na conta dispensa carteira. Para pagar com carteira, prefira Solana; Base também é compatível.",
+    "register": "Cadastro",
+    "keys": "API keys",
+    "credits": "Créditos",
+    "guide": "Guia de configuração"
+},
   getStarted: {
     eyebrow: "Preço · Instalação · Fundo",
     titlePre: "Pague pelo",
@@ -105,7 +113,7 @@ export const ptBR: HomeDict = {
       },
       {
         title: "Carregue ($5 já basta)",
-        body: "Gere uma carteira em Base ou Solana. Envie USDC. Libere todos os modelos de fronteira.",
+        body: "Gere uma carteira em Solana ou Base. Envie USDC. Libere todos os modelos de fronteira.",
       },
       {
         title: "Diga o resultado desejado",
@@ -236,7 +244,7 @@ export const ptBR: HomeDict = {
       },
       {
         q: "O que “um agente com carteira” quer dizer na prática?",
-        a: "Franklin guarda USDC em Base ou Solana. Quando precisa de um modelo, um feed ou um serviço, assina um micropagamento EIP-712 e paga. Você define o orçamento; Franklin respeita. Cada centavo é rastreado em tempo real. Sem assinaturas, sem API keys, sem portal de billing.",
+        a: "Cadastre-se em user.blockrun.ai, crie uma chave e adicione créditos. Defina BLOCKRUN_API_KEY no ambiente e execute franklin start. A cobrança na conta dispensa carteira. Para pagar com carteira, prefira Solana; Base também é compatível.",
       },
       {
         q: "Em que Franklin pode gastar?",
@@ -259,7 +267,7 @@ export const ptBR: HomeDict = {
         a: "Pode. Os modelos NVIDIA gratuitos (Nemotron 3, Llama 3.2 Vision) funcionam sem carteira, sem USDC, sem cadastro. Carregue a carteira só quando quiser Sonnet, Opus, GPT, Gemini, Grok ou ferramentas pagas.",
       },
       {
-        q: "Por que Base e Solana?",
+        q: "Por que Solana e Base?",
         a: "Finalidade rápida, taxas irrisórias, suporte maduro a USDC e um ecossistema x402 real nas duas. Você escolhe na configuração e pode trocar quando quiser. Mesma UX de carteira, mesmos modelos, trilhos diferentes.",
       },
     ],

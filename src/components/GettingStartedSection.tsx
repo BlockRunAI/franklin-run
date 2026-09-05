@@ -1,10 +1,11 @@
+import Link from "next/link";
 import { en as defaultDict } from "@/lib/home/en";
 import type { HomeDict } from "@/lib/home/types";
 
 const STEP_CODES = [
   "npm i -g @blockrun/franklin",
   "franklin",
-  "franklin setup base",
+  "franklin setup solana",
   "franklin --trust",
 ];
 
@@ -44,6 +45,17 @@ export function GettingStartedSection({
           <br />
           {g.titlePost}
         </h2>
+
+        <div className="col-span-full my-8 rounded-lg border p-8">
+          <h3 className="text-xl">{dict.account.title}</h3>
+          <p className="mt-3 text-sm leading-relaxed">{dict.account.body}</p>
+          <div className="cta-row flex-wrap">
+            <a className="btn-primary" href="https://user.blockrun.ai">{dict.account.register}</a>
+            <a className="btn-outline" href="https://user.blockrun.ai/dashboard/keys">{dict.account.keys}</a>
+            <a className="btn-outline" href="https://user.blockrun.ai/dashboard/credits">{dict.account.credits}</a>
+            <Link className="btn-outline" href="/docs/getting-started/account-api">{dict.account.guide}</Link>
+          </div>
+        </div>
 
         <div className="stamp-402">
           <span className="stamp-c stamp-c-tl">◆ HTTP</span>

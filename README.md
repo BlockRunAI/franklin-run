@@ -2,9 +2,15 @@
 
 Source code for [**franklin.run**](https://franklin.run), the marketing site for **Franklin Agent** — the AI agent with a wallet.
 
-Franklin writes code and spends money to get things done. Open-source, runs anywhere, pays per call in USDC via [x402](https://x402.gitbook.io/x402) — 55+ models, trading data, image gen, web search. One wallet, no API keys.
+Franklin writes code and spends money to get things done. Open-source, runs anywhere, pays per call in USDC via [x402](https://x402.gitbook.io/x402) — 55+ models, trading data, image gen, web search. Use account API billing or a Solana/Base wallet.
 
 > Looking for the product? Visit [franklin.run](https://franklin.run) or the agent repo at [blockrunai/franklin](https://github.com/blockrunai/franklin).
+
+## Account API access
+
+[Register](https://user.blockrun.ai), [create an API key](https://user.blockrun.ai/dashboard/keys), and [add credits](https://user.blockrun.ai/dashboard/credits). With the release containing [Franklin #156](https://github.com/BlockRunAI/Franklin/pull/156), set `BLOCKRUN_API_KEY` and run `franklin start`. The account endpoint is `https://api.blockrun.ai/v1`; account mode needs no payment wallet. The website documents this at `/docs/getting-started/account-api` and links registration from all 13 homepage locales.
+
+Native wallet onboarding recommends **Solana**, followed by **Base**. Existing wallet selections remain supported. This repository change updates onboarding documentation; the website's wallet demonstration remains a wallet flow.
 
 ## Tech Stack
 

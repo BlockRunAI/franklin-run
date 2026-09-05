@@ -11,8 +11,8 @@ export function TrustBar({ dict = defaultDict }: TrustBarProps) {
   return (
     <div className="trust-bar">
       <p>
-        {t.builtOn} <strong>USDC</strong> · <strong>Base</strong> ·{" "}
-        <strong>Solana</strong> · <strong>x402</strong> · {t.routesPrefix}{" "}
+        {t.builtOn} <strong>USDC</strong> · <strong>Solana</strong> ·{" "}
+        <strong>Base</strong> · <strong>x402</strong> · {t.routesPrefix}{" "}
         <strong>{t.routesModels}</strong> {t.providersPrefix} Anthropic,
         OpenAI, Google, DeepSeek, Moonshot and Z.AI.
       </p>

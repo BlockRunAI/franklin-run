@@ -58,7 +58,7 @@ export const hi: HomeDict = {
       {
         label: "वॉलेट",
         title: "वो software जो पैसे खर्च कर सकता है।",
-        desc: "Franklin Base या Solana पर USDC रखता है। जब उसे model, data feed, या image चाहिए — वो payment sign करता है और ले लेता है। Non-custodial। Keys आपकी मशीन पर रहती हैं। Cap आप सेट करते हैं; वो लागू करता है।",
+        desc: "Franklin Solana या Base पर USDC रखता है। जब उसे model, data feed, या image चाहिए — वो payment sign करता है और ले लेता है। Non-custodial। Keys आपकी मशीन पर रहती हैं। Cap आप सेट करते हैं; वो लागू करता है।",
       },
       {
         label: "Trading",
@@ -78,6 +78,14 @@ export const hi: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "API key से शुरू करें",
+    "body": "user.blockrun.ai पर पंजीकरण करें, key बनाएँ और क्रेडिट जोड़ें। वातावरण में BLOCKRUN_API_KEY सेट करके franklin start चलाएँ। खाते से भुगतान के लिए वॉलेट नहीं चाहिए। वॉलेट भुगतान के लिए पहले Solana चुनें; Base भी समर्थित है।",
+    "register": "पंजीकरण",
+    "keys": "API keys",
+    "credits": "क्रेडिट",
+    "guide": "सेटअप गाइड"
+},
   getStarted: {
     eyebrow: "Pricing · Install · Fund",
     titlePre: "पैसे दीजिए",
@@ -99,7 +107,7 @@ export const hi: HomeDict = {
       },
       {
         title: "Fund करें ($5 काफ़ी है)",
-        body: "Base या Solana wallet generate करें। USDC भेजें। हर frontier model unlock करें।",
+        body: "Solana या Base wallet generate करें। USDC भेजें। हर frontier model unlock करें।",
       },
       {
         title: "Outcome बताएँ",
@@ -230,7 +238,7 @@ export const hi: HomeDict = {
       },
       {
         q: "“Wallet वाला एजेंट” का मतलब असल में क्या है?",
-        a: "Franklin Base या Solana पर USDC रखता है। जब उसे model, data feed या service चाहिए, वो EIP-712 micropayment sign करता है और pay कर देता है। आप budget सेट करते हैं; Franklin लागू करता है। हर सिक्का real-time में track होता है। न subscriptions, न API keys, न billing portals।",
+        a: "user.blockrun.ai पर पंजीकरण करें, key बनाएँ और क्रेडिट जोड़ें। वातावरण में BLOCKRUN_API_KEY सेट करके franklin start चलाएँ। खाते से भुगतान के लिए वॉलेट नहीं चाहिए। वॉलेट भुगतान के लिए पहले Solana चुनें; Base भी समर्थित है।",
       },
       {
         q: "Franklin किन चीज़ों पर खर्च कर सकता है?",
@@ -253,7 +261,7 @@ export const hi: HomeDict = {
         a: "हाँ। Free NVIDIA models (Nemotron 3, Llama 3.2 Vision) बिना wallet, बिना USDC, बिना signup के चलते हैं। Wallet सिर्फ़ तब fund कीजिए जब Sonnet, Opus, GPT, Gemini, Grok, या paid tools चाहिए हों।",
       },
       {
-        q: "Base और Solana ही क्यों?",
+        q: "Solana और Base ही क्यों?",
         a: "तेज़ finality, नगण्य fees, mature USDC support, और दोनों पर असली x402 ecosystem। Setup पर चुनिए, कभी भी switch करें। वही wallet UX, वही models, सिर्फ़ rails अलग।",
       },
     ],

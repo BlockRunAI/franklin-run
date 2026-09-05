@@ -3,7 +3,7 @@ import type { HomeDict } from "./types";
 /**
  * Türkçe — franklin.run ana sayfa kopyası.
  *
- * Marka, protokol ve model isimleri (Franklin, BlockRun, USDC, Base, Solana,
+ * Marka, protokol ve model isimleri (Franklin, BlockRun, USDC, Solana, Base,
  * x402, YOPO, kimi-k2.6 vb.) İngilizce olarak korunur. Kod parçacıkları ve
  * slash komut isimleri evrenseldir, çevrilmez.
  */
@@ -65,7 +65,7 @@ export const tr: HomeDict = {
       {
         label: "Cüzdan",
         title: "Para harcayabilen yazılım.",
-        desc: "Franklin, Base veya Solana üzerinde USDC tutar. Bir modele, veri akışına ya da görsele ihtiyaç duyduğunda — ödemeyi imzalar ve alır. Non-custodial. Anahtarlar makinenizden çıkmaz. Limiti siz koyarsınız; o uygular.",
+        desc: "Franklin, Solana veya Base üzerinde USDC tutar. Bir modele, veri akışına ya da görsele ihtiyaç duyduğunda — ödemeyi imzalar ve alır. Non-custodial. Anahtarlar makinenizden çıkmaz. Limiti siz koyarsınız; o uygular.",
       },
       {
         label: "Trading",
@@ -85,6 +85,14 @@ export const tr: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "API anahtarı kullanın",
+    "body": "user.blockrun.ai adresinde kaydolun, anahtar oluşturun ve kredi ekleyin. Ortamda BLOCKRUN_API_KEY tanımlayıp franklin start çalıştırın. Hesaptan ödeme için cüzdan gerekmez. Cüzdan ödemelerinde önce Solana önerilir; Base de desteklenir.",
+    "register": "Kaydol",
+    "keys": "API anahtarları",
+    "credits": "Krediler",
+    "guide": "Kurulum rehberi"
+},
   getStarted: {
     eyebrow: "Fiyat · Kurulum · Yükle",
     titlePre: "Sadece",
@@ -106,7 +114,7 @@ export const tr: HomeDict = {
       },
       {
         title: "Yükle (5$ fazlasıyla yeter)",
-        body: "Base veya Solana cüzdanı oluştur. USDC gönder. Tüm frontier modelleri aç.",
+        body: "Solana veya Base cüzdanı oluştur. USDC gönder. Tüm frontier modelleri aç.",
       },
       {
         title: "Sonucu söyle",
@@ -237,7 +245,7 @@ export const tr: HomeDict = {
       },
       {
         q: "“Cüzdanı olan ajan” aslında ne demek?",
-        a: "Franklin Base veya Solana üzerinde USDC tutar. Bir modele, veri akışına ya da hizmete ihtiyaç duyduğunda EIP-712 mikroödemesini imzalar ve öder. Bütçeyi siz koyarsınız; Franklin uygular. Her cent gerçek zamanlı izlenir. Abonelik yok, API anahtarı yok, faturalama portalı yok.",
+        a: "user.blockrun.ai adresinde kaydolun, anahtar oluşturun ve kredi ekleyin. Ortamda BLOCKRUN_API_KEY tanımlayıp franklin start çalıştırın. Hesaptan ödeme için cüzdan gerekmez. Cüzdan ödemelerinde önce Solana önerilir; Base de desteklenir.",
       },
       {
         q: "Franklin neye harcayabilir?",
@@ -260,7 +268,7 @@ export const tr: HomeDict = {
         a: "Evet. Ücretsiz NVIDIA modelleri (Nemotron 3, Llama 3.2 Vision) cüzdansız, USDC'siz, kayıt olmadan çalışır. Sonnet, Opus, GPT, Gemini, Grok ya da ücretli araçlar isterseniz cüzdanı yüklersiniz.",
       },
       {
-        q: "Neden Base ve Solana?",
+        q: "Neden Solana ve Base?",
         a: "Hızlı kesinleşme, ihmal edilebilir ücretler, olgun USDC desteği ve her ikisinde de gerçek bir x402 ekosistemi. Kurulumda seçersiniz, dilediğiniz zaman değiştirirsiniz. Aynı cüzdan UX'i, aynı modeller, farklı raylar.",
       },
     ],

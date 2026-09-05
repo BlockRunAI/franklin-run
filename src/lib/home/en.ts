@@ -65,7 +65,7 @@ export const en: HomeDict = {
       {
         label: "The Wallet",
         title: "Software that can spend money.",
-        desc: "Franklin holds USDC on Base or Solana. When it needs a model, a data feed, or an image — it signs a payment and takes it. Non-custodial. Your keys stay on your machine. You set a cap; it enforces it.",
+        desc: "Franklin holds USDC on Solana or Base. When it needs a model, a data feed, or an image — it signs a payment and takes it. Non-custodial. Your keys stay on your machine. You set a cap; it enforces it.",
       },
       {
         label: "Trading",
@@ -85,6 +85,14 @@ export const en: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "Use an API key",
+    "body": "Register at user.blockrun.ai, create a key and add credits. Set BLOCKRUN_API_KEY in your environment, then run franklin start. Account billing needs no wallet. For wallet billing, choose Solana first or Base.",
+    "register": "Register",
+    "keys": "API keys",
+    "credits": "Credits",
+    "guide": "Setup guide"
+},
   getStarted: {
     eyebrow: "Pricing · Install · Fund",
     titlePre: "Pay for the",
@@ -106,7 +114,7 @@ export const en: HomeDict = {
       },
       {
         title: "Fund ($5 is plenty)",
-        body: "Generate a Base or Solana wallet. Send USDC. Unlock every frontier model.",
+        body: "Generate a Solana or Base wallet. Send USDC. Unlock every frontier model.",
       },
       {
         title: "State an outcome",
@@ -237,7 +245,7 @@ export const en: HomeDict = {
       },
       {
         q: "What does “an agent with a wallet” actually mean?",
-        a: "Franklin holds USDC on Base or Solana. When it needs a model, a data feed, or a service, it signs an EIP-712 micropayment and pays. You set a budget; Franklin enforces it. Every cent is tracked in real-time. No subscriptions, no API keys, no billing portals.",
+        a: "Register at user.blockrun.ai, create a key and add credits. Set BLOCKRUN_API_KEY in your environment, then run franklin start. Account billing needs no wallet. For wallet billing, choose Solana first or Base.",
       },
       {
         q: "What can Franklin spend on?",
@@ -260,7 +268,7 @@ export const en: HomeDict = {
         a: "Yes. Free NVIDIA models (Nemotron 3, Llama 3.2 Vision) work with no wallet, no USDC, no signup. Fund the wallet only when you want Sonnet, Opus, GPT, Gemini, Grok, or paid tools.",
       },
       {
-        q: "Why Base and Solana?",
+        q: "Why Solana and Base?",
         a: "Fast finality, negligible fees, mature USDC support, and a real x402 ecosystem on both. You pick at setup and can switch anytime. Same wallet UX, same models, different rails.",
       },
     ],

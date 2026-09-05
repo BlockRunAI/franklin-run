@@ -58,7 +58,7 @@ export const ko: HomeDict = {
       {
         label: "지갑",
         title: "돈을 쓸 수 있는 소프트웨어.",
-        desc: "Franklin은 Base 또는 Solana 위에 USDC를 보유한다. 모델, 데이터 피드, 이미지가 필요할 때 — 결제에 서명하고 그것을 가져온다. 비수탁형. 키는 당신의 머신에 머무른다. 당신이 한도를 정하면, Franklin이 그것을 강제한다.",
+        desc: "Franklin은 Solana 또는 Base 위에 USDC를 보유한다. 모델, 데이터 피드, 이미지가 필요할 때 — 결제에 서명하고 그것을 가져온다. 비수탁형. 키는 당신의 머신에 머무른다. 당신이 한도를 정하면, Franklin이 그것을 강제한다.",
       },
       {
         label: "트레이딩",
@@ -78,6 +78,14 @@ export const ko: HomeDict = {
     ],
   },
 
+  account: {
+    "title": "API 키로 시작",
+    "body": "user.blockrun.ai에서 가입하고 키를 만든 뒤 크레딧을 충전하세요. 환경 변수 BLOCKRUN_API_KEY를 설정하고 franklin start를 실행하세요. 계정 결제에는 지갑이 필요 없습니다. 지갑 결제는 Solana를 우선 권장하며 Base도 지원합니다.",
+    "register": "가입",
+    "keys": "API 키",
+    "credits": "크레딧",
+    "guide": "설정 가이드"
+},
   getStarted: {
     eyebrow: "가격 · 설치 · 충전",
     titlePre: "오직",
@@ -99,7 +107,7 @@ export const ko: HomeDict = {
       },
       {
         title: "충전 ($5면 충분)",
-        body: "Base 또는 Solana 지갑을 생성하고 USDC를 보내라. 모든 프론티어 모델이 열린다.",
+        body: "Solana 또는 Base 지갑을 생성하고 USDC를 보내라. 모든 프론티어 모델이 열린다.",
       },
       {
         title: "결과를 말하라",
@@ -230,7 +238,7 @@ export const ko: HomeDict = {
       },
       {
         q: "“지갑을 가진 에이전트”가 실제로 무슨 뜻인가?",
-        a: "Franklin은 Base 또는 Solana 위에 USDC를 보유한다. 모델, 데이터 피드, 서비스가 필요하면 EIP-712 마이크로페이먼트에 서명해 결제한다. 당신이 예산을 정하면, Franklin이 강제한다. 모든 센트가 실시간으로 추적된다. 구독도, API 키도, 결제 포털도 없다.",
+        a: "user.blockrun.ai에서 가입하고 키를 만든 뒤 크레딧을 충전하세요. 환경 변수 BLOCKRUN_API_KEY를 설정하고 franklin start를 실행하세요. 계정 결제에는 지갑이 필요 없습니다. 지갑 결제는 Solana를 우선 권장하며 Base도 지원합니다.",
       },
       {
         q: "Franklin은 어디에 돈을 쓸 수 있나?",
@@ -253,7 +261,7 @@ export const ko: HomeDict = {
         a: "그렇다. 무료 NVIDIA 모델 (Nemotron 3, Llama 3.2 Vision)은 지갑도, USDC도, 가입도 없이 작동한다. Sonnet, Opus, GPT, Gemini, Grok, 또는 유료 도구를 원할 때만 지갑을 충전하라.",
       },
       {
-        q: "왜 Base와 Solana인가?",
+        q: "왜 Solana와 Base인가?",
         a: "빠른 파이널리티, 무시할 만한 수수료, 성숙한 USDC 지원, 그리고 양쪽 모두에 실재하는 x402 생태계. 셋업할 때 고르고 언제든 전환할 수 있다. 같은 지갑 UX, 같은 모델, 다른 레일.",
       },
     ],

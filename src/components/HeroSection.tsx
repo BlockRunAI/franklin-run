@@ -192,7 +192,7 @@ function useUsdcBalance() {
   return balance;
 }
 
-const TECH_CHIPS = ["x402", "EIP-712", "● Base", "● Solana", "402 → paid"];
+const TECH_CHIPS = ["x402", "EIP-712", "● Solana", "● Base", "402 → paid"];
 
 /** Compact live agent panel — the technical "star" of the hero. */
 function HeroLivePanel() {
@@ -348,7 +348,7 @@ export function HeroSection({ dict = defaultDict }: HeroSectionProps) {
 
           <p className="hero-trust">
             Open source · MIT licensed · Built by the <strong>BlockRun</strong> team.
-            Trusted by developers shipping autonomous agents on <strong>Base</strong> and <strong>Solana</strong>.
+            Trusted by developers shipping autonomous agents on <strong>Solana</strong> and <strong>Base</strong>.
           </p>
         </div>
 
