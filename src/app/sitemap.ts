@@ -16,7 +16,7 @@ const SITE_URL = "https://franklin.run";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  const entries: MetadataRoute.Sitemap = [];
+  const entries: MetadataRoute.Sitemap = [{ url: `${SITE_URL}/desktop`, changeFrequency: "weekly", priority: 0.8 }];
 
   // Chat app — lives at /chat, standalone (not part of the
   // marketing-homepage hreflang cluster).

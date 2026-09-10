@@ -2,6 +2,7 @@ import type { HomeDict } from "./types";
 
 export const zhCN: HomeDict = {
   nav: {
+    blockrunLogin: "登录 BlockRun",
     features: "特性",
     compare: "对比",
     blog: "博客",

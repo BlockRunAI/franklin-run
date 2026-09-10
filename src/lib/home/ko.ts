@@ -2,6 +2,7 @@ import type { HomeDict } from "./types";
 
 export const ko: HomeDict = {
   nav: {
+    blockrunLogin: "BlockRun 로그인",
     features: "기능",
     compare: "비교",
     blog: "블로그",

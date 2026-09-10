@@ -58,3 +58,7 @@ temp/
 # Local dev conversation store
 .franklin-store/
 .worktrees/
+
+# Local dependency symlinks used during development
+/node_modules
+.franklin-store/

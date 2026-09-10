@@ -1,5 +1,6 @@
 "use client";
 
+import { BlockRunAccountProvider } from "@/hooks/use-blockrun-account";
 import { useState } from "react";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,7 +17,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <ClientProvider client={solanaClient}>{children}</ClientProvider>
+        <ClientProvider client={solanaClient}><BlockRunAccountProvider>{children}</BlockRunAccountProvider></ClientProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

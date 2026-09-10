@@ -8,6 +8,7 @@ import type { HomeDict } from "./types";
  */
 export const ptBR: HomeDict = {
   nav: {
+    blockrunLogin: "Entrar no BlockRun",
     features: "Recursos",
     compare: "Comparar",
     blog: "Blog",

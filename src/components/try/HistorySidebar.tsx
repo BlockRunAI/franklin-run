@@ -11,9 +11,12 @@ import type { Conversation } from "@/hooks/use-chat-history";
 import { cdnUrl } from "@/lib/cdn";
 import { useTryLang } from "@/lib/try-i18n";
 import { MoreMenu } from "./MoreMenu";
+import { ACCOUNT_COPY } from "@/lib/account-i18n";
+import { AccountControl } from "./AccountControl";
+import { Monitor, Users } from "lucide-react";
 import { ConnectWallet } from "./ConnectWallet";
 
-export type TryView = "chat" | "phone" | "tools" | "gallery" | "wallet" | "skills" | "cli";
+export type TryView = "chat" | "phone" | "tools" | "gallery" | "wallet" | "skills" | "cli" | "desktop" | "team";
 
 interface Props {
   conversations: Conversation[];
@@ -28,7 +31,7 @@ interface Props {
 }
 
 export function HistorySidebar({ conversations, activeId, onNew, onSelect, onDelete, view, onView, open, auth }: Props) {
-  const { t } = useTryLang();
+  const { t, lang } = useTryLang();
   const [searchOpen, setSearchOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreBtnRef = useRef<HTMLButtonElement>(null);
@@ -45,6 +48,8 @@ export function HistorySidebar({ conversations, activeId, onNew, onSelect, onDel
   const nav: { key: TryView; icon: React.ReactNode; label: string }[] = [
     { key: "tools", icon: <Blocks className="h-4 w-4" />, label: t.marketplace },
     { key: "gallery", icon: <Images className="h-4 w-4" />, label: t.gallery },
+    { key: "team", icon: <Users className="h-4 w-4" />, label: ACCOUNT_COPY[lang].team },
+    { key: "desktop", icon: <Monitor className="h-4 w-4" />, label: ACCOUNT_COPY[lang].desktop },
     { key: "cli", icon: <Terminal className="h-4 w-4" />, label: t.cli },
   ];
   // Secondary, less-used sections tucked into the "More" flyout.
@@ -132,6 +137,7 @@ export function HistorySidebar({ conversations, activeId, onNew, onSelect, onDel
       </div>
 
       <div className="try-sidebar-footer">
+        <AccountControl />
         <div className="try-footer-icons">
           <MoreMenu />
           <div className="try-footer-wallet">

@@ -13,6 +13,10 @@ import { GalleryPanel } from "./GalleryPanel";
 import { SHOWCASE_ITEMS } from "@/lib/showcase-gallery";
 import { WalletPanel } from "./WalletPanel";
 import { SkillsPanel } from "./SkillsPanel";
+import { TeamPanel } from "./TeamPanel";
+import { DesktopPanel } from "./DesktopPanel";
+import { useBlockRunAccount } from "@/hooks/use-blockrun-account";
+import { ACCOUNT_COPY } from "@/lib/account-i18n";
 import { CLIPanel } from "./CLIPanel";
 import { useFranklinChat, maxAttachmentsFor } from "@/hooks/use-franklin-chat";
 import { useChatHistory } from "@/hooks/use-chat-history";
@@ -72,8 +76,10 @@ export interface ChatPrefill {
 }
 
 export function FranklinChat({ initial }: { initial?: ChatPrefill } = {}) {
-  const { t } = useTryLang();
+  const { t, lang } = useTryLang();
   const auth = useAuth();
+  const payment = useBlockRunAccount();
+  const paymentHint = payment.rail === "credit" ? ACCOUNT_COPY[lang].expired : ACCOUNT_COPY[lang].choose;
   const history = useChatHistory(auth.address);
   const { usage, recordSpend } = useUsageStats();
   const chat = useFranklinChat(history.messages, history.setMessages, history.ensureConvId, recordSpend, {
@@ -281,7 +287,7 @@ export function FranklinChat({ initial }: { initial?: ChatPrefill } = {}) {
   };
 
   const placeholder = needsWallet
-    ? t.phConnect
+    ? paymentHint
     : mode === "image"
       ? t.phImage
       : mode === "video"
@@ -364,7 +370,11 @@ export function FranklinChat({ initial }: { initial?: ChatPrefill } = {}) {
           )}
         </div>
 
-        {view === "phone" ? (
+        {view === "team" ? (
+          <TeamPanel auth={auth} />
+        ) : view === "desktop" ? (
+          <DesktopPanel />
+        ) : view === "phone" ? (
           <PhonePanel />
         ) : view === "tools" ? (
           <ToolsPanel onTry={tryMarketplace} />
@@ -555,7 +565,7 @@ export function FranklinChat({ initial }: { initial?: ChatPrefill } = {}) {
         <div className="try-input-wrap">
           {needsToolWallet && (
             <div className="try-input-hint try-input-hint-action">
-              <span>{t.hintToolWallet}</span>
+              <span>{paymentHint}</span>
               <button className="try-hint-connect" onClick={() => auth.connect()} disabled={auth.signingIn}>
                 {auth.signingIn ? t.connecting : t.connectWallet}
               </button>
@@ -563,13 +573,7 @@ export function FranklinChat({ initial }: { initial?: ChatPrefill } = {}) {
           )}
           {needsWallet && (
             <div className="try-input-hint">
-              {mode === "image"
-                ? t.hintImage
-                : mode === "video"
-                  ? t.hintVideo
-                  : mode === "music"
-                    ? t.hintMusic
-                    : t.hintChat(selectedModel?.label ?? "")}
+              {paymentHint}
             </div>
           )}
 

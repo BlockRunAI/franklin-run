@@ -2,6 +2,7 @@ import type { HomeDict } from "./types";
 
 export const vi: HomeDict = {
   nav: {
+    blockrunLogin: "Đăng nhập BlockRun",
     features: "Tính năng",
     compare: "So sánh",
     blog: "Blog",

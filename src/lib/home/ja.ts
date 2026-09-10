@@ -2,6 +2,7 @@ import type { HomeDict } from "./types";
 
 export const ja: HomeDict = {
   nav: {
+    blockrunLogin: "BlockRun にログイン",
     features: "特徴",
     compare: "比較",
     blog: "ブログ",

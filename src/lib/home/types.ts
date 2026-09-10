@@ -30,6 +30,7 @@ export interface HomeDict {
     gallery: string;
     docs: string;
     tryFranklin: string;
+    blockrunLogin: string;
     downloadDesktop: string;
     github: string;
     getStarted: string;

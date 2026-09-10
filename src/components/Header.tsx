@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-html-link-for-pages -- OAuth requires full document navigation, not a prefetched RSC request. */
+
 import Link from "next/link";
 import { useState } from "react";
 import { GitHubIcon } from "./icons";
@@ -7,11 +9,9 @@ import { en as defaultDict } from "@/lib/home/en";
 import type { HomeDict } from "@/lib/home/types";
 import { homeUrl, type Locale } from "@/lib/locales";
 
-// Desktop now ships from the public Franklin monorepo. Do not use
-// `/releases/latest`: CLI and Desktop releases share the repository, so a
-// newer CLI release could otherwise make this button point at the wrong app.
+// The desktop page describes local capabilities and links to the public releases.
 const DESKTOP_RELEASES_URL =
-  "https://github.com/BlockRunAI/Franklin/releases";
+  "/desktop";
 
 interface HeaderProps {
   variant?: "ink" | "paper";
@@ -78,9 +78,7 @@ export function Header({
           >
             {dict.nav.downloadDesktop}
           </a>
-          <a className="nav-link" href="https://blockrun.ai" target="_blank" rel="noreferrer">
-            BlockRun
-          </a>
+          <a className="nav-link" href="/api/try/account/login">{dict.nav.blockrunLogin}</a>
           <a
             className="btn-outline"
             href="https://github.com/blockrunai/franklin"
@@ -144,9 +142,7 @@ export function Header({
           >
             {dict.nav.downloadDesktop}
           </a>
-          <a href="https://blockrun.ai" target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>
-            BlockRun
-          </a>
+          <a href="/api/try/account/login" onClick={() => setMenuOpen(false)}>{dict.nav.blockrunLogin}</a>
           <a
             href="https://github.com/blockrunai/franklin"
             onClick={() => setMenuOpen(false)}
