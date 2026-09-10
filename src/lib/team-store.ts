@@ -97,7 +97,7 @@ function safeId(id: string): string {
 
 function safeRelative(input: string): string {
   const value = path.posix.normalize(input.trim().replaceAll("\\", "/")).replace(/^\/+/, "");
-  if (!value || value === "." || value.startsWith("../") || value.includes("/../") || value.length > 240) {
+  if (!value || value === "." || value === ".." || value.startsWith("../") || value.includes("/../") || value.includes("\0") || value.length > 240) {
     throw new TeamStoreError(400, "Invalid workspace file path");
   }
   return value;
@@ -134,11 +134,24 @@ async function readDocument<T>(key: string): Promise<Document<T> | null> {
       const stat = await fs.stat(file);
       return { value: JSON.parse(await fs.readFile(file, "utf8")) as T, generation: stat.mtimeMs };
     }
-    const file = (await getBucket()).file(key);
-    const [exists] = await file.exists();
-    if (!exists) return null;
-    const [[buffer], [metadata]] = await Promise.all([file.download(), file.getMetadata()]);
-    return { value: JSON.parse(buffer.toString("utf8")) as T, generation: metadata.generation || "0" };
+    const bucket = await getBucket();
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const [metadata] = await bucket.file(key).getMetadata();
+      const generation = metadata.generation;
+      if (!generation) throw new Error("Workspace storage returned no generation");
+      try {
+        // The body and the write precondition must name the SAME revision.
+        // Independent latest-body/metadata reads can pair old data with a new
+        // generation and silently overwrite a teammate's concurrent update.
+        const [buffer] = await bucket.file(key, { generation }).download();
+        return { value: JSON.parse(buffer.toString("utf8")) as T, generation };
+      } catch (error) {
+        // A non-versioned bucket may discard the old generation between the
+        // metadata and body reads. Read the current generation and retry.
+        if ((error as { code?: number }).code !== 404) throw error;
+      }
+    }
+    throw new TeamStoreError(409, "Workspace changed concurrently; retry the request");
   } catch (error) {
     if ((error as { code?: number }).code === 404) return null;
     throw error;
@@ -237,7 +250,7 @@ async function mutateWorkspaceUnlocked<T>(id: string, mutate: (workspace: TeamWo
       await writeDocument(workspaceKey(id), workspace, doc.generation);
       return { workspace, result };
     } catch (error) {
-      if ((error as { code?: number }).code !== 412 || attempt === 4) throw error;
+      if ((error as { code?: number }).code !== 412) throw error;
     }
   }
   throw new TeamStoreError(409, "Workspace changed concurrently; retry the request");
@@ -411,7 +424,7 @@ export async function readTeamFile(wallet: string, id: string, filePath: string)
   const cleanPath = safeRelative(filePath);
   const file = workspace.files.find((item) => item.path === cleanPath);
   if (!file) throw new TeamStoreError(404, "File not found");
-  return { path: file.path, content: file.content, bytes: file.bytes, version: workspace.version };
+  return { path: file.path, content: file.content, bytes: file.bytes, version: file.version, workspaceVersion: workspace.version };
 }
 
 export async function saveTeamFile(wallet: string, id: string, filePath: string, content: string, expectedVersion?: number) {

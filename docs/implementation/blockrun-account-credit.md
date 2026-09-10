@@ -19,7 +19,7 @@ Credit requests only use `api.blockrun.ai` and server-held credentials. A 401/40
 
 - `npm run test:account`: encryption, cookie type separation, expiry, origin checks, payment headers, media poll URLs.
 - `npm run test:routes`: mocked login/callback and gateway routes, state binding, bearer injection, SSE forwarding, credit refusal, mixed-rail rejection, polling, Base and Solana routing. No live credentials or charges.
-- `npm run test:team`: owner/member/viewer rules, single-use invites, messages, files and optimistic concurrency. Run only in a disposable local test directory; it clears its local team store.
+- `npm run test:team`: owner/member/viewer rules, single-use invites, messages, files and optimistic concurrency, including GCS generation races and file read/save version compatibility. Run only in a disposable local test directory; it clears its local team store.
 - `npm run lint`, `npm run typecheck`, `npm run build`.
 
 Existing local conversation history stays on the current browser unless wallet history sign-in is used. Account credit sign-in does not merge wallet identities or upload local history to an account.

@@ -35,7 +35,7 @@
     "check": "npm run lint && npm run typecheck && npm run build",
     "deploy": "bash scripts/deploy.sh",
     "test:account": "node --experimental-strip-types --test test/account.mts",
-    "test:team": "FRANKLIN_STORE_LOCAL=1 node --experimental-strip-types test/team-store.mts && FRANKLIN_STORE_LOCAL=1 node --import tsx test/team-routes.mts",
+    "test:team": "FRANKLIN_STORE_LOCAL=1 node --experimental-strip-types test/team-store.mts && FRANKLIN_STORE_LOCAL=1 node --import tsx test/team-routes.mts && node --experimental-test-module-mocks --experimental-strip-types test/team-gcs.mts",
     "test:routes": "node --import tsx test/account-routes.mts"
   },
   "dependencies": {

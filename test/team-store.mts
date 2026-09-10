@@ -33,7 +33,12 @@ try {
   await store.saveTeamFile(member, workspace.id, "plans/launch.md", "v1");
   const first = await store.readTeamFile(owner, workspace.id, "plans/launch.md");
   assert.equal(first.content, "v1");
-  await store.saveTeamFile(owner, workspace.id, "plans/launch.md", "v2", 1);
+  assert.equal(first.version, 1, "file reads return the file revision, independent of team messages");
+  await store.saveTeamFile(owner, workspace.id, "plans/launch.md", "v2", first.version);
+  for (const invalid of ["..", "../escape.md", "bad\0path"]) {
+    await assert.rejects(() => store.saveTeamFile(owner, workspace.id, invalid, "invalid"),
+      (error: unknown) => error instanceof store.TeamStoreError && error.status === 400);
+  }
   await assert.rejects(
     () => store.saveTeamFile(member, workspace.id, "plans/launch.md", "stale", 1),
     (error: unknown) => error instanceof store.TeamStoreError && error.status === 409,
