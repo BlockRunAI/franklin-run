@@ -9,6 +9,7 @@ import type { HomeDict } from "./types";
  */
 export const ar: HomeDict = {
   nav: {
+    blockrunLogin: "تسجيل الدخول إلى BlockRun",
     features: "المزايا",
     compare: "المقارنة",
     blog: "المدوّنة",

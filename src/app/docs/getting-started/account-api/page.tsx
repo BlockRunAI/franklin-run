@@ -19,7 +19,16 @@ export default function AccountApiPage() {
     <>
       <DocsBreadcrumb items={getBreadcrumbs(PAGE_PATH)} />
       <DocsContent title="Account API" description="One BlockRun API key for models, media and data tools.">
-        <h2>Register and add credits</h2>
+        <h2>Use account credit on franklin.run</h2>
+        <ol>
+          <li>Open <a href="https://franklin.run/chat">Franklin web</a> and choose <strong>Sign in to BlockRun</strong>.</li>
+          <li>Sign in to your BlockRun account and confirm the Franklin connection. You return to Franklin automatically.</li>
+          <li>Choose <strong>BlockRun credit</strong> in the Payment control. Chat, tools and media use your account balance.</li>
+        </ol>
+        <p>No API key needs to be copied into the browser. Account connections expire after eight hours and can be disconnected in Franklin or revoked under API Keys in BlockRun.</p>
+        <p>Wallet USDC and account credit remain separate. Franklin keeps your chosen payment method when credit expires or runs out; use the billing link to top up, or explicitly choose Wallet to switch.</p>
+        <p>Team workspace identity currently uses a Base wallet signature, independently of your selected payment method. Account billing and usage are available in the BlockRun dashboard.</p>
+        <h2>Register and add credits for the CLI</h2>
         <ol>
           <li><a href="https://user.blockrun.ai">Register or sign in</a>.</li>
           <li>Create a key in <a href="https://user.blockrun.ai/dashboard/keys">API Keys</a>.</li>

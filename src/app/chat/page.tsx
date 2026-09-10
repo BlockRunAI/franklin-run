@@ -7,7 +7,7 @@ import { getShowcaseItem, showcaseModelId } from "@/lib/showcase-gallery";
 export const metadata: Metadata = {
   title: "Franklin — the AI agent with a wallet",
   description:
-    "Chat with frontier AI models, generate images and video, and let Franklin use tools — paid per request in USDC via x402. No subscription. Your wallet is your account.",
+    "Chat with frontier AI models, generate images and video, and let Franklin use tools — pay with your wallet or BlockRun account credit. Sign in to BlockRun and return to Franklin.",
   alternates: { canonical: "https://franklin.run/chat" },
 };
 

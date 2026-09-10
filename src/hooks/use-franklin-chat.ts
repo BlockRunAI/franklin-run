@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { mediaPollPath } from "@/lib/payment-client";
+import { useBlockRunAccount } from "./use-blockrun-account";
 import { useWallet, chainHeaders, type WalletChain } from "./use-wallet";
 import { useX402Payment, parseX402FromResponse, selectRequirement } from "./use-x402-payment";
 import { FRANKLIN_SYSTEM_PROMPT, FRANKLIN_TOOLS_PROMPT, systemPromptDateLine } from "@/lib/franklin-system-prompt";
@@ -545,7 +547,8 @@ export function useFranklinChat(
   // keeps a future read-only or unpayable chain from reaching the signer.
   // `chain` rides along on every paid request so the proxy picks the gateway
   // that issues a requirement this wallet can actually sign (see use-wallet).
-  const { canPay, chain } = useWallet();
+  const { chain } = useWallet();
+  const { canPay, request: paymentFetch } = useBlockRunAccount();
   const { makePayment } = useX402Payment();
   const onSpendRef = useRef(onSpend);
   // A generation is pinned to the conversation it started in: all writes target
@@ -667,7 +670,7 @@ export function useFranklinChat(
               body,
               signal: sig(),
             };
-      let res = await fetch(url, init());
+      let res = await paymentFetch(url, init());
       if (res.status === 402) {
         const reqs = parseX402FromResponse(res);
         if (!reqs) throw new Error("Could not read payment requirements from the server.");
@@ -689,7 +692,7 @@ export function useFranklinChat(
         // Signature done — leave "signing" so the tool/working status can show
         // again during the actual request (and the next sign re-sets it).
         setStatus("thinking");
-        res = await fetch(url, init({ "X-Payment": payload }));
+        res = await paymentFetch(url, init({ "X-Payment": payload }));
         // Record the spend only on the *settling* response. The async media
         // submit returns 202 (payment verified, not yet settled) — the poll
         // settles and records instead, so recording here too would double-count.
@@ -702,7 +705,7 @@ export function useFranklinChat(
       }
       return res;
     },
-    [makePayment, pushStep, updateStep],
+    [paymentFetch, makePayment, pushStep, updateStep],
   );
 
   // Abort the in-flight generation and force-clear busy state. Resetting the
@@ -892,7 +895,7 @@ export function useFranklinChat(
           await new Promise((r) => setTimeout(r, 6000));
           // Unpaid status poll, but still gateway-bound: the call was placed on
           // one host and only that host knows the id.
-          const s = await fetch(`/api/blockrun/v1/voice/call/${callId}`, {
+          const s = await paymentFetch(`/api/blockrun/v1/voice/call/${callId}`, {
             headers: chainHeaders(chainRef.current),
             signal: abortRef.current?.signal,
           });
@@ -1258,7 +1261,7 @@ export function useFranklinChat(
       // switch send the poll somewhere the job doesn't exist.
       const jobChain = chainRef.current;
       const chainHdr = chainHeaders(jobChain);
-      let res = await fetch(endpoint, {
+      let res = await paymentFetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...chainHdr },
         body,
@@ -1272,7 +1275,7 @@ export function useFranklinChat(
         const { payload, error: signErr } = await makePayment(reqs);
         if (!payload) throw new Error(signErr || "Wallet signature failed.");
         setPhase("generating");
-        res = await fetch(endpoint, {
+        res = await paymentFetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json", ...chainHdr, "X-Payment": payload },
           body,
@@ -1334,9 +1337,7 @@ export function useFranklinChat(
     // gateway directly (CORS, and the 402 header wouldn't survive). Which of
     // the two hosts the proxy then forwards to is carried by the chain header
     // below, not by this URL, so dropping the host here is intentional.
-    const proxied = pollPath.startsWith("/api/blockrun")
-      ? pollPath
-      : `/api/blockrun${pollPath.replace(/^.*\/api/, "")}`;
+    const proxied = mediaPollPath(pollPath);
     const chainHdr = chainHeaders(chain);
     const setPhase = (phase: MediaJob["phase"]) => setMediaJobs((p) => ({ ...p, [convId]: { kind, phase } }));
 
@@ -1348,7 +1349,7 @@ export function useFranklinChat(
       if (signal.aborted) throw new DOMException("Aborted", "AbortError");
       const headers: Record<string, string> = { ...chainHdr };
       if (sig) headers["X-Payment"] = sig;
-      const r = await fetch(proxied, { headers, signal });
+      const r = await paymentFetch(proxied, { headers, signal });
       if (r.status === 402 && !sig) {
         const reqs = parseX402FromResponse(r);
         if (!reqs) throw new Error("Poll missing payment requirements.");
@@ -1381,9 +1382,7 @@ export function useFranklinChat(
     if (!pollPath) return extractMediaUrl(submit, kind);
     // See pollMediaJob: the host is stripped on purpose — the chain header
     // below is what routes this back to the gateway that owns the job.
-    const proxied = pollPath.startsWith("/api/blockrun")
-      ? pollPath
-      : `/api/blockrun${pollPath.replace(/^.*\/api/, "")}`;
+    const proxied = mediaPollPath(pollPath);
     // Read once and hold it for the run, so a wallet switch mid-render can't
     // point a later poll at a gateway that never saw this job.
     const chain = chainRef.current;
@@ -1395,7 +1394,7 @@ export function useFranklinChat(
       if (signal()?.aborted) throw new DOMException("Aborted", "AbortError");
       const headers: Record<string, string> = { ...chainHdr };
       if (sig) headers["X-Payment"] = sig;
-      const r = await fetch(proxied, { headers, signal: abortRef.current?.signal });
+      const r = await paymentFetch(proxied, { headers, signal: abortRef.current?.signal });
       if (r.status === 402 && !sig) {
         const reqs = parseX402FromResponse(r);
         if (!reqs) throw new Error("Poll missing payment requirements.");

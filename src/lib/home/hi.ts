@@ -2,6 +2,7 @@ import type { HomeDict } from "./types";
 
 export const hi: HomeDict = {
   nav: {
+    blockrunLogin: "BlockRun में साइन इन करें",
     features: "फ़ीचर्स",
     compare: "तुलना",
     blog: "ब्लॉग",

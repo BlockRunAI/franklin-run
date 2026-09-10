@@ -27,6 +27,7 @@ const instrumentSerif = Instrument_Serif({
 
 const notoSerifSC = Noto_Serif_SC({
   variable: "--font-serif-sc",
+  preload: false,
   weight: ["400", "700"],
 });
 

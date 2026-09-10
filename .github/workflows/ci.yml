@@ -32,5 +32,8 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
+      - name: Account and team regression tests
+        run: npm run test:account && npm run test:routes && npm run test:team
+
       - name: Build
         run: npm run build

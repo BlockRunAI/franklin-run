@@ -10,6 +10,7 @@ import type { HomeDict } from "./types";
  */
 export const fa: HomeDict = {
   nav: {
+    blockrunLogin: "ورود به BlockRun",
     features: "قابلیت‌ها",
     compare: "مقایسه",
     blog: "وبلاگ",

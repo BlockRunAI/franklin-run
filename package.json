@@ -2,7 +2,7 @@
   "name": "franklin-run",
   "version": "1.0.0",
   "private": true,
-  "description": "Marketing site for Franklin Agent — the AI agent with a wallet (franklin.run)",
+  "description": "Marketing site for Franklin Agent \u2014 the AI agent with a wallet (franklin.run)",
   "author": "BlockRun.ai",
   "license": "MIT",
   "repository": {
@@ -33,7 +33,10 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "check": "npm run lint && npm run typecheck && npm run build",
-    "deploy": "bash scripts/deploy.sh"
+    "deploy": "bash scripts/deploy.sh",
+    "test:account": "node --experimental-strip-types --test test/account.mts",
+    "test:team": "FRANKLIN_STORE_LOCAL=1 node --experimental-strip-types test/team-store.mts && FRANKLIN_STORE_LOCAL=1 node --import tsx test/team-routes.mts && node --experimental-test-module-mocks --experimental-strip-types test/team-gcs.mts",
+    "test:routes": "node --import tsx test/account-routes.mts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
@@ -75,6 +78,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
     "tailwindcss": "^4",
+    "tsx": "^4.23.13",
     "typescript": "^5"
   }
 }

@@ -9,6 +9,7 @@ import type { HomeDict } from "./types";
  */
 export const tr: HomeDict = {
   nav: {
+    blockrunLogin: "BlockRun’a giriş yap",
     features: "Özellikler",
     compare: "Karşılaştır",
     blog: "Blog",
